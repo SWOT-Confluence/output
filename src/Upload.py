@@ -72,5 +72,6 @@ class Upload:
 
         # Copy new version in a new directory
         new_dir = output_dir / vers
-        mkdir(new_dir)
+        if not new_dir.exists():
+            mkdir(new_dir)
         copy(output_dir / self.sos_file, new_dir / self.sos_file)
