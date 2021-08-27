@@ -58,6 +58,8 @@ class Append:
         path to new SoS directory
     VERS_LENGTH: int
         number of integers in SoS identifier
+    version: int
+        unique identifier for new version of the SoS
     Methods
     -------
     append_data():
@@ -92,6 +94,7 @@ class Append:
         self.sos_nrids = sos_data["node_reaches"]
         self.sos_nids = sos_data["nodes"]
         self.nt = get_nt(input_dir)
+        self.version = "9999"
 
     def create_new_version(self):
         """Create new version of the SoS."""
@@ -100,9 +103,9 @@ class Append:
         copy(self.sos_cur / self.sos_file, new_file)
         sos = Dataset(new_file, 'a')
         
-        new_vers = str(int(sos.version) + 1)
-        padding = ['0'] * (self.VERS_LENGTH - len(new_vers))
-        sos.version = f"{''.join(padding)}{new_vers}"
+        self.version = str(int(sos.version) + 1)
+        padding = ['0'] * (self.VERS_LENGTH - len(self.version))
+        sos.version = f"{''.join(padding)}{self.version}"
         
         sos.production_date = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
         sos["time_steps"][:] = self.nt
@@ -122,30 +125,30 @@ class Append:
         """
 
         sos_file = Path(self.sos_new) / self.sos_file
-                
+        
         gb = GeoBAM(list(self.cont.values())[0], flpe_dir, sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
-        gb.append_gb(self.nt.shape[0])
+        gb.append_gb(self.nt.shape[0], self.version)
         
         mm = Momma(list(self.cont.values())[0], flpe_dir, sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
-        mm.append_mm(self.nt.shape[0])
+        mm.append_mm(self.nt.shape[0], self.version)
 
         hv = Hivdi(list(self.cont.values())[0], flpe_dir, sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
-        hv.append_hv(self.nt.shape[0])
+        hv.append_hv(self.nt.shape[0], self.version)
 
         mn = Metroman(list(self.cont.values())[0], flpe_dir, sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
-        mn.append_mn(self.nt.shape[0])
+        mn.append_mn(self.nt.shape[0], self.version)
 
         moi = Moi(list(self.cont.values())[0], moi_dir, sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
-        moi.append_moi(self.nt.shape[0])
+        moi.append_moi(self.nt.shape[0], self.version)
 
         pd = Postdiagnostics(list(self.cont.values())[0], postd_dir, sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
-        pd.append_pd()
+        pd.append_pd(self.version)
 
 def get_cont_data(cont_json, index):
     """Extract and return the continent data needs to be extracted for.

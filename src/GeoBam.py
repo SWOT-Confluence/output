@@ -35,18 +35,22 @@ class GeoBAM:
     -------
     append_gb()
         append geoBAM results to the SoS
-    __append_gb_data( gb_dict)
-        append geoBAM data to the new version of the SoS
+    __create_gb_data(gb_dict)
+        create variables and append geoBAM data to the new version of the SoS
     __create_gb_dict(nt)
         creates and returns geoBAM data dictionary
     __get_gb_data()
         extract geoBAM results from NetCDF files
+    __insert_gb_data( gb_dict)
+        insert geoBAM data into existing variables of the new version of the SoS
     __insert_nr(name, chain, index, gb_ds, gb_dict)
         insert discharge values into dictionary with nr dimension
-     __insert_nt(self, name, chain, index, gb_ds, gb_dict):
+    __insert_nt(self, name, chain, index, gb_ds, gb_dict):
         insert discharge values into dictionary with nr by nt dimensions
     __insert_nx( rid, name, chain, gb_ds, gb_dict)
         append geoBam result data to dictionary with nx dimension
+    __insert_var(grp, name, chain, gb_dict)
+        insert new geoBAM data into NetCDF variable
     __write_var(q_grp, name, chain, dims, gb_dict)
         create NetCDF variable and write geoBAM data to it
     """
@@ -78,17 +82,22 @@ class GeoBAM:
         self.sos_nrids = nrids
         self.sos_nids = nids
 
-    def append_gb(self, nt):
+    def append_gb(self, nt, version):
         """Append geoBAM results to the SoS.
         
         Parameters
         ----------
         nt: int
             number of time steps
+        version: int
+            unique identifier for SoS version
         """
 
         gb_dict = self.__get_gb_data(nt)
-        self.__append_gb_data(gb_dict)
+        if int(version) == 1:
+            self.__create_gb_data(gb_dict)
+        else:
+            self.__insert_gb_data(gb_dict)
 
     def __get_gb_data(self, nt):
         """Extract geoBAM results from NetCDF files.
@@ -305,7 +314,7 @@ class GeoBAM:
             gb_dict[name][f"{chain}_chain2"][indexes] = gb_ds[name][f"{chain}_chain2"][:].filled(np.nan)
             gb_dict[name][f"{chain}_chain3"][indexes] = gb_ds[name][f"{chain}_chain3"][:].filled(np.nan)
 
-    def __append_gb_data(self, gb_dict):
+    def __create_gb_data(self, gb_dict):
         """Append geoBAM data to the new version of the SoS.
         
         Parameters
@@ -383,3 +392,76 @@ class GeoBAM:
         c2[:] = np.nan_to_num(gb_dict[name][f"{chain}_chain2"], copy=True, nan=self.FILL_VALUE)
         c3 = grp.createVariable(f"{chain}_chain3", "f8", dims, fill_value=self.FILL_VALUE)
         c3[:] = np.nan_to_num(gb_dict[name][f"{chain}_chain3"], copy=True, nan=self.FILL_VALUE)
+
+    def __insert_gb_data(self, gb_dict):
+        """Insert geoBAM data into existing variables of new SoS.
+        
+        Parameters
+        ----------
+        gb_dict: dict
+            dictionary of geoBAM variables
+        """
+
+        sos_ds = Dataset(self.sos_new, 'a')
+        gb_grp = sos_ds["geobam"]
+
+        q_grp = gb_grp["logQ"]
+        self.__insert_var(q_grp, "logQ", "mean", gb_dict)
+        self.__insert_var(q_grp, "logQ", "sd", gb_dict)
+
+        wc_grp = gb_grp["logWc"]
+        self.__insert_var(wc_grp, "logWc", "mean", gb_dict)
+        self.__insert_var(wc_grp, "logWc", "sd", gb_dict)
+
+        qc_grp = gb_grp["logQc"]
+        self.__insert_var(qc_grp, "logQc", "mean", gb_dict)
+        self.__insert_var(qc_grp, "logQc", "sd", gb_dict)
+
+        nm_grp = gb_grp["logn_man"]
+        self.__insert_var(nm_grp, "logn_man", "mean", gb_dict)
+        self.__insert_var(nm_grp, "logn_man", "sd", gb_dict)
+
+        an_grp = gb_grp["logn_amhg"]
+        self.__insert_var(an_grp, "logn_amhg", "mean", gb_dict)
+        self.__insert_var(an_grp, "logn_amhg", "sd", gb_dict)
+
+        a0_grp = gb_grp["A0"]
+        self.__insert_var(a0_grp, "A0", "mean", gb_dict)
+        self.__insert_var(a0_grp, "A0", "sd", gb_dict)
+
+        b_grp = gb_grp["b"]
+        self.__insert_var(b_grp, "b", "mean", gb_dict)
+        self.__insert_var(b_grp, "b", "sd", gb_dict)
+
+        r_grp = gb_grp["logr"]
+        self.__insert_var(r_grp, "logr", "mean", gb_dict)
+        self.__insert_var(r_grp, "logr", "sd", gb_dict)
+
+        wb_grp = gb_grp["logWb"]
+        self.__insert_var(wb_grp, "logWb", "mean", gb_dict)
+        self.__insert_var(wb_grp, "logWb", "sd", gb_dict)
+
+        db_grp = gb_grp["logDb"]
+        self.__insert_var(db_grp, "logDb", "mean", gb_dict)
+        self.__insert_var(db_grp, "logDb", "sd", gb_dict)
+
+        sos_ds.close()
+
+    def __insert_var(self, grp, name, chain, gb_dict):
+        """Insert new geoBAM data into NetCDF variable.
+        
+        Parameters
+        ----------
+        grp: netCDF4._netCDF4.Group
+            dicharge NetCDF4 group to write data to
+        name: str
+            name of variable
+        chain: str
+            mean or standard deviation chain
+        gb_dict: dict
+            dictionary of geoBAM result data
+        """
+
+        grp[f"{chain}_chain1"][:] = np.nan_to_num(gb_dict[name][f"{chain}_chain1"], copy=True, nan=self.FILL_VALUE)
+        grp[f"{chain}_chain2"][:] = np.nan_to_num(gb_dict[name][f"{chain}_chain2"], copy=True, nan=self.FILL_VALUE)
+        grp[f"{chain}_chain3"][:] = np.nan_to_num(gb_dict[name][f"{chain}_chain3"], copy=True, nan=self.FILL_VALUE)

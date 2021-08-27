@@ -34,17 +34,21 @@ class Moi:
     -------
     append_moi()
         append MOI results to the SoS
-    __append_moi_data( moi_dict)
-        append MOI data to the new version of the SoS
+    __create_moi_data(moi_dict)
+        create variables and append MetroMan data to the new version of the SoS
     __create_moi_dict(nt)
         creates and returns MOI data dictionary
     __get_moi_data()
         extract MOI results from NetCDF files
-    __insert_nr(name, chain, index, moi_ds, moi_dict)
+    __insert_moi_data(moi_dict)
+        insert MOI data into existing variables of the new version of the SoS
+    __insert_nr(name, index, moi_ds, moi_dict)
         insert discharge values into dictionary with nr dimension
-     __insert_nt(self, name, chain, index, moi_ds, moi_dict):
+    __insert_nt(self, name, index, moi_ds, moi_dict):
         insert discharge values into dictionary with nr by nt dimensions
-    __write_var(q_grp, name, chain, dims, moi_dict)
+    __insert_var(grp, name, moi_dict)
+        insert new MOI data into NetCDF variable
+    __write_var(q_grp, name, dims, moi_dict)
         create NetCDF variable and write MOI data to it
     """
 
@@ -75,17 +79,22 @@ class Moi:
         self.sos_nrids = nrids
         self.sos_nids = nids
 
-    def append_moi(self, nt):
+    def append_moi(self, nt, version):
         """Append MOI results to the SoS.
         
         Parameters
         ----------
         nt: int
             number of time steps
+        version: int
+            unique identifier for SoS version
         """
 
         moi_dict = self.__get_moi_data(nt)
-        self.__append_moi_data(moi_dict)
+        if int(version) == 1:
+            self.__create_moi_data(moi_dict)
+        else:
+            self.__insert_moi_data(moi_dict)
 
     def __get_moi_data(self, nt):
         """Extract MOI results from NetCDF files.
@@ -223,7 +232,7 @@ class Moi:
 
         moi_dict[alg][name][index, :] = moi_ds[alg][name][:].filled(np.nan)
 
-    def __append_moi_data(self, moi_dict):
+    def __create_moi_data(self, moi_dict):
         """Append MOI data to the new version of the SoS.
         
         Parameters
@@ -290,3 +299,67 @@ class Moi:
 
         var = grp.createVariable(name, "f8", dims, fill_value=self.FILL_VALUE)
         var[:] = np.nan_to_num(moi_dict[name], copy=True, nan=self.FILL_VALUE)
+
+    def __insert_moi_data(self, moi_dict):
+        """Insert MetroMAN data into existing variables of new SoS.
+        
+        Parameters
+        ----------
+        moi_dict: dict
+            dictionary of MOI variables
+        """
+
+        sos_ds = Dataset(self.sos_new, 'a')
+        moi_grp = sos_ds["moi"]
+
+        # geobam
+        gb_grp = moi_grp["geobam"]
+        self.__insert_var(gb_grp, "q", moi_dict["geobam"])
+        self.__insert_var(gb_grp, "a0", moi_dict["geobam"])
+        self.__insert_var(gb_grp, "n", moi_dict["geobam"])
+        self.__insert_var(gb_grp, "qbar_reachScale", moi_dict["geobam"])
+        self.__insert_var(gb_grp, "qbar_basinScale", moi_dict["geobam"])
+
+        # hivdi
+        hv_grp = moi_grp["hivdi"]
+        self.__insert_var(hv_grp, "q", moi_dict["hivdi"])
+        self.__insert_var(hv_grp, "Abar", moi_dict["hivdi"])
+        self.__insert_var(hv_grp, "alpha", moi_dict["hivdi"])
+        self.__insert_var(hv_grp, "beta", moi_dict["hivdi"])
+        self.__insert_var(hv_grp, "qbar_reachScale", moi_dict["hivdi"])
+        self.__insert_var(hv_grp, "qbar_basinScale", moi_dict["hivdi"])
+
+        # metroman
+        mm_grp = moi_grp["metroman"]
+        self.__insert_var(mm_grp, "q", moi_dict["metroman"])
+        self.__insert_var(mm_grp, "Abar", moi_dict["metroman"])
+        self.__insert_var(mm_grp, "na", moi_dict["metroman"])
+        self.__insert_var(mm_grp, "x1", moi_dict["metroman"])
+        self.__insert_var(mm_grp, "qbar_reachScale", moi_dict["metroman"])
+        self.__insert_var(mm_grp, "qbar_basinScale", moi_dict["metroman"])
+
+        # momma
+        mo_grp = moi_grp["momma"]
+        self.__insert_var(mo_grp, "q", moi_dict["momma"])
+        self.__insert_var(mo_grp, "B", moi_dict["momma"])
+        self.__insert_var(mo_grp, "H", moi_dict["momma"])
+        self.__insert_var(mo_grp, "Save", moi_dict["momma"])
+        self.__insert_var(mo_grp, "qbar_reachScale", moi_dict["momma"])
+        self.__insert_var(mo_grp, "qbar_basinScale", moi_dict["momma"])
+        
+        sos_ds.close()
+
+    def __insert_var(self, grp, name, moi_dict):
+        """Insert new MOI data into NetCDF variable.
+        
+        Parameters
+        ----------
+        grp: netCDF4._netCDF4.Group
+            dicharge NetCDF4 group to write data to
+        name: str
+            name of variable
+        moi_dict: dict
+            dictionary of geoBAM result data
+        """
+
+        grp[name][:] = np.nan_to_num(moi_dict[name], copy=True, nan=self.FILL_VALUE)

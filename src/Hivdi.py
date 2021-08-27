@@ -35,17 +35,21 @@ class Hivdi:
     -------
     append_hv()
         append HiVDI results to the SoS
-    __append_hv_data( hv_dict)
-        append HiVDI data to the new version of the SoS
+    __create_hv_data(hv_dict)
+        create variables and append HiVDI data to the new version of the SoS
     __create_hv_dict(nt)
         creates and returns HiVDI data dictionary
     __get_hv_data()
         extract HiVDI results from NetCDF files
-    __insert_nr(name, chain, index, hv_ds, hv_dict)
+    __insert_hv_data(hv_dict)
+        insert HiVDI data into existing variables of the new version of the SoS
+    __insert_nr(name, index, hv_ds, hv_dict)
         insert discharge values into dictionary with nr dimension
-     __insert_nt(self, name, chain, index, hv_ds, hv_dict):
+    __insert_nt(self, name, index, hv_ds, hv_dict):
         insert discharge values into dictionary with nr by nt dimensions
-    __write_var(q_grp, name, chain, dims, hv_dict)
+    __insert_var(grp, name, hv_dict)
+        insert new HiVDI data into NetCDF variable
+    __write_var(q_grp, name, dims, hv_dict)
         create NetCDF variable and write HiVDI data to it
     """
 
@@ -76,17 +80,22 @@ class Hivdi:
         self.sos_nrids = nrids
         self.sos_nids = nids
 
-    def append_hv(self, nt):
+    def append_hv(self, nt, version):
         """Append HiVDI results to the SoS.
         
         Parameters
         ----------
         nt: int
             number of time steps
+        version: int
+            unique identifier for SoS version
         """
 
         hv_dict = self.__get_hv_data(nt)
-        self.__append_hv_data(hv_dict)
+        if int(version) == 1:
+            self.__create_hv_data(hv_dict)
+        else:
+            self.__insert_hv_data(hv_dict)
 
     def __get_hv_data(self, nt):
         """Extract HiVDI results from NetCDF files.
@@ -115,7 +124,7 @@ class Hivdi:
                     self.__insert_nt("Q", index, hv_grp, hv_dict["reach"])
                     self.__insert_nr("A0", index, hv_grp, hv_dict["reach"])
                     self.__insert_nr("alpha", index, hv_grp, hv_dict["reach"])
-                    self.__insert_nr("beta", index, hv_grp, hv_dict["reach"])                
+                    self.__insert_nr("beta", index, hv_grp, hv_dict["reach"])
                     hv_ds.close()               
                 index += 1
         return hv_dict
@@ -175,7 +184,7 @@ class Hivdi:
 
         hv_dict[name][index, :] = hv_ds[name][:].filled(np.nan)
     
-    def __append_hv_data(self, hv_dict):
+    def __create_hv_data(self, hv_dict):
         """Append HiVDI data to the new version of the SoS.
         
         Parameters
@@ -212,3 +221,37 @@ class Hivdi:
 
         var = grp.createVariable(name, "f8", dims, fill_value=self.FILL_VALUE)
         var[:] = np.nan_to_num(mm_dict[name], copy=True, nan=self.FILL_VALUE)
+
+    def __insert_hv_data(self, hv_dict):
+        """Insert HiVDI data into existing variables of new SoS.
+        
+        Parameters
+        ----------
+        hv_dict: dict
+            dictionary of HiVDI variables
+        """
+
+        sos_ds = Dataset(self.sos_new, 'a')
+        hv_grp = sos_ds["hivdi"]
+
+        self.__insert_var(hv_grp, "Q", hv_dict["reach"])
+        self.__insert_var(hv_grp, "A0", hv_dict["reach"])
+        self.__insert_var(hv_grp, "beta", hv_dict["reach"])
+        self.__insert_var(hv_grp, "alpha", hv_dict["reach"])
+
+        sos_ds.close()
+
+    def __insert_var(self, grp, name, hv_dict):
+        """Insert new HiVDI data into NetCDF variable.
+        
+        Parameters
+        ----------
+        grp: netCDF4._netCDF4.Group
+            dicharge NetCDF4 group to write data to
+        name: str
+            name of variable
+        hv_dict: dict
+            dictionary of HiVDI result data
+        """
+
+        grp[name][:] = np.nan_to_num(hv_dict[name], copy=True, nan=self.FILL_VALUE)

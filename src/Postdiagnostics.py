@@ -32,17 +32,21 @@ class Postdiagnostics:
     -------
     append_pd()
         append Postdiagnostics results to the SoS
-    __append_pd_data( pd_dict)
-        append Postdiagnostics data to the new version of the SoS
+    __create_pd_data( pd_dict)
+        create variables and append Postdiagnostics data to the new SoS
     __create_pd_dict(nt)
         creates and returns Postdiagnostics data dictionary
     __get_pd_data()
         extract Postdiagnostics results from NetCDF files
-    __insert_nr(name, chain, index, pd_ds, pd_dict)
+    __insert_nr(name, index, pd_ds, pd_dict)
         insert discharge values into dictionary with nr dimension
-     __insert_nt(self, name, chain, index, pd_ds, pd_dict):
+    __insert_nt(self, name, index, pd_ds, pd_dict):
         insert discharge values into dictionary with nr by nt dimensions
-    __write_var(q_grp, name, chain, dims, pd_dict)
+    __insert_pd_data(pd_dict)
+        insert Postdiagnostics data into existing variables of the new SoS
+    __insert_var(grp, name, pd_dict)
+        insert new Postdiagnostics data into NetCDF variable
+    __write_var(q_grp, name, dims, pd_dict)
         create NetCDF variable and write Postdiagnostics data to it
     """
 
@@ -73,11 +77,20 @@ class Postdiagnostics:
         self.sos_nrids = nrids
         self.sos_nids = nids
 
-    def append_pd(self):
-        """Append Postdiagnostic results to the SoS."""
+    def append_pd(self, version):
+        """Append Postdiagnostic results to the SoS.
+        
+        Parameters
+        ----------
+        version: int
+            unique identifier for SoS version
+        """
 
         pd_dict = self.__get_pd_data()
-        self.__append_pd_data(pd_dict)
+        if int(version) == 1:
+            self.__create_pd_data(pd_dict)
+        else:
+            self.__insert_pd_data(pd_dict)
 
     def __get_pd_data(self):
         """Extract Postdiagnostics results from NetCDF files."""
@@ -161,7 +174,7 @@ class Postdiagnostics:
 
         pd_dict[alg][name][index, :] = pd_ds[name][:].filled(np.nan)
 
-    def __append_pd_data(self, pd_dict):
+    def __create_pd_data(self, pd_dict):
         """Append Postdiagnostic data to the new version of the SoS.
         
         Parameters
@@ -174,7 +187,7 @@ class Postdiagnostics:
         pd_grp = sos_ds.createGroup("postdiagnostics")
 
         # Postdiagnostic data
-        pd_grp.createDimension("num_algos", pd_dict["num_algos"])
+        pd_grp.createDimension("num_algos", None)
         pd_grp.createDimension("nchar", None)
         na_v = pd_grp.createVariable("num_algos", "i4", ("num_algos",))
         na_v[:] = range(1, pd_dict["num_algos"] + 1)
@@ -211,3 +224,46 @@ class Postdiagnostics:
 
         var = grp.createVariable(name, "f8", dims, fill_value=self.FILL_VALUE)
         var[:] = np.nan_to_num(pd_dict[name], copy=True, nan=self.FILL_VALUE)
+
+    def __insert_pd_data(self, pd_dict):
+        """Insert Postdiagnostics data into existing variables of new SoS.
+        
+        Parameters
+        ----------
+        pd_dict: dict
+            dictionary of Postdiagnostics variables
+        """
+
+        sos_ds = Dataset(self.sos_new, 'a')
+        pd_grp = sos_ds["postdiagnostics"]
+
+        pd_grp["num_algos"][:] = range(1, pd_dict["num_algos"] + 1)
+        pd_grp["algo_names"][:] = stringtochar(np.array(pd_dict["algo_names"], dtype="S8"))
+
+        # Basin
+        b_grp = pd_grp["basin"]
+        self.__insert_var(b_grp, "realism_flags", pd_dict["basin"])
+        self.__insert_var(b_grp, "stability_flags", pd_dict["basin"])
+        self.__insert_var(b_grp, "prepost_flags", pd_dict["basin"])
+
+        # Reach
+        r_grp = pd_grp["reach"]
+        self.__insert_var(r_grp, "realism_flags", pd_dict["reach"])
+        self.__insert_var(r_grp, "stability_flags", pd_dict["reach"])
+        
+        sos_ds.close()
+
+    def __insert_var(self, grp, name, pd_dict):
+        """Insert new Postdiagnostic data into NetCDF variable.
+        
+        Parameters
+        ----------
+        grp: netCDF4._netCDF4.Group
+            dicharge NetCDF4 group to write data to
+        name: str
+            name of variable
+        pd_dict: dict
+            dictionary of geoBAM result data
+        """
+
+        grp[name][:] = np.nan_to_num(pd_dict[name], copy=True, nan=self.FILL_VALUE)
