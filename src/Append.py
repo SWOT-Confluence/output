@@ -56,6 +56,8 @@ class Append:
         path to the current SoS
     sos_new: Path
         path to new SoS directory
+    VERS_LENGTH: int
+        number of integers in SoS identifier
     Methods
     -------
     append_data():
@@ -63,6 +65,7 @@ class Append:
     """
 
     FILL_VALUE = -999999999999
+    VERS_LENGTH = 4
 
     def __init__(self, cont_json, index, input_dir, output_dir):
         """
@@ -96,6 +99,11 @@ class Append:
         new_file = Path(self.sos_new) / self.sos_file
         copy(self.sos_cur / self.sos_file, new_file)
         sos = Dataset(new_file, 'a')
+        
+        new_vers = str(int(sos.version) + 1)
+        padding = ['0'] * (self.VERS_LENGTH - len(new_vers))
+        sos.version = f"{''.join(padding)}{new_vers}"
+        
         sos.production_date = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
         sos["time_steps"][:] = self.nt
         sos.close()
