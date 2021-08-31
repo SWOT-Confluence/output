@@ -1,7 +1,6 @@
 # Standard imports
 import glob
 from pathlib import Path
-from re import S
 
 # Third-party imports
 from netCDF4 import Dataset
@@ -225,7 +224,7 @@ class Offline:
         var[:] = np.nan_to_num(off_dict[name], copy=True, nan=self.FILL_VALUE)
     
     def __insert_off_data(self, off_dict):
-        """Insert MetroMAN data into existing variables of new SoS.
+        """Insert Offline data into existing variables of new SoS.
         
         Parameters
         ----------
@@ -234,7 +233,7 @@ class Offline:
         """
 
         sos_ds = Dataset(self.sos_new, 'a')
-        off_grp = sos_ds["metroman"]
+        off_grp = sos_ds["offline"]
 
         self.__insert_var(off_grp, "d_x_area", off_dict)
         self.__insert_var(off_grp, "d_x_area_u", off_dict)
