@@ -10,6 +10,7 @@ INPUT = Path("")
 FLPE = Path("")
 MOI = Path("")
 DIAGNOSTICS = Path("")
+OFFLINE = Path("")
 OUTPUT = Path("")
 
 def main():
@@ -21,7 +22,7 @@ def main():
     # Append SoS data
     append = Append(INPUT / "continent.json", index, INPUT, OUTPUT)
     append.create_new_version()
-    append.append_data(FLPE, MOI, DIAGNOSTICS)
+    append.append_data(FLPE, MOI, DIAGNOSTICS, OFFLINE)
 
     # Login
     login = Login()

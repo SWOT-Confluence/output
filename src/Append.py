@@ -30,6 +30,7 @@ from src.Hivdi import Hivdi
 from src.Metroman import Metroman
 from src.Moi import Moi
 from src.Momma import Momma
+from src.Offline import Offline
 from src.Postdiagnostics import Postdiagnostics
 
 class Append:
@@ -111,7 +112,7 @@ class Append:
         sos["time_steps"][:] = self.nt
         sos.close()
 
-    def append_data(self, flpe_dir, moi_dir, postd_dir):
+    def append_data(self, flpe_dir, moi_dir, postd_dir, off_dir):
         """Append data to the SoS.
         
         Parameters
@@ -122,6 +123,8 @@ class Append:
             path to basin-level MOI directory
         postd_dir: Path
             path to Postdiagnostics directory
+        off_dir: Path
+            path to Offline directory
         """
 
         sos_file = Path(self.sos_new) / self.sos_file
@@ -149,6 +152,10 @@ class Append:
         pd = Postdiagnostics(list(self.cont.values())[0], postd_dir, sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
         pd.append_pd(self.version)
+
+        off = Offline(list(self.cont.values())[0], off_dir, sos_file, 
+            self.sos_rids, self.sos_nrids, self.sos_nids)
+        off.append_off(self.nt.shape[0], self.version)
 
 def get_cont_data(cont_json, index):
     """Extract and return the continent data needs to be extracted for.
