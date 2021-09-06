@@ -2,7 +2,7 @@
 import s3fs
 
 # Application imports
-from src.output_conf import sos_creds
+from output.output_conf import sos_creds
 
 class Login:
     """
