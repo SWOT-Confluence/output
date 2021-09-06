@@ -1,5 +1,5 @@
 # Standard imports
-from os import mkdir
+from os import makedirs
 from shutil import copy
 
 # Third-party imports
@@ -73,5 +73,5 @@ class Upload:
         # Copy new version in a new directory
         new_dir = output_dir / run_type / vers
         if not new_dir.exists():
-            mkdir(new_dir)
+            makedirs(new_dir)
         copy(output_dir / self.sos_file, new_dir / self.sos_file)
