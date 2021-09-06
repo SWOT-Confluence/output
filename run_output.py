@@ -1,10 +1,25 @@
+"""Script to run Output module.
+
+The Output module appends results from each stage of the Confluence workflow
+to a new version of the SoS.
+
+Each stage requiring storage has a class and the run type is determined by
+the command line argument so that the new version gets uploaded to the 
+correct location in the SoS S3 bucket.
+
+Command line arguments:
+run_type: values should be "constrained" or "unconstrained"
+Default is to run unconstrained.
+"""
+
 # Standard imports
 from pathlib import Path
+import sys
 
 # Local imports
-from src.Append import Append
-from src.Login import Login
-from src.Upload import Upload  
+from output.Append import Append
+from output.Login import Login
+from output.Upload import Upload 
 
 INPUT = Path("")
 FLPE = Path("")
@@ -14,6 +29,11 @@ OFFLINE = Path("")
 OUTPUT = Path("")
 
 def main():
+    # Command line arguments
+    try:
+        run_type = sys.argv[1]
+    except IndexError:
+        run_type = "unconstrained"
 
     # AWS Batch index
     # index = int(os.environ.get("AWS_BATCH_JOB_ARRAY_INDEX"))
@@ -30,8 +50,8 @@ def main():
     
     # Upload SoS data
     upload = Upload(login.sos_fs, append.sos_file)
-    # upload.upload_data_local(OUTPUT)
-    upload.upload_data(OUTPUT)
+    upload.upload_data_local(OUTPUT, run_type)
+    # upload.upload_data(OUTPUT, run_type)
 
 if __name__ == "__main__":
     from datetime import datetime

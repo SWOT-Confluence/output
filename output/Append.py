@@ -25,13 +25,13 @@ from shutil import copy
 from netCDF4 import Dataset
 
 # Local imports
-from src.GeoBam import GeoBAM
-from src.Hivdi import Hivdi
-from src.Metroman import Metroman
-from src.Moi import Moi
-from src.Momma import Momma
-from src.Offline import Offline
-from src.Postdiagnostics import Postdiagnostics
+from output.GeoBam import GeoBAM
+from output.Hivdi import Hivdi
+from output.Metroman import Metroman
+from output.Moi import Moi
+from output.Momma import Momma
+from output.Offline import Offline
+from output.Postdiagnostics import Postdiagnostics
 
 class Append:
     """

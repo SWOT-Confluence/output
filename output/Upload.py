@@ -1,5 +1,5 @@
 # Standard imports
-from os import mkdir, scandir
+from os import mkdir
 from shutil import copy
 
 # Third-party imports
@@ -35,17 +35,15 @@ class Upload:
         self.sos_fs = sos_fs
         self.sos_file = sos_file
 
-    def upload_data(self, output_dir):
+    def upload_data(self, output_dir, run_type):
         """ Transfers SOS data to S3 from EFS via EC2 instance.
-        
-        ## TODO
-        - Implement
-        - Create new directory for the new version of the SoS to live in
 
         Parameters
         ----------
         output_dir: Path
             path to output directory
+        run_type: str
+            either "constrained" or "unconstrained"
         """
 
         # Get new SoS version
@@ -54,15 +52,17 @@ class Upload:
         sos_ds.close()
 
         # Upload new SoS file to the S3 bucket
-        self.sos_fs.put(str(output_dir / self.sos_file), f"confluence-sos/{vers}/{self.sos_file}")
+        self.sos_fs.put(str(output_dir / self.sos_file), f"confluence-sos/{run_type}/{vers}/{self.sos_file}")
 
-    def upload_data_local(self, output_dir):
+    def upload_data_local(self, output_dir, run_type):
         """Copy data to local directory and remove temporary directory.
 
         Parameters
         ----------
         output_dir: Path
-            path to output directory        
+            path to output directory
+        run_type: str
+            either "constrained" or "unconstrained"    
         """
 
         # Get new SoS version
@@ -71,7 +71,7 @@ class Upload:
         sos_ds.close()
 
         # Copy new version in a new directory
-        new_dir = output_dir / vers
+        new_dir = output_dir / run_type / vers
         if not new_dir.exists():
             mkdir(new_dir)
         copy(output_dir / self.sos_file, new_dir / self.sos_file)
