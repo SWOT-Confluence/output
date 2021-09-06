@@ -109,7 +109,7 @@ class Append:
         sos.version = f"{''.join(padding)}{self.version}"
         
         sos.production_date = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
-        sos["time_steps"][:] = self.nt
+        sos["time"][:] = self.nt
         sos.close()
 
     def append_data(self, flpe_dir, moi_dir, postd_dir, off_dir):
@@ -189,9 +189,9 @@ def get_continent_sos_data(sos_cur, continent):
     """
     
     nc = Dataset(sos_cur / f"{continent}_apriori_rivers_v07_SOS.nc", 'r')
-    rids = nc["num_reaches"][:]
+    rids = nc["reaches"]["reach_id"][:]
     nrids = nc["nodes"]["reach_id"][:]
-    nids = nc["num_nodes"][:]
+    nids = nc["nodes"]["node_id"][:]
     nc.close()
 
     return { "reaches": rids, "node_reaches": nrids, "nodes": nids }
