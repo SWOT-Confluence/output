@@ -50,8 +50,8 @@ def main():
     
     # Upload SoS data
     upload = Upload(login.sos_fs, append.sos_file)
-    upload.upload_data_local(OUTPUT, run_type)
-    # upload.upload_data(OUTPUT, run_type)
+    # upload.upload_data_local(OUTPUT, run_type)
+    upload.upload_data(OUTPUT, run_type)
 
 if __name__ == "__main__":
     from datetime import datetime
