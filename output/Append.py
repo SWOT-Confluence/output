@@ -32,6 +32,7 @@ from output.Moi import Moi
 from output.Momma import Momma
 from output.Offline import Offline
 from output.Postdiagnostics import Postdiagnostics
+from output.Validation import Validation
 
 class Append:
     """
@@ -112,7 +113,7 @@ class Append:
         sos["time"][:] = self.nt
         sos.close()
 
-    def append_data(self, flpe_dir, moi_dir, postd_dir, off_dir):
+    def append_data(self, flpe_dir, moi_dir, postd_dir, off_dir, val_dir):
         """Append data to the SoS.
         
         Parameters
@@ -125,6 +126,8 @@ class Append:
             path to Postdiagnostics directory
         off_dir: Path
             path to Offline directory
+        val_dir: Path
+            path to Validation directory
         """
 
         sos_file = Path(self.sos_new) / self.sos_file
@@ -156,6 +159,10 @@ class Append:
         off = Offline(list(self.cont.values())[0], off_dir, sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
         off.append_off(self.nt.shape[0], self.version)
+
+        val = Validation(list(self.cont.values())[0], val_dir, sos_file, 
+            self.sos_rids, self.sos_nrids, self.sos_nids)
+        val.append_val(self.version)
 
 def get_cont_data(cont_json, index):
     """Extract and return the continent data needs to be extracted for.
