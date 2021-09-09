@@ -1,5 +1,6 @@
 # Standard imports
-from os import makedirs
+from os import makedirs, scandir
+from pathlib import Path
 from shutil import copy
 
 # Third-party imports
@@ -35,13 +36,15 @@ class Upload:
         self.sos_fs = sos_fs
         self.sos_file = sos_file
 
-    def upload_data(self, output_dir, run_type):
+    def upload_data(self, output_dir, val_dir, run_type):
         """ Transfers SOS data to S3 from EFS via EC2 instance.
 
         Parameters
         ----------
         output_dir: Path
             path to output directory
+        val_dir: Path   
+            path to directory that contains validation figures
         run_type: str
             either "constrained" or "unconstrained"
         """
@@ -54,13 +57,20 @@ class Upload:
         # Upload new SoS file to the S3 bucket
         self.sos_fs.put(str(output_dir / self.sos_file), f"confluence-sos/{run_type}/{vers}/{self.sos_file}")
 
-    def upload_data_local(self, output_dir, run_type):
+        # Upload validation figures to S3 bucket
+        with scandir(val_dir) as entries:
+            for entry in entries:
+                self.sos_fs.put(str(Path(entry)), f"confluence-sos/figs/{run_type}/{vers}/{entry.name}")
+
+    def upload_data_local(self, output_dir, val_dir, run_type):
         """Copy data to local directory and remove temporary directory.
 
         Parameters
         ----------
         output_dir: Path
             path to output directory
+        val_dir: Path   
+            path to directory that contains validation figures
         run_type: str
             either "constrained" or "unconstrained"    
         """
@@ -75,3 +85,11 @@ class Upload:
         if not new_dir.exists():
             makedirs(new_dir)
         copy(output_dir / self.sos_file, new_dir / self.sos_file)
+
+        # Copy figures to a new directory
+        figs_dir = output_dir / "figs" / run_type / vers
+        if not figs_dir.exists():
+            makedirs(figs_dir)
+        with scandir(val_dir) as entries:
+            for entry in entries:
+                copy(Path(entry), figs_dir / entry.name)
