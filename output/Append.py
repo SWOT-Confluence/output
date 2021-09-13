@@ -32,6 +32,7 @@ from output.Moi import Moi
 from output.Momma import Momma
 from output.Offline import Offline
 from output.Postdiagnostics import Postdiagnostics
+from output.Sad import Sad
 from output.Validation import Validation
 
 class Append:
@@ -147,6 +148,10 @@ class Append:
         mn = Metroman(list(self.cont.values())[0], flpe_dir, sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
         mn.append_mn(self.nt.shape[0], self.version)
+
+        sd = Sad(list(self.cont.values())[0], flpe_dir, sos_file, 
+            self.sos_rids, self.sos_nrids, self.sos_nids)
+        sd.append_sd(self.nt.shape[0], self.version)
 
         moi = Moi(list(self.cont.values())[0], moi_dir, sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
