@@ -33,6 +33,7 @@ from output.Momma import Momma
 from output.Offline import Offline
 from output.Postdiagnostics import Postdiagnostics
 from output.Sad import Sad
+from output.Sic4dvar import Sic4dvar
 from output.Validation import Validation
 
 class Append:
@@ -133,41 +134,45 @@ class Append:
 
         sos_file = Path(self.sos_new) / self.sos_file
         
-        gb = GeoBAM(list(self.cont.values())[0], flpe_dir, sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        gb.append_gb(self.nt.shape[0], self.version)
+        # gb = GeoBAM(list(self.cont.values())[0], flpe_dir, sos_file, 
+        #     self.sos_rids, self.sos_nrids, self.sos_nids)
+        # gb.append_gb(self.nt.shape[0], self.version)
         
-        mm = Momma(list(self.cont.values())[0], flpe_dir, sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        mm.append_mm(self.nt.shape[0], self.version)
+        # mm = Momma(list(self.cont.values())[0], flpe_dir, sos_file, 
+        #     self.sos_rids, self.sos_nrids, self.sos_nids)
+        # mm.append_mm(self.nt.shape[0], self.version)
 
-        hv = Hivdi(list(self.cont.values())[0], flpe_dir, sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        hv.append_hv(self.nt.shape[0], self.version)
+        # hv = Hivdi(list(self.cont.values())[0], flpe_dir, sos_file, 
+        #     self.sos_rids, self.sos_nrids, self.sos_nids)
+        # hv.append_hv(self.nt.shape[0], self.version)
 
-        mn = Metroman(list(self.cont.values())[0], flpe_dir, sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        mn.append_mn(self.nt.shape[0], self.version)
+        # mn = Metroman(list(self.cont.values())[0], flpe_dir, sos_file, 
+        #     self.sos_rids, self.sos_nrids, self.sos_nids)
+        # mn.append_mn(self.nt.shape[0], self.version)
 
-        sd = Sad(list(self.cont.values())[0], flpe_dir, sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        sd.append_sd(self.nt.shape[0], self.version)
+        # sd = Sad(list(self.cont.values())[0], flpe_dir, sos_file, 
+        #     self.sos_rids, self.sos_nrids, self.sos_nids)
+        # sd.append_sd(self.nt.shape[0], self.version)
 
-        moi = Moi(list(self.cont.values())[0], moi_dir, sos_file, 
+        sv = Sic4dvar(list(self.cont.values())[0], flpe_dir, sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
-        moi.append_moi(self.nt.shape[0], self.version)
+        sv.append_sv(self.nt.shape[0], self.version)
 
-        pd = Postdiagnostics(list(self.cont.values())[0], postd_dir, sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        pd.append_pd(self.version)
+        # moi = Moi(list(self.cont.values())[0], moi_dir, sos_file, 
+        #     self.sos_rids, self.sos_nrids, self.sos_nids)
+        # moi.append_moi(self.nt.shape[0], self.version)
 
-        off = Offline(list(self.cont.values())[0], off_dir, sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        off.append_off(self.nt.shape[0], self.version)
+        # pd = Postdiagnostics(list(self.cont.values())[0], postd_dir, sos_file, 
+        #     self.sos_rids, self.sos_nrids, self.sos_nids)
+        # pd.append_pd(self.version)
 
-        val = Validation(list(self.cont.values())[0], val_dir, sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        val.append_val(self.version)
+        # off = Offline(list(self.cont.values())[0], off_dir, sos_file, 
+        #     self.sos_rids, self.sos_nrids, self.sos_nids)
+        # off.append_off(self.nt.shape[0], self.version)
+
+        # val = Validation(list(self.cont.values())[0], val_dir, sos_file, 
+        #     self.sos_rids, self.sos_nrids, self.sos_nids)
+        # val.append_val(self.version)
 
 def get_cont_data(cont_json, index):
     """Extract and return the continent data needs to be extracted for.
