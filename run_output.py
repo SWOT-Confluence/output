@@ -45,14 +45,14 @@ def main():
     append.create_new_version()
     append.append_data(FLPE, MOI, DIAGNOSTICS, OFFLINE, VALIDATION / "stats")
 
-    # Login
-    login = Login()
-    login.login()
+    # # Login
+    # login = Login()
+    # login.login()
     
-    # Upload SoS data
-    upload = Upload(login.sos_fs, append.sos_file)
-    upload.upload_data_local(OUTPUT, VALIDATION / "figs", run_type)
-    # upload.upload_data(OUTPUT, VALIDATION / "figs", run_type)
+    # # Upload SoS data
+    # upload = Upload(login.sos_fs, append.sos_file)
+    # upload.upload_data_local(OUTPUT, VALIDATION / "figs", run_type)
+    # # upload.upload_data(OUTPUT, VALIDATION / "figs", run_type)
 
 if __name__ == "__main__":
     from datetime import datetime
