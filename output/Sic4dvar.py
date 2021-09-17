@@ -277,36 +277,36 @@ class Sic4dvar:
         var = grp.createVariable(name, "f8", dims, fill_value=self.FILL_VALUE)
         var[:] = np.nan_to_num(sv_dict[name], copy=True, nan=self.FILL_VALUE)
 
-    def __insert_sv_data(self, sv_dict):
-        """Insert SIC4DVar data into existing variables of new SoS.
+    # def __insert_sv_data(self, sv_dict):
+    #     """Insert SIC4DVar data into existing variables of new SoS.
         
-        Parameters
-        ----------
-        sv_dict: dict
-            dictionary of SIC4DVar variables
-        """
+    #     Parameters
+    #     ----------
+    #     sv_dict: dict
+    #         dictionary of SIC4DVar variables
+    #     """
 
-        sos_ds = Dataset(self.sos_new, 'a')
-        sv_grp = sos_ds["sic4dvar"]
+    #     sos_ds = Dataset(self.sos_new, 'a')
+    #     sv_grp = sos_ds["sic4dvar"]
 
-        self.__insert_var(sv_grp, "A0", sv_dict)
-        self.__insert_var(sv_grp, "n", sv_dict)
-        self.__insert_var(sv_grp, "Q", sv_dict)
-        self.__insert_var(sv_grp, "Q_u", sv_dict)
+    #     self.__insert_var(sv_grp, "A0", sv_dict)
+    #     self.__insert_var(sv_grp, "n", sv_dict)
+    #     self.__insert_var(sv_grp, "Q", sv_dict)
+    #     self.__insert_var(sv_grp, "Q_u", sv_dict)
 
-        sos_ds.close()
+    #     sos_ds.close()
 
-    def __insert_var(self, grp, name, sv_dict):
-        """Insert new SIC4DVar data into NetCDF variable.
+    # def __insert_var(self, grp, name, sv_dict):
+    #     """Insert new SIC4DVar data into NetCDF variable.
         
-        Parameters
-        ----------
-        grp: netCDF4._netCDF4.Group
-            dicharge NetCDF4 group to write data to
-        name: str
-            name of variable
-        sv_dict: dict
-            dictionary of SIC4DVar result data
-        """
+    #     Parameters
+    #     ----------
+    #     grp: netCDF4._netCDF4.Group
+    #         dicharge NetCDF4 group to write data to
+    #     name: str
+    #         name of variable
+    #     sv_dict: dict
+    #         dictionary of SIC4DVar result data
+    #     """
 
-        grp[name][:] = np.nan_to_num(sv_dict[name], copy=True, nan=self.FILL_VALUE)
+    #     grp[name][:] = np.nan_to_num(sv_dict[name], copy=True, nan=self.FILL_VALUE)
