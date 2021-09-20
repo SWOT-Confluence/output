@@ -94,8 +94,8 @@ class Sic4dvar:
         sv_dict = self.__get_sv_data(nt)
         if int(version) == 1:
             self.__create_sv_data(sv_dict)
-        # else:
-        #     self.__insert_sv_data(sv_dict)
+        else:
+            self.__insert_sv_data(sv_dict)
 
     def __get_sv_data(self, nt):
         """Extract SIC4DVar results from NetCDF files.
@@ -126,7 +126,9 @@ class Sic4dvar:
                     self.__insert_nt("Qalgo31", index, sv_ds, sv_dict)
                     self.__insert_nx(s_rid, "half_width", sv_ds, sv_dict)
                     self.__insert_nx(s_rid, "elevation", sv_ds, sv_dict)
-                    sv_ds.close()        
+                    indexes = np.where(s_rid == self.sos_nrids)
+                    sv_dict["node_id"][indexes] = self.sos_nids[indexes]
+                    sv_ds.close()
                 index += 1
         return sv_dict
     
@@ -146,9 +148,8 @@ class Sic4dvar:
             "Qalgo5" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
             "Qalgo31" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
             "half_width": np.full((self.sos_nids.shape[0],1), np.array([np.nan]), dtype=object),
-            "elevation": np.full((self.sos_nids.shape[0],1), np.array([np.nan]), dtype=object)
-            # "half_width" : np.empty(self.sos_nids.shape[0], dtype=object),
-            # "elevation": np.empty(self.sos_nids.shape[0], dtype=object)
+            "elevation": np.full((self.sos_nids.shape[0],1), np.array([np.nan]), dtype=object),
+            "node_id" : np.zeros(self.sos_nids.shape[0], dtype=np.int64)
         }
 
     def __insert_nr(self, name, index, sv_ds, sv_dict):
@@ -247,15 +248,21 @@ class Sic4dvar:
         self.__write_var(sv_grp, "Qalgo5", ("num_reaches", "time_steps"), sv_dict)
 
         # Variable length data
-        print(sv_dict["half_width"].shape)
+        indexes = np.where(sv_dict["node_id"] != 0)
+        
+        sv_grp.createDimension("num_sic4dvar_nodes", None)
+        nid = sv_grp.createVariable("sic4dvar_node_id", "i8", ("num_sic4dvar_nodes",))
+        nid[:] = sv_dict["node_id"][indexes]
+
+        rid = sv_grp.createVariable("sic4dvar_reach_id", "i8", ("num_sic4dvar_nodes",))
+        rid[:] = self.sos_nrids[indexes]
+
         vlen_t = sv_grp.createVLType(np.float64, "vlen")
-        hw = sv_grp.createVariable("half_width", vlen_t, ("num_nodes"))
-        print(hw)
-        hw[:] = sv_dict["half_width"]
+        hw = sv_grp.createVariable("half_width", vlen_t, ("num_sic4dvar_nodes"))
+        hw[:] = sv_dict["half_width"][indexes]
 
-
-        # self.__write_var(sv_grp, "half_width", ("num_nodes"), sv_dict)
-        # self.__write_var(sv_grp, "Q_u", ("num_reaches", "time_steps"), sv_dict)
+        e = sv_grp.createVariable("elevation", vlen_t, ("num_sic4dvar_nodes"))
+        e[:] = sv_dict["elevation"][indexes]
         
         sos_ds.close()
 
@@ -277,36 +284,43 @@ class Sic4dvar:
         var = grp.createVariable(name, "f8", dims, fill_value=self.FILL_VALUE)
         var[:] = np.nan_to_num(sv_dict[name], copy=True, nan=self.FILL_VALUE)
 
-    # def __insert_sv_data(self, sv_dict):
-    #     """Insert SIC4DVar data into existing variables of new SoS.
+    def __insert_sv_data(self, sv_dict):
+        """Insert SIC4DVar data into existing variables of new SoS.
         
-    #     Parameters
-    #     ----------
-    #     sv_dict: dict
-    #         dictionary of SIC4DVar variables
-    #     """
+        Parameters
+        ----------
+        sv_dict: dict
+            dictionary of SIC4DVar variables
+        """
 
-    #     sos_ds = Dataset(self.sos_new, 'a')
-    #     sv_grp = sos_ds["sic4dvar"]
+        sos_ds = Dataset(self.sos_new, 'a')
+        sv_grp = sos_ds["sic4dvar"]
 
-    #     self.__insert_var(sv_grp, "A0", sv_dict)
-    #     self.__insert_var(sv_grp, "n", sv_dict)
-    #     self.__insert_var(sv_grp, "Q", sv_dict)
-    #     self.__insert_var(sv_grp, "Q_u", sv_dict)
+        self.__insert_var(sv_grp, "A0", sv_dict)
+        self.__insert_var(sv_grp, "n", sv_dict)
+        self.__insert_var(sv_grp, "Qalgo31", sv_dict)
+        self.__insert_var(sv_grp, "Qalgo5", sv_dict)
 
-    #     sos_ds.close()
+        # Variable length data
+        indexes = np.where(sv_dict["node_id"] != 0)
+        sv_grp["sic4dvar_node_id"][:] = sv_dict["node_id"][indexes]
+        sv_grp["sic4dvar_reach_id"][:] = self.sos_nrids[indexes]
+        sv_grp["half_width"][:] = sv_dict["half_width"][indexes]
+        sv_grp["elevation"][:] = sv_dict["elevation"][indexes]
 
-    # def __insert_var(self, grp, name, sv_dict):
-    #     """Insert new SIC4DVar data into NetCDF variable.
+        sos_ds.close()
+
+    def __insert_var(self, grp, name, sv_dict):
+        """Insert new SIC4DVar data into NetCDF variable.
         
-    #     Parameters
-    #     ----------
-    #     grp: netCDF4._netCDF4.Group
-    #         dicharge NetCDF4 group to write data to
-    #     name: str
-    #         name of variable
-    #     sv_dict: dict
-    #         dictionary of SIC4DVar result data
-    #     """
+        Parameters
+        ----------
+        grp: netCDF4._netCDF4.Group
+            dicharge NetCDF4 group to write data to
+        name: str
+            name of variable
+        sv_dict: dict
+            dictionary of SIC4DVar result data
+        """
 
-    #     grp[name][:] = np.nan_to_num(sv_dict[name], copy=True, nan=self.FILL_VALUE)
+        grp[name][:] = np.nan_to_num(sv_dict[name], copy=True, nan=self.FILL_VALUE)
