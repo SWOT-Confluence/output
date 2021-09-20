@@ -95,7 +95,6 @@ class Validation:
         if int(version) == 1:
             self.__create_val_data(val_dict)
         else:
-            print(version)
             self.__insert_val_data(val_dict)
 
     def __get_val_data(self):
