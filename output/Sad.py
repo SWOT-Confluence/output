@@ -233,7 +233,7 @@ class Sad:
 
         self.__insert_var(sd_grp, "A0", sd_dict)
         self.__insert_var(sd_grp, "n", sd_dict)
-        self.__insert_var(sd_grp, "Q", sd_dict)
+        self.__insert_var(sd_grp, "Qa", sd_dict)
         self.__insert_var(sd_grp, "Q_u", sd_dict)
 
         sos_ds.close()
