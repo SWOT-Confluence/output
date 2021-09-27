@@ -145,6 +145,18 @@ class Moi:
                     self.__insert_nr("momma", "Save", index, moi_ds, moi_dict)
                     self.__insert_nr("momma", "qbar_reachScale", index, moi_ds, moi_dict)
                     self.__insert_nr("momma", "qbar_basinScale", index, moi_ds, moi_dict)
+
+                    self.__insert_nt("sad", "q", index, moi_ds, moi_dict)
+                    self.__insert_nr("sad", "a0", index, moi_ds, moi_dict)
+                    self.__insert_nr("sad", "n", index, moi_ds, moi_dict)
+                    self.__insert_nr("sad", "qbar_reachScale", index, moi_ds, moi_dict)
+                    self.__insert_nr("sad", "qbar_basinScale", index, moi_ds, moi_dict)
+
+                    self.__insert_nt("sic4dvar", "q", index, moi_ds, moi_dict)
+                    self.__insert_nr("sic4dvar", "a0", index, moi_ds, moi_dict)
+                    self.__insert_nr("sic4dvar", "n", index, moi_ds, moi_dict)
+                    self.__insert_nr("sic4dvar", "qbar_reachScale", index, moi_ds, moi_dict)
+                    self.__insert_nr("sic4dvar", "qbar_basinScale", index, moi_ds, moi_dict)
                     
                     moi_ds.close()
                 index += 1
@@ -189,6 +201,20 @@ class Moi:
                 "B" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "H" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "Save" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64)
+            },
+            "sad" : {
+                "q" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+                "a0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "n" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64)
+            },
+            "sic4dvar" : {
+                "q" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+                "a0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "n" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64)
             }
@@ -280,6 +306,22 @@ class Moi:
         self.__write_var(mo_grp, "qbar_reachScale", ("num_reaches",), moi_dict["momma"])
         self.__write_var(mo_grp, "qbar_basinScale", ("num_reaches",), moi_dict["momma"])
 
+        # sad
+        gb_grp = moi_grp.createGroup("sad")
+        self.__write_var(gb_grp, "q", ("num_reaches", "time_steps"), moi_dict["sad"])
+        self.__write_var(gb_grp, "a0", ("num_reaches",), moi_dict["sad"])
+        self.__write_var(gb_grp, "n", ("num_reaches",), moi_dict["sad"])
+        self.__write_var(gb_grp, "qbar_reachScale", ("num_reaches",), moi_dict["sad"])
+        self.__write_var(gb_grp, "qbar_basinScale", ("num_reaches",), moi_dict["sad"])
+
+        # sic4dvar
+        gb_grp = moi_grp.createGroup("sic4dvar")
+        self.__write_var(gb_grp, "q", ("num_reaches", "time_steps"), moi_dict["sic4dvar"])
+        self.__write_var(gb_grp, "a0", ("num_reaches",), moi_dict["sic4dvar"])
+        self.__write_var(gb_grp, "n", ("num_reaches",), moi_dict["sic4dvar"])
+        self.__write_var(gb_grp, "qbar_reachScale", ("num_reaches",), moi_dict["sic4dvar"])
+        self.__write_var(gb_grp, "qbar_basinScale", ("num_reaches",), moi_dict["sic4dvar"])
+
         sos_ds.close()
 
     def __write_var(self, grp, name, dims, moi_dict):
@@ -346,6 +388,22 @@ class Moi:
         self.__insert_var(mo_grp, "Save", moi_dict["momma"])
         self.__insert_var(mo_grp, "qbar_reachScale", moi_dict["momma"])
         self.__insert_var(mo_grp, "qbar_basinScale", moi_dict["momma"])
+
+        # sad
+        gb_grp = moi_grp["sad"]
+        self.__insert_var(gb_grp, "q", moi_dict["sad"])
+        self.__insert_var(gb_grp, "a0", moi_dict["sad"])
+        self.__insert_var(gb_grp, "n", moi_dict["sad"])
+        self.__insert_var(gb_grp, "qbar_reachScale", moi_dict["sad"])
+        self.__insert_var(gb_grp, "qbar_basinScale", moi_dict["sad"])
+
+        # sic4dvar
+        gb_grp = moi_grp["sic4dvar"]
+        self.__insert_var(gb_grp, "q", moi_dict["sic4dvar"])
+        self.__insert_var(gb_grp, "a0", moi_dict["sic4dvar"])
+        self.__insert_var(gb_grp, "n", moi_dict["sic4dvar"])
+        self.__insert_var(gb_grp, "qbar_reachScale", moi_dict["sic4dvar"])
+        self.__insert_var(gb_grp, "qbar_basinScale", moi_dict["sic4dvar"])
         
         sos_ds.close()
 
