@@ -8,6 +8,7 @@ the command line argument so that the new version gets uploaded to the
 correct location in the SoS S3 bucket.
 
 Command line arguments:
+continent_json: Name of file that contains continent data in JSON format
 run_type: values should be "constrained" or "unconstrained"
 Default is to run unconstrained.
 """
@@ -22,27 +23,28 @@ from output.Append import Append
 from output.Login import Login
 from output.Upload import Upload 
 
-INPUT = Path("")
-FLPE = Path("")
-MOI = Path("")
-DIAGNOSTICS = Path("")
-OFFLINE = Path("")
-VALIDATION = Path("")
-OUTPUT = Path("")
+INPUT = Path("/mnt/data/input")
+FLPE = Path("/mnt/data/flpe")
+MOI = Path("/mnt/data/moi")
+DIAGNOSTICS = Path("/mnt/data/diagnostics")
+OFFLINE = Path("/mnt/data/offline")
+VALIDATION = Path("/mnt/data/validation")
+OUTPUT = Path("/mnt/data/output")
 
 def main():
     # Command line arguments
     try:
-        run_type = sys.argv[1]
+        continent_json = sys.argv[1]
+        run_type = sys.argv[2]
     except IndexError:
+        continent_json = "continent.json"
         run_type = "unconstrained"
 
     # AWS Batch index
-    # index = int(os.environ.get("AWS_BATCH_JOB_ARRAY_INDEX"))
-    index = 3
+    index = int(os.environ.get("AWS_BATCH_JOB_ARRAY_INDEX"))
 
     # Append SoS data
-    append = Append(INPUT / "continent.json", index, INPUT, OUTPUT)
+    append = Append(INPUT / continent_json, index, INPUT, OUTPUT)
     append.create_new_version()
     append.append_data(FLPE, MOI, DIAGNOSTICS, OFFLINE, VALIDATION / "stats")
 
@@ -52,8 +54,8 @@ def main():
     
     # Upload SoS data
     upload = Upload(login.sos_fs, append.sos_file)
-    upload.upload_data_local(OUTPUT, VALIDATION / "figs", run_type)
-    # upload.upload_data(OUTPUT, VALIDATION / "figs", run_type)
+    # upload.upload_data_local(OUTPUT, VALIDATION / "figs", run_type)
+    upload.upload_data(OUTPUT, VALIDATION / "figs", run_type)
 
 if __name__ == "__main__":
     from datetime import datetime
