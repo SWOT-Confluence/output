@@ -120,17 +120,19 @@ class Offline:
                     off_file = [ f for f in glob.glob(f"{off_dir}/*{s_rid}*.nc") ][0]
                     off_ds = Dataset(off_file, 'r')
                     self.__insert_nt("d_x_area", index, off_ds, off_dict)
-                    self.__insert_nt("d_x_area_u", index, off_ds, off_dict)
+                    if "d_x_area_u" in off_ds.variables.keys(): self.__insert_nt("d_x_area_u", index, off_ds, off_dict)
                     self.__insert_nt("metro_q_c", index, off_ds, off_dict)
                     self.__insert_nt("bam_q_c", index, off_ds, off_dict)
                     self.__insert_nt("hivdi_q_c", index, off_ds, off_dict)
                     self.__insert_nt("momma_q_c", index, off_ds, off_dict)
                     self.__insert_nt("sads_q_c", index, off_ds, off_dict)
+                    self.__insert_nt("consensus_q_c", index, off_ds, off_dict)
                     self.__insert_nt("metro_q_uc", index, off_ds, off_dict)
                     self.__insert_nt("bam_q_uc", index, off_ds, off_dict)
                     self.__insert_nt("hivdi_q_uc", index, off_ds, off_dict)
                     self.__insert_nt("momma_q_uc", index, off_ds, off_dict)
                     self.__insert_nt("sads_q_uc", index, off_ds, off_dict)
+                    self.__insert_nt("consensus_q_uc", index, off_ds, off_dict)
                     off_ds.close()
                 index += 1
         return off_dict
@@ -153,11 +155,13 @@ class Offline:
             "hivdi_q_c" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
             "momma_q_c" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
             "sads_q_c" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+            "consensus_q_c" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
             "metro_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
             "bam_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
             "hivdi_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
             "momma_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "sads_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64)
+            "sads_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+            "consensus_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64)
         }
 
     def __insert_nt(self, name, index, off_ds, off_dict):
@@ -197,11 +201,13 @@ class Offline:
         self.__write_var(off_grp, "hivdi_q_c", ("num_reaches", "time_steps"), off_dict)
         self.__write_var(off_grp, "momma_q_c", ("num_reaches", "time_steps"), off_dict)
         self.__write_var(off_grp, "sads_q_c", ("num_reaches", "time_steps"), off_dict)
+        self.__write_var(off_grp, "consensus_q_c", ("num_reaches", "time_steps"), off_dict)
         self.__write_var(off_grp, "metro_q_uc", ("num_reaches", "time_steps"), off_dict)
         self.__write_var(off_grp, "bam_q_uc", ("num_reaches", "time_steps"), off_dict)
         self.__write_var(off_grp, "hivdi_q_uc", ("num_reaches", "time_steps"), off_dict)
         self.__write_var(off_grp, "momma_q_uc", ("num_reaches", "time_steps"), off_dict)
         self.__write_var(off_grp, "sads_q_uc", ("num_reaches", "time_steps"), off_dict)
+        self.__write_var(off_grp, "consensus_q_uc", ("num_reaches", "time_steps"), off_dict)
 
         sos_ds.close()
 
@@ -242,11 +248,13 @@ class Offline:
         self.__insert_var(off_grp, "hivdi_q_c", off_dict)
         self.__insert_var(off_grp, "momma_q_c", off_dict)
         self.__insert_var(off_grp, "sads_q_c", off_dict)
+        self.__insert_var(off_grp, "consensus_q_c", off_dict)
         self.__insert_var(off_grp, "metro_q_uc", off_dict)
         self.__insert_var(off_grp, "bam_q_uc", off_dict)
         self.__insert_var(off_grp, "hivdi_q_uc", off_dict)
         self.__insert_var(off_grp, "momma_q_uc", off_dict)
         self.__insert_var(off_grp, "sads_q_uc", off_dict)
+        self.__insert_var(off_grp, "consensus_q_uc", off_dict)
         
         sos_ds.close()
 
