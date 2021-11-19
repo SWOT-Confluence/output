@@ -6,7 +6,10 @@ from pathlib import Path
 from netCDF4 import Dataset
 import numpy as np
 
-class Metroman:
+# Local imports
+from output.modules.AbstractModule import AbstractModule
+
+class Metroman(AbstractModule):
     """
     A class that represents the results of running MetroMan.
 
@@ -15,46 +18,21 @@ class Metroman:
 
     Attributes
     ----------
-    cont_ids: list
-            list of continent identifiers
-    FILL_VALUE: float
-        fill value to use for missing data
-    input_dir: Path
-        path to input directory
-    sos_nrids: nd.array
-        array of SOS reach identifiers on the node-level
-    sos_nids: nd.array
-        array of SOS node identifiers
-    sos_rids: nd.array
-        array of SoS reach identifiers associated with continent
-        path to the current SoS
-    sos_new: Path
-            path to new SOS file
 
     Methods
     -------
-    append_mn()
-        append MetroMan results to the SoS
-    __create_mn_data(mn_dict)
-        create variables and append MetroMan data to the new version of the SoS
-    __create_mn_dict(nt)
-        creates and returns MetroMan data dictionary
-    __get_mn_data()
-        extract MetroMan results from NetCDF files
-    __insert_mn_data(mn_dict)
-        insert MetroMan data into existing variables of the new version of the SoS
+    append_module_data(data_dict)
+        append module data to the new version of the SoS result file.
+    create_data_dict(nt=None)
+        creates and returns module data dictionary.
+    get_module_data(nt=None)
+        retrieve module results from NetCDF files.
     __insert_nr(name, index, mn_ds, mn_dict)
         insert discharge values into dictionary with nr dimension
     __insert_nt(self, name, index, mn_ds, mn_dict):
         insert discharge values into dictionary with nr by nt dimensions
-    __insert_var(grp, name, mn_dict)
-        insert new MetroMan data into NetCDF variable
-    __write_var(q_grp, name, dims, mn_dict)
-        create NetCDF variable and write MetroMan data to it
     """
-
-    FILL_VALUE = -999999999999
-
+    
     def __init__(self, cont_ids, input_dir, sos_new, rids, nrids, nids):
         """
         Parameters
@@ -73,28 +51,9 @@ class Metroman:
             array of SOS node identifiers
         """
 
-        self.cont_ids = cont_ids
-        self.input_dir = input_dir
-        self.sos_new = sos_new
-        self.sos_rids = rids
-        self.sos_nrids = nrids
-        self.sos_nids = nids
+        super().__init__(cont_ids, input_dir, sos_new, rids, nrids, nids)
 
-    def append_mn(self, nt, version):
-        """Append MetroMan results to the SoS.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        version: int
-            unique identifier for SoS version
-        """
-
-        mn_dict = self.__get_mn_data(nt)
-        self.__create_mn_data(mn_dict)
-
-    def __get_mn_data(self, nt):
+    def get_module_data(self, nt=None):
         """Extract MetroMan results from NetCDF files.
         
         Parameters
@@ -110,7 +69,7 @@ class Metroman:
         mn_rids = [ int(rid) for rid_list in mn_rids for rid in rid_list ]
 
         # Storage of results data
-        mn_dict = self.__create_mn_dict(nt)
+        mn_dict = self.create_data_dict(nt)
         
         if len(mn_files) != 0:
             # Data extraction
@@ -128,7 +87,7 @@ class Metroman:
                 index += 1
         return mn_dict
 
-    def __create_mn_dict(self, nt):
+    def create_data_dict(self, nt=None):
         """Creates and returns MetroMan data dictionary.
         
         Parameters
@@ -186,12 +145,12 @@ class Metroman:
         mn_index = np.where(mn_ds["reach_id"][:] == s_rid)[0][0]
         mn_dict[name][index, :] = mn_ds[name][mn_index,:].filled(np.nan)
 
-    def __create_mn_data(self, mn_dict):
+    def append_module_data(self, data_dict):
         """Append MetroMan data to the new version of the SoS.
         
         Parameters
         ----------
-        mn_dict: dict
+        data_dict: dict
             dictionary of MetroMan variables
         """
 
@@ -199,28 +158,10 @@ class Metroman:
         mn_grp = sos_ds.createGroup("metroman")
 
         # MetroMan data
-        self.__write_var(mn_grp, "allq", ("num_reaches", "time_steps"), mn_dict)
-        self.__write_var(mn_grp, "A0hat", ("num_reaches",), mn_dict)
-        self.__write_var(mn_grp, "nahat", ("num_reaches",), mn_dict)
-        self.__write_var(mn_grp, "x1hat", ("num_reaches",), mn_dict)
-        self.__write_var(mn_grp, "q_u", ("num_reaches", "time_steps"), mn_dict)
+        self.write_var(mn_grp, "allq", "f8", ("num_reaches", "time_steps"), data_dict)
+        self.write_var(mn_grp, "A0hat", "f8", ("num_reaches",), data_dict)
+        self.write_var(mn_grp, "nahat", "f8", ("num_reaches",), data_dict)
+        self.write_var(mn_grp, "x1hat", "f8", ("num_reaches",), data_dict)
+        self.write_var(mn_grp, "q_u", "f8", ("num_reaches", "time_steps"), data_dict)
 
         sos_ds.close()
-
-    def __write_var(self, grp, name, dims, mn_dict):
-        """Create NetCDF variable and write MetroMan data to it.
-        
-        Parameters
-        ----------
-        grp: netCDF4._netCDF4.Group
-            dicharge NetCDF4 group to write data to
-        name: str
-            name of variable
-        dims: tuple
-            tuple of NetCDF4 dimensions that matches shape of var dataa
-        mn_dict: dict
-            dictionary of MetroMan result data
-        """
-
-        var = grp.createVariable(name, "f8", dims, fill_value=self.FILL_VALUE)
-        var[:] = np.nan_to_num(mn_dict[name], copy=True, nan=self.FILL_VALUE)

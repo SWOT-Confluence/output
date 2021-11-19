@@ -9,9 +9,15 @@ Append
 Functions
 ---------
 get_cont_data(cont_json)
-    Extract and return the continent data needs to be extracted for
+    extract and return the continent data needs to be extracted for
 get_continent_sos_data(sos_cur)
-    Return a dictionary of continents with associated identifier data
+    return a dictionary of continents with associated identifier data
+get_nt(input_dir)
+    return time steps (nt) from first SWOT NetCDF file
+write_reaches(prior_sos, result_sos)
+    write reach_id variable and associated dimension to the SoS
+write_nodes(prior_sos, result_sos)
+    write node_id and reach_id variables with associated dimension to the SoS
 """
 
 # Standard imports
@@ -19,22 +25,21 @@ from datetime import datetime
 import json
 from os import scandir
 from pathlib import Path
-from shutil import copy
 
 # Third-party imports
 from netCDF4 import Dataset
 
 # Local imports
-from output.GeoBam import GeoBAM
-from output.Hivdi import Hivdi
-from output.Metroman import Metroman
-from output.Moi import Moi
-from output.Momma import Momma
-from output.Offline import Offline
-from output.Postdiagnostics import Postdiagnostics
-from output.Sad import Sad
-from output.Sic4dvar import Sic4dvar
-from output.Validation import Validation
+from output.modules.GeoBam import GeoBAM
+from output.modules.Hivdi import Hivdi
+from output.modules.Metroman import Metroman
+from output.modules.Moi import Moi
+from output.modules.Momma import Momma
+from output.modules.Offline import Offline
+from output.modules.Postdiagnostics import Postdiagnostics
+from output.modules.Sad import Sad
+from output.modules.Sic4dvar import Sic4dvar
+from output.modules.Validation import Validation
 
 class Append:
     """
@@ -46,10 +51,16 @@ class Append:
     ----------
     cont: dict
         continent name key with associated numeric identifier values (list)
-    FILL_VALUE: float
-        fill value to use for missing data
     input_dir: Path
         path to input directory
+    modules: list
+        list of AbstractModule objects to execute result storage ops for
+    MODULES_LIST: list
+        list of string module names to create objects for
+    PRIORS_SUFFIX: str
+        string suffix for priors file name
+    RESULTS_SUFFIX: str
+        string suffix for output file name
     sos_nrids: nd.array
         array of SOS reach identifiers on the node-level
     sos_nids: nd.array
@@ -64,13 +75,23 @@ class Append:
         number of integers in SoS identifier
     version: int
         unique identifier for new version of the SoS
+        
     Methods
     -------
     append_data():
         append data to the SoS
+    create_modules(flpe_dir, moi_dir, postd_dir, off_dir, val_dir)
+        create and stores a list of AbstractModule objects
+    create_new_version()
+        create new version of the SoS
     """
 
-    FILL_VALUE = -999999999999
+    MODULES_LIST = ["geobam", "hivdi", "metroman", "moi", "momma", "offline", \
+        "postdiagnostics", "sad", "sic4dvar", "validation"]
+    # PRIORS_SUFFIX = "sword_v11_SOS_priors"
+    PRIORS_SUFFIX = "apriori_rivers_v07_SOS_priors"
+    # RESULTS_SUFFIX = "sword_v11_SOS_results"
+    RESULTS_SUFFIX = "apriori_rivers_v07_SOS_results"
     VERS_LENGTH = 4
 
     def __init__(self, cont_json, index, input_dir, output_dir):
@@ -91,11 +112,12 @@ class Append:
 
         self.cont = get_cont_data(cont_json, index)
         self.sos_cur = input_dir / "sos"
-        self.sos_file = output_dir / "sos" / f"{list(self.cont.keys())[0]}_sword_v11_SOS_results.nc"
-        sos_data = get_continent_sos_data(self.sos_cur, list(self.cont.keys())[0])
+        self.sos_file = output_dir / "sos" / f"{list(self.cont.keys())[0]}_{self.RESULTS_SUFFIX}.nc"
+        sos_data = get_continent_sos_data(self.sos_cur, list(self.cont.keys())[0], self.PRIORS_SUFFIX)
         self.sos_rids = sos_data["reaches"]
         self.sos_nrids = sos_data["node_reaches"]
         self.sos_nids = sos_data["nodes"]
+        self.modules = []
         self.nt = get_nt(input_dir)
         self.version = "9999"
 
@@ -130,8 +152,14 @@ class Append:
         prior_sos.close()
         result_sos.close()
 
-    def append_data(self, flpe_dir, moi_dir, postd_dir, off_dir, val_dir):
-        """Append data to the SoS.
+    def append_data(self):
+        """Append data to the SoS by executing module storage operations."""
+        
+        for module in self.modules:
+            module.append_module(nt=self.nt.shape[0])
+        
+    def create_modules(self, flpe_dir, moi_dir, postd_dir, off_dir, val_dir):
+        """Create and stores a list of AbstractModule objects.
         
         Parameters
         ----------
@@ -147,45 +175,48 @@ class Append:
             path to Validation directory
         """
         
-        gb = GeoBAM(list(self.cont.values())[0], flpe_dir, self.sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        gb.append_gb(self.nt.shape[0], self.version)
-        
-        mm = Momma(list(self.cont.values())[0], flpe_dir, self.sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        mm.append_mm(self.nt.shape[0], self.version)
-
-        hv = Hivdi(list(self.cont.values())[0], flpe_dir, self.sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        hv.append_hv(self.nt.shape[0], self.version)
-
-        mn = Metroman(list(self.cont.values())[0], flpe_dir, self.sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        mn.append_mn(self.nt.shape[0], self.version)
-
-        sd = Sad(list(self.cont.values())[0], flpe_dir, self.sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        sd.append_sd(self.nt.shape[0], self.version)
-
-        sv = Sic4dvar(list(self.cont.values())[0], flpe_dir, self.sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        sv.append_sv(self.nt.shape[0], self.version)
-
-        moi = Moi(list(self.cont.values())[0], moi_dir, self.sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        moi.append_moi(self.nt.shape[0], self.version)
-
-        pd = Postdiagnostics(list(self.cont.values())[0], postd_dir, self.sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        pd.append_pd(self.version)
-
-        off = Offline(list(self.cont.values())[0], off_dir, self.sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        off.append_off(self.nt.shape[0], self.version)
-
-        val = Validation(list(self.cont.values())[0], val_dir, self.sos_file, 
-            self.sos_rids, self.sos_nrids, self.sos_nids)
-        val.append_val(self.version)
+        for module in self.MODULES_LIST:
+            if module == "geobam":
+                self.modules.append(GeoBAM(list(self.cont.values())[0], \
+                flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
+                self.sos_nids))
+            if module == "hivdi":
+                self.modules.append(Hivdi(list(self.cont.values())[0], \
+                    flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
+                    self.sos_nids))
+            if module == "metroman":
+                self.modules.append(Metroman(list(self.cont.values())[0], \
+                    flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
+                    self.sos_nids))
+            if module == "moi":
+                self.modules.append(Moi(list(self.cont.values())[0], \
+                    moi_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
+                    self.sos_nids))
+            if module == "momma":
+                self.modules.append(Momma(list(self.cont.values())[0], \
+                    flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
+                    self.sos_nids))
+            if module == "offline":
+                self.modules.append(Offline(list(self.cont.values())[0], \
+                    off_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
+                    self.sos_nids))
+            if module == "postdiagnostics":
+                self.modules.append(Postdiagnostics(list(self.cont.values())[0], \
+                    postd_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
+                    self.sos_nids))
+            if module == "sad":
+                self.modules.append(Sad(list(self.cont.values())[0], \
+                    flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
+                    self.sos_nids))
+            if module == "sic4dvar":
+                self.modules.append(Sic4dvar(list(self.cont.values())[0], \
+                    flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
+                    self.sos_nids))
+            if module == "validation":
+                self.modules.append(Validation(list(self.cont.values())[0], \
+                    val_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
+                    self.sos_nids))
+            
 
 def get_cont_data(cont_json, index):
     """Extract and return the continent data needs to be extracted for.
@@ -207,7 +238,7 @@ def get_cont_data(cont_json, index):
         data = json.load(jsonfile)
     return data[index]
 
-def get_continent_sos_data(sos_cur, continent):
+def get_continent_sos_data(sos_cur, continent, priors_suffix):
     """Return a dictionary of continents with associated reach identifiers.
     
     Parameters
@@ -216,9 +247,11 @@ def get_continent_sos_data(sos_cur, continent):
         continent letter identifiers
     sos_cur: Path
         path to the current SoS
+    priors_suffix: str
+        string suffix of priors SOS file name
     """
     
-    nc = Dataset(sos_cur / f"{continent}_sword_v11_SOS_priors.nc", 'r')
+    nc = Dataset(sos_cur / f"{continent}_{priors_suffix}.nc", 'r')
     rids = nc["reaches"]["reach_id"][:]
     nrids = nc["nodes"]["reach_id"][:]
     nids = nc["nodes"]["node_id"][:]

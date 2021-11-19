@@ -6,7 +6,10 @@ from pathlib import Path
 from netCDF4 import Dataset
 import numpy as np
 
-class GeoBAM:
+# Local imports
+from output.modules.AbstractModule import AbstractModule
+
+class GeoBAM(AbstractModule):
     """
     A class that represents the results of running geoBAM.
 
@@ -15,47 +18,24 @@ class GeoBAM:
 
     Attributes
     ----------
-    cont_ids: list
-            list of continent identifiers
-    FILL_VALUE: float
-        fill value to use for missing data
-    input_dir: Path
-        path to input directory
-    sos_nrids: nd.array
-        array of SOS reach identifiers on the node-level
-    sos_nids: nd.array
-        array of SOS node identifiers
-    sos_rids: nd.array
-        array of SoS reach identifiers associated with continent
-        path to the current SoS
-    sos_new: Path
-            path to new SOS file
 
     Methods
     -------
-    append_gb()
-        append geoBAM results to the SoS
-    __create_gb_data(gb_dict)
-        create variables and append geoBAM data to the new version of the SoS
-    __create_gb_dict(nt)
-        creates and returns geoBAM data dictionary
-    __get_gb_data()
-        extract geoBAM results from NetCDF files
-    __insert_gb_data( gb_dict)
-        insert geoBAM data into existing variables of the new version of the SoS
+    append_module_data(data_dict)
+        append module data to the new version of the SoS result file.
+    create_data_dict(nt=None)
+        creates and returns module data dictionary.
+    get_module_data(nt=None)
+        retrieve module results from NetCDF files.
     __insert_nr(name, chain, index, gb_ds, gb_dict)
         insert discharge values into dictionary with nr dimension
     __insert_nt(self, name, chain, index, gb_ds, gb_dict):
         insert discharge values into dictionary with nr by nt dimensions
     __insert_nx( rid, name, chain, gb_ds, gb_dict)
         append geoBam result data to dictionary with nx dimension
-    __insert_var(grp, name, chain, gb_dict)
-        insert new geoBAM data into NetCDF variable
-    __write_var(q_grp, name, chain, dims, gb_dict)
-        create NetCDF variable and write geoBAM data to it
+    write_var(q_grp, name, dims, sv_dict)
+        create NetCDF variable and write module data to it
     """
-
-    FILL_VALUE = -999999999999
 
     def __init__(self, cont_ids, input_dir, sos_new, rids, nrids, nids):
         """
@@ -75,26 +55,9 @@ class GeoBAM:
             array of SOS node identifiers
         """
 
-        self.cont_ids = cont_ids
-        self.input_dir = input_dir
-        self.sos_new = sos_new
-        self.sos_rids = rids
-        self.sos_nrids = nrids
-        self.sos_nids = nids
+        super().__init__(cont_ids, input_dir, sos_new, rids, nrids, nids)
 
-    def append_gb(self, nt):
-        """Append geoBAM results to the SoS.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
-
-        gb_dict = self.__get_gb_data(nt)
-        self.__create_gb_data(gb_dict)
-
-    def __get_gb_data(self, nt):
+    def get_module_data(self, nt=None):
         """Extract geoBAM results from NetCDF files.
         
         Parameters
@@ -109,7 +72,7 @@ class GeoBAM:
         gb_rids = [ int(gb_file.name.split('_')[0]) for gb_file in gb_files ]
 
         # Storage of results data
-        gb_dict = self.__create_gb_dict(nt)
+        gb_dict = self.create_data_dict(nt)
         
         if len(gb_files) != 0:
             # Data extraction
@@ -141,7 +104,7 @@ class GeoBAM:
                 index += 1
         return gb_dict
 
-    def __create_gb_dict(self, nt):
+    def create_data_dict(self, nt=None):
         """Creates and returns geoBAM data dictionary.
         
         Parameters
@@ -149,7 +112,7 @@ class GeoBAM:
         nt: int
             number of time steps
         """
-
+                
         return {
             "nt" : nt,
             "logQ" : {
@@ -309,12 +272,12 @@ class GeoBAM:
             gb_dict[name][f"{chain}_chain2"][indexes] = gb_ds[name][f"{chain}_chain2"][:].filled(np.nan)
             gb_dict[name][f"{chain}_chain3"][indexes] = gb_ds[name][f"{chain}_chain3"][:].filled(np.nan)
 
-    def __create_gb_data(self, gb_dict):
+    def append_module_data(self, data_dict):
         """Append geoBAM data to the new version of the SoS.
         
         Parameters
         ----------
-        gb_dict: dict
+        data_dict: dict
             dictionary of geoBAM variables
         """
 
@@ -323,48 +286,48 @@ class GeoBAM:
 
         # geoBAM data
         q_grp = gb_grp.createGroup("logQ")
-        self.__write_var(q_grp, "logQ", "mean", ("num_reaches", "time_steps"), gb_dict)
-        self.__write_var(q_grp, "logQ", "sd", ("num_reaches", "time_steps"), gb_dict)
+        self.write_var(q_grp, "logQ", "mean", ("num_reaches", "time_steps"), data_dict)
+        self.write_var(q_grp, "logQ", "sd", ("num_reaches", "time_steps"), data_dict)
 
         wc_grp = gb_grp.createGroup("logWc")
-        self.__write_var(wc_grp, "logWc", "mean", ("num_reaches",), gb_dict)
-        self.__write_var(wc_grp, "logWc", "sd", ("num_reaches",), gb_dict)
+        self.write_var(wc_grp, "logWc", "mean", ("num_reaches",), data_dict)
+        self.write_var(wc_grp, "logWc", "sd", ("num_reaches",), data_dict)
 
         qc_grp = gb_grp.createGroup("logQc")
-        self.__write_var(qc_grp, "logQc", "mean", ("num_reaches",), gb_dict)
-        self.__write_var(qc_grp, "logQc", "sd", ("num_reaches",), gb_dict)
+        self.write_var(qc_grp, "logQc", "mean", ("num_reaches",), data_dict)
+        self.write_var(qc_grp, "logQc", "sd", ("num_reaches",), data_dict)
 
         nm_grp = gb_grp.createGroup("logn_man")
-        self.__write_var(nm_grp, "logn_man", "mean", ("num_nodes",), gb_dict)
-        self.__write_var(nm_grp, "logn_man", "sd", ("num_nodes",), gb_dict)
+        self.write_var(nm_grp, "logn_man", "mean", ("num_nodes",), data_dict)
+        self.write_var(nm_grp, "logn_man", "sd", ("num_nodes",), data_dict)
 
         an_grp = gb_grp.createGroup("logn_amhg")
-        self.__write_var(an_grp, "logn_amhg", "mean", ("num_nodes",), gb_dict)
-        self.__write_var(an_grp, "logn_amhg", "sd", ("num_nodes",), gb_dict)
+        self.write_var(an_grp, "logn_amhg", "mean", ("num_nodes",), data_dict)
+        self.write_var(an_grp, "logn_amhg", "sd", ("num_nodes",), data_dict)
 
         a0_grp = gb_grp.createGroup("A0")
-        self.__write_var(a0_grp, "A0", "mean", ("num_nodes",), gb_dict)
-        self.__write_var(a0_grp, "A0", "sd", ("num_nodes",), gb_dict)
+        self.write_var(a0_grp, "A0", "mean", ("num_nodes",), data_dict)
+        self.write_var(a0_grp, "A0", "sd", ("num_nodes",), data_dict)
 
         b_grp = gb_grp.createGroup("b")
-        self.__write_var(b_grp, "b", "mean", ("num_nodes",), gb_dict)
-        self.__write_var(b_grp, "b", "sd", ("num_nodes",), gb_dict)
+        self.write_var(b_grp, "b", "mean", ("num_nodes",), data_dict)
+        self.write_var(b_grp, "b", "sd", ("num_nodes",), data_dict)
 
         r_grp = gb_grp.createGroup("logr")
-        self.__write_var(r_grp, "logr", "mean", ("num_nodes",), gb_dict)
-        self.__write_var(r_grp, "logr", "sd", ("num_nodes",), gb_dict)
+        self.write_var(r_grp, "logr", "mean", ("num_nodes",), data_dict)
+        self.write_var(r_grp, "logr", "sd", ("num_nodes",), data_dict)
 
         wb_grp = gb_grp.createGroup("logWb")
-        self.__write_var(wb_grp, "logWb", "mean", ("num_nodes",), gb_dict)
-        self.__write_var(wb_grp, "logWb", "sd", ("num_nodes",), gb_dict)
+        self.write_var(wb_grp, "logWb", "mean", ("num_nodes",), data_dict)
+        self.write_var(wb_grp, "logWb", "sd", ("num_nodes",), data_dict)
 
         db_grp = gb_grp.createGroup("logDb")
-        self.__write_var(db_grp, "logDb", "mean", ("num_nodes",), gb_dict)
-        self.__write_var(db_grp, "logDb", "sd", ("num_nodes",), gb_dict)
+        self.write_var(db_grp, "logDb", "mean", ("num_nodes",), data_dict)
+        self.write_var(db_grp, "logDb", "sd", ("num_nodes",), data_dict)
 
         sos_ds.close()
 
-    def __write_var(self, grp, name, chain, dims, gb_dict):
+    def write_var(self, grp, name, chain, dims, gb_dict):
         """Create NetCDF variable and write geoBAM data to it.
         
         Parameters
@@ -381,9 +344,9 @@ class GeoBAM:
             dictionary of geoBAM result data
         """
 
-        c1 = grp.createVariable(f"{chain}_chain1", "f8", dims, fill_value=self.FILL_VALUE)
-        c1[:] = np.nan_to_num(gb_dict[name][f"{chain}_chain1"], copy=True, nan=self.FILL_VALUE)
-        c2 = grp.createVariable(f"{chain}_chain2", "f8", dims, fill_value=self.FILL_VALUE)
-        c2[:] = np.nan_to_num(gb_dict[name][f"{chain}_chain2"], copy=True, nan=self.FILL_VALUE)
-        c3 = grp.createVariable(f"{chain}_chain3", "f8", dims, fill_value=self.FILL_VALUE)
-        c3[:] = np.nan_to_num(gb_dict[name][f"{chain}_chain3"], copy=True, nan=self.FILL_VALUE)
+        c1 = grp.createVariable(f"{chain}_chain1", "f8", dims, fill_value=self.FILL["f8"])
+        c1[:] = np.nan_to_num(gb_dict[name][f"{chain}_chain1"], copy=True, nan=self.FILL["f8"])
+        c2 = grp.createVariable(f"{chain}_chain2", "f8", dims, fill_value=self.FILL["f8"])
+        c2[:] = np.nan_to_num(gb_dict[name][f"{chain}_chain2"], copy=True, nan=self.FILL["f8"])
+        c3 = grp.createVariable(f"{chain}_chain3", "f8", dims, fill_value=self.FILL["f8"])
+        c3[:] = np.nan_to_num(gb_dict[name][f"{chain}_chain3"], copy=True, nan=self.FILL["f8"])
