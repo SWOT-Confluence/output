@@ -56,6 +56,11 @@ class Validation:
 
     FLOAT_FILL = -999999999999
     INT_FILL = -999
+    FILL = {
+        "f8": -999999999999,
+        "i4": -999,
+        "S1": "x"
+    }
 
     def __init__(self, cont_ids, input_dir, sos_new, rids, nrids, nids):
         """
@@ -82,20 +87,11 @@ class Validation:
         self.sos_nrids = nrids
         self.sos_nids = nids
 
-    def append_val(self, version):
-        """Append Validation results to the SoS.
-        
-        Parameters
-        ----------
-        version: int
-            unique identifier for SoS version
-        """
+    def append_val(self):
+        """Append Validation results to the SoS."""
         
         val_dict = self.__get_val_data()
-        if int(version) == 1:
-            self.__create_val_data(val_dict)
-        else:
-            self.__insert_val_data(val_dict)
+        self.__create_val_data(val_dict)
 
     def __get_val_data(self):
         """Extract Validation results from NetCDF files.
@@ -175,47 +171,36 @@ class Validation:
         val_grp.createDimension("nchar", val_dict["nchar"])
 
         # Validation data
-        an = val_grp.createVariable("algo_names", "S1", ("num_reaches", "num_algos", "nchar",))
-        an[:] = val_dict["algo_names"]
-
-        hv = val_grp.createVariable("has_validation", "i4", ("num_reaches",), fill_value=self.INT_FILL)
-        hv[:] = np.nan_to_num(val_dict["has_validation"], copy=True, nan=self.INT_FILL).astype(int)
-
-        nse = val_grp.createVariable("nse", "f8", ("num_reaches", "num_algos",), fill_value=self.FLOAT_FILL)
-        nse[:] = np.nan_to_num(val_dict["nse"], copy=True, nan=self.FLOAT_FILL)
-
-        rsq = val_grp.createVariable("rsq", "f8", ("num_reaches", "num_algos",), fill_value=self.FLOAT_FILL)
-        rsq[:] = np.nan_to_num(val_dict["rsq"], copy=True, nan=self.FLOAT_FILL)
-
-        kge = val_grp.createVariable("kge", "f8", ("num_reaches", "num_algos",), fill_value=self.FLOAT_FILL)
-        kge[:] = np.nan_to_num(val_dict["kge"], copy=True, nan=self.FLOAT_FILL)
-
-        rmse = val_grp.createVariable("rmse", "f8", ("num_reaches", "num_algos",), fill_value=self.FLOAT_FILL)
-        rmse[:] = np.nan_to_num(val_dict["rmse"], copy=True, nan=self.FLOAT_FILL)
-
-        testn = val_grp.createVariable("testn", "f8", ("num_reaches", "num_algos",), fill_value=self.FLOAT_FILL)
-        testn[:] = np.nan_to_num(val_dict["testn"], copy=True, nan=self.FLOAT_FILL)
+        self.__write_var(val_grp, "algo_names", "S1", ("num_reaches", "num_algos", "nchar",), val_dict)
+        self.__write_var(val_grp, "has_validation", "i4", ("num_reaches",), val_dict)
+        self.__write_var(val_grp, "nse", "f8", ("num_reaches", "num_algos",), val_dict)
+        self.__write_var(val_grp, "rsq", "f8", ("num_reaches", "num_algos",), val_dict)
+        self.__write_var(val_grp, "kge", "f8", ("num_reaches", "num_algos",), val_dict)
+        self.__write_var(val_grp, "rmse", "f8", ("num_reaches", "num_algos",), val_dict)
+        self.__write_var(val_grp, "testn", "f8", ("num_reaches", "num_algos",), val_dict)
 
         sos_ds.close()
-
-    def __insert_val_data(self, val_dict):
-        """Insert Validation data into existing variables of new SoS.
         
+    def __write_var(self, grp, name, type, dims, sv_dict):
+        """Create NetCDF variable and write SIC4DVar data to it.
+    
         Parameters
         ----------
-        val_dict: dict
-            dictionary of Validation variables
+        grp: netCDF4._netCDF4.Group
+            dicharge NetCDF4 group to write data to
+        name: str
+            name of variable
+        dims: tuple
+            tuple of NetCDF4 dimensions that matches shape of var data
+        type: str
+            string type of NeetCDF variable
+        sv_dict: dict
+            dictionary of SIC4DVar result data
         """
 
-        sos_ds = Dataset(self.sos_new, 'a')
-        val_grp = sos_ds["validation"]
-
-        val_grp["algo_names"][:] = val_dict["algo_names"]
-        val_grp["has_validation"][:] = np.nan_to_num(val_dict["has_validation"], copy=True, nan=self.INT_FILL).astype(int)
-        val_grp["nse"][:] = np.nan_to_num(val_dict["nse"], copy=True, nan=self.FLOAT_FILL)
-        val_grp["rsq"][:] = np.nan_to_num(val_dict["rsq"], copy=True, nan=self.FLOAT_FILL)
-        val_grp["kge"][:] = np.nan_to_num(val_dict["kge"], copy=True, nan=self.FLOAT_FILL)
-        val_grp["rmse"][:] = np.nan_to_num(val_dict["rmse"], copy=True, nan=self.FLOAT_FILL)
-        val_grp["testn"][:] = np.nan_to_num(val_dict["testn"], copy=True, nan=self.FLOAT_FILL)
         
-        sos_ds.close()
+        var = grp.createVariable(name, type, dims, fill_value=self.FILL[type])
+        if type == "f8" or type == "i4": 
+            var[:] = np.nan_to_num(sv_dict[name], copy=True, nan=self.FILL[type])
+        else:
+            var[:] = sv_dict[name]
