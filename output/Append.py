@@ -91,8 +91,7 @@ class Append:
 
         self.cont = get_cont_data(cont_json, index)
         self.sos_cur = input_dir / "sos"
-        self.sos_file = f"{list(self.cont.keys())[0]}_apriori_rivers_v07_SOS.nc"
-        self.sos_new = output_dir
+        self.sos_file = output_dir / "sos" / f"{list(self.cont.keys())[0]}_sword_v11_SOS_results.nc"
         sos_data = get_continent_sos_data(self.sos_cur, list(self.cont.keys())[0])
         self.sos_rids = sos_data["reaches"]
         self.sos_nrids = sos_data["node_reaches"]
@@ -102,18 +101,34 @@ class Append:
 
     def create_new_version(self):
         """Create new version of the SoS."""
+        
+        # Create directory and file
+        self.sos_file.parent.mkdir(parents=True, exist_ok=True)
+        file_name = '_'.join(self.sos_file.name.split('_')[:-1])
+        prior_sos = Dataset(self.sos_cur / f"{file_name}_priors.nc")
+        result_sos = Dataset(self.sos_file, 'w')
+        
+        # Global attributes
+        result_sos.Name = prior_sos.Name
+        result_sos.version = prior_sos.version
+        result_sos.production_date = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
+        result_sos.run_type = prior_sos.run_type
 
-        new_file = Path(self.sos_new) / self.sos_file
-        copy(self.sos_cur / self.sos_file, new_file)
-        sos = Dataset(new_file, 'a')
-        
-        self.version = str(int(sos.version) + 1)
-        padding = ['0'] * (self.VERS_LENGTH - len(self.version))
-        sos.version = f"{''.join(padding)}{self.version}"
-        
-        sos.production_date = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
-        sos["time"][:] = self.nt
-        sos.close()
+        # Global dimensions
+        result_sos.createDimension("num_reaches", prior_sos["reaches"]["reach_id"][:].shape[0])             
+        result_sos.createDimension("num_nodes", prior_sos["nodes"]["node_id"][:].shape[0])
+        result_sos.createDimension("time_steps", self.nt.shape[0])
+
+        # Global variables
+        time_var = result_sos.createVariable("time", "i8", ("time_steps",))
+        time_var[:] = self.nt
+
+        # Node and reach group
+        write_reaches(prior_sos, result_sos)
+        write_nodes(prior_sos, result_sos)
+
+        prior_sos.close()
+        result_sos.close()
 
     def append_data(self, flpe_dir, moi_dir, postd_dir, off_dir, val_dir):
         """Append data to the SoS.
@@ -131,46 +146,44 @@ class Append:
         val_dir: Path
             path to Validation directory
         """
-
-        sos_file = Path(self.sos_new) / self.sos_file
         
-        gb = GeoBAM(list(self.cont.values())[0], flpe_dir, sos_file, 
+        gb = GeoBAM(list(self.cont.values())[0], flpe_dir, self.sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
         gb.append_gb(self.nt.shape[0], self.version)
         
-        mm = Momma(list(self.cont.values())[0], flpe_dir, sos_file, 
+        mm = Momma(list(self.cont.values())[0], flpe_dir, self.sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
         mm.append_mm(self.nt.shape[0], self.version)
 
-        hv = Hivdi(list(self.cont.values())[0], flpe_dir, sos_file, 
+        hv = Hivdi(list(self.cont.values())[0], flpe_dir, self.sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
         hv.append_hv(self.nt.shape[0], self.version)
 
-        mn = Metroman(list(self.cont.values())[0], flpe_dir, sos_file, 
+        mn = Metroman(list(self.cont.values())[0], flpe_dir, self.sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
         mn.append_mn(self.nt.shape[0], self.version)
 
-        sd = Sad(list(self.cont.values())[0], flpe_dir, sos_file, 
+        sd = Sad(list(self.cont.values())[0], flpe_dir, self.sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
         sd.append_sd(self.nt.shape[0], self.version)
 
-        sv = Sic4dvar(list(self.cont.values())[0], flpe_dir, sos_file, 
+        sv = Sic4dvar(list(self.cont.values())[0], flpe_dir, self.sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
         sv.append_sv(self.nt.shape[0], self.version)
 
-        moi = Moi(list(self.cont.values())[0], moi_dir, sos_file, 
+        moi = Moi(list(self.cont.values())[0], moi_dir, self.sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
         moi.append_moi(self.nt.shape[0], self.version)
 
-        pd = Postdiagnostics(list(self.cont.values())[0], postd_dir, sos_file, 
+        pd = Postdiagnostics(list(self.cont.values())[0], postd_dir, self.sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
         pd.append_pd(self.version)
 
-        off = Offline(list(self.cont.values())[0], off_dir, sos_file, 
+        off = Offline(list(self.cont.values())[0], off_dir, self.sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
         off.append_off(self.nt.shape[0], self.version)
 
-        val = Validation(list(self.cont.values())[0], val_dir, sos_file, 
+        val = Validation(list(self.cont.values())[0], val_dir, self.sos_file, 
             self.sos_rids, self.sos_nrids, self.sos_nids)
         val.append_val(self.version)
 
@@ -205,7 +218,7 @@ def get_continent_sos_data(sos_cur, continent):
         path to the current SoS
     """
     
-    nc = Dataset(sos_cur / f"{continent}_apriori_rivers_v07_SOS.nc", 'r')
+    nc = Dataset(sos_cur / f"{continent}_sword_v11_SOS_priors.nc", 'r')
     rids = nc["reaches"]["reach_id"][:]
     nrids = nc["nodes"]["reach_id"][:]
     nids = nc["nodes"]["node_id"][:]
@@ -229,3 +242,25 @@ def get_nt(input_dir):
     nt = swot_ds["nt"][:]
     swot_ds.close()
     return nt
+
+def write_reaches(prior_sos, result_sos):
+        """Write reach_id variable and associated dimension to the SoS."""
+        
+        sos_reach = result_sos.createGroup("reaches")
+        reach_var = sos_reach.createVariable("reach_id", "i8", ("num_reaches",))
+        reach_var.format = prior_sos["reaches"]["reach_id"].format
+        reach_var[:] = prior_sos["reaches"]["reach_id"][:]
+
+def write_nodes(prior_sos, result_sos):
+    """Write node_id and reach_id variables with associated dimension to the
+    SoS."""
+
+    sos_node = result_sos.createGroup("nodes")
+    
+    node_var = sos_node.createVariable("node_id", "i8", ("num_nodes",))
+    node_var.format = prior_sos["nodes"]["node_id"].format
+    node_var[:] = prior_sos["nodes"]["node_id"][:]
+    
+    reach_var = sos_node.createVariable("reach_id", "i8", ("num_nodes",))
+    reach_var.format = prior_sos["nodes"]["reach_id"].format
+    reach_var[:] = prior_sos["nodes"]["reach_id"][:]
