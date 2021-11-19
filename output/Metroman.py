@@ -92,10 +92,7 @@ class Metroman:
         """
 
         mn_dict = self.__get_mn_data(nt)
-        if int(version) == 1:
-            self.__create_mn_data(mn_dict)
-        else:
-            self.__insert_mn_data(mn_dict)
+        self.__create_mn_data(mn_dict)
 
     def __get_mn_data(self, nt):
         """Extract MetroMan results from NetCDF files.
@@ -227,38 +224,3 @@ class Metroman:
 
         var = grp.createVariable(name, "f8", dims, fill_value=self.FILL_VALUE)
         var[:] = np.nan_to_num(mn_dict[name], copy=True, nan=self.FILL_VALUE)
-
-    def __insert_mn_data(self, mn_dict):
-        """Insert MetroMAN data into existing variables of new SoS.
-        
-        Parameters
-        ----------
-        mn_dict: dict
-            dictionary of MetroMan variables
-        """
-
-        sos_ds = Dataset(self.sos_new, 'a')
-        mn_grp = sos_ds["metroman"]
-
-        self.__insert_var(mn_grp, "allq", mn_dict)
-        self.__insert_var(mn_grp, "A0hat", mn_dict)
-        self.__insert_var(mn_grp, "nahat", mn_dict)
-        self.__insert_var(mn_grp, "x1hat", mn_dict)
-        self.__insert_var(mn_grp, "q_u", mn_dict)
-        
-        sos_ds.close()
-
-    def __insert_var(self, grp, name, mn_dict):
-        """Insert new Metroman data into NetCDF variable.
-        
-        Parameters
-        ----------
-        grp: netCDF4._netCDF4.Group
-            dicharge NetCDF4 group to write data to
-        name: str
-            name of variable
-        mn_dict: dict
-            dictionary of geoBAM result data
-        """
-
-        grp[name][:] = np.nan_to_num(mn_dict[name], copy=True, nan=self.FILL_VALUE)

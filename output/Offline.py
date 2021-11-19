@@ -89,10 +89,7 @@ class Offline:
         """
 
         off_dict = self.__get_off_data(nt)
-        if int(version) == 1:
-            self.__create_off_data(off_dict)
-        else:
-            self.__insert_off_data(off_dict)
+        self.__create_off_data(off_dict)
 
     def __get_off_data(self, nt):
         """Extract Offline results from NetCDF files.
@@ -228,47 +225,3 @@ class Offline:
 
         var = grp.createVariable(name, "f8", dims, fill_value=self.FILL_VALUE)
         var[:] = np.nan_to_num(off_dict[name], copy=True, nan=self.FILL_VALUE)
-    
-    def __insert_off_data(self, off_dict):
-        """Insert Offline data into existing variables of new SoS.
-        
-        Parameters
-        ----------
-        off_dict: dict
-            dictionary of Offline variables
-        """
-
-        sos_ds = Dataset(self.sos_new, 'a')
-        off_grp = sos_ds["offline"]
-
-        self.__insert_var(off_grp, "d_x_area", off_dict)
-        self.__insert_var(off_grp, "d_x_area_u", off_dict)
-        self.__insert_var(off_grp, "metro_q_c", off_dict)
-        self.__insert_var(off_grp, "bam_q_c", off_dict)
-        self.__insert_var(off_grp, "hivdi_q_c", off_dict)
-        self.__insert_var(off_grp, "momma_q_c", off_dict)
-        self.__insert_var(off_grp, "sads_q_c", off_dict)
-        self.__insert_var(off_grp, "consensus_q_c", off_dict)
-        self.__insert_var(off_grp, "metro_q_uc", off_dict)
-        self.__insert_var(off_grp, "bam_q_uc", off_dict)
-        self.__insert_var(off_grp, "hivdi_q_uc", off_dict)
-        self.__insert_var(off_grp, "momma_q_uc", off_dict)
-        self.__insert_var(off_grp, "sads_q_uc", off_dict)
-        self.__insert_var(off_grp, "consensus_q_uc", off_dict)
-        
-        sos_ds.close()
-
-    def __insert_var(self, grp, name, off_dict):
-        """Insert new Offline data into NetCDF variable.
-        
-        Parameters
-        ----------
-        grp: netCDF4._netCDF4.Group
-            dicharge NetCDF4 group to write data to
-        name: str
-            name of variable
-        off_dict: dict
-            dictionary of Offline result data
-        """
-
-        grp[name][:] = np.nan_to_num(off_dict[name], copy=True, nan=self.FILL_VALUE)

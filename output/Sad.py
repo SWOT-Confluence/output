@@ -92,10 +92,7 @@ class Sad:
         """
 
         sd_dict = self.__get_sd_data(nt)
-        if int(version) == 1:
-            self.__create_sd_data(sd_dict)
-        else:
-            self.__insert_sd_data(sd_dict)
+        self.__create_sd_data(sd_dict)
 
     def __get_sd_data(self, nt):
         """Extract SAD results from NetCDF files.
@@ -218,37 +215,3 @@ class Sad:
 
         var = grp.createVariable(name, "f8", dims, fill_value=self.FILL_VALUE)
         var[:] = np.nan_to_num(sd_dict[name], copy=True, nan=self.FILL_VALUE)
-
-    def __insert_sd_data(self, sd_dict):
-        """Insert SAD data into existing variables of new SoS.
-        
-        Parameters
-        ----------
-        sd_dict: dict
-            dictionary of SAD variables
-        """
-
-        sos_ds = Dataset(self.sos_new, 'a')
-        sd_grp = sos_ds["sad"]
-
-        self.__insert_var(sd_grp, "A0", sd_dict)
-        self.__insert_var(sd_grp, "n", sd_dict)
-        self.__insert_var(sd_grp, "Qa", sd_dict)
-        self.__insert_var(sd_grp, "Q_u", sd_dict)
-
-        sos_ds.close()
-
-    def __insert_var(self, grp, name, sd_dict):
-        """Insert new SAD data into NetCDF variable.
-        
-        Parameters
-        ----------
-        grp: netCDF4._netCDF4.Group
-            dicharge NetCDF4 group to write data to
-        name: str
-            name of variable
-        sd_dict: dict
-            dictionary of SAD result data
-        """
-
-        grp[name][:] = np.nan_to_num(sd_dict[name], copy=True, nan=self.FILL_VALUE)

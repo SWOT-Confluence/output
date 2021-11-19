@@ -91,11 +91,8 @@ class Moi:
         """
 
         moi_dict = self.__get_moi_data(nt)
-        if int(version) == 1:
-            self.__create_moi_data(moi_dict)
-        else:
-            self.__insert_moi_data(moi_dict)
-
+        self.__create_moi_data(moi_dict)
+        
     def __get_moi_data(self, nt):
         """Extract MOI results from NetCDF files.
         
@@ -341,83 +338,3 @@ class Moi:
 
         var = grp.createVariable(name, "f8", dims, fill_value=self.FILL_VALUE)
         var[:] = np.nan_to_num(moi_dict[name], copy=True, nan=self.FILL_VALUE)
-
-    def __insert_moi_data(self, moi_dict):
-        """Insert MetroMAN data into existing variables of new SoS.
-        
-        Parameters
-        ----------
-        moi_dict: dict
-            dictionary of MOI variables
-        """
-
-        sos_ds = Dataset(self.sos_new, 'a')
-        moi_grp = sos_ds["moi"]
-
-        # geobam
-        gb_grp = moi_grp["geobam"]
-        self.__insert_var(gb_grp, "q", moi_dict["geobam"])
-        self.__insert_var(gb_grp, "a0", moi_dict["geobam"])
-        self.__insert_var(gb_grp, "n", moi_dict["geobam"])
-        self.__insert_var(gb_grp, "qbar_reachScale", moi_dict["geobam"])
-        self.__insert_var(gb_grp, "qbar_basinScale", moi_dict["geobam"])
-
-        # hivdi
-        hv_grp = moi_grp["hivdi"]
-        self.__insert_var(hv_grp, "q", moi_dict["hivdi"])
-        self.__insert_var(hv_grp, "Abar", moi_dict["hivdi"])
-        self.__insert_var(hv_grp, "alpha", moi_dict["hivdi"])
-        self.__insert_var(hv_grp, "beta", moi_dict["hivdi"])
-        self.__insert_var(hv_grp, "qbar_reachScale", moi_dict["hivdi"])
-        self.__insert_var(hv_grp, "qbar_basinScale", moi_dict["hivdi"])
-
-        # metroman
-        mm_grp = moi_grp["metroman"]
-        self.__insert_var(mm_grp, "q", moi_dict["metroman"])
-        self.__insert_var(mm_grp, "Abar", moi_dict["metroman"])
-        self.__insert_var(mm_grp, "na", moi_dict["metroman"])
-        self.__insert_var(mm_grp, "x1", moi_dict["metroman"])
-        self.__insert_var(mm_grp, "qbar_reachScale", moi_dict["metroman"])
-        self.__insert_var(mm_grp, "qbar_basinScale", moi_dict["metroman"])
-
-        # momma
-        mo_grp = moi_grp["momma"]
-        self.__insert_var(mo_grp, "q", moi_dict["momma"])
-        self.__insert_var(mo_grp, "B", moi_dict["momma"])
-        self.__insert_var(mo_grp, "H", moi_dict["momma"])
-        self.__insert_var(mo_grp, "Save", moi_dict["momma"])
-        self.__insert_var(mo_grp, "qbar_reachScale", moi_dict["momma"])
-        self.__insert_var(mo_grp, "qbar_basinScale", moi_dict["momma"])
-
-        # sad
-        gb_grp = moi_grp["sad"]
-        self.__insert_var(gb_grp, "q", moi_dict["sad"])
-        self.__insert_var(gb_grp, "a0", moi_dict["sad"])
-        self.__insert_var(gb_grp, "n", moi_dict["sad"])
-        self.__insert_var(gb_grp, "qbar_reachScale", moi_dict["sad"])
-        self.__insert_var(gb_grp, "qbar_basinScale", moi_dict["sad"])
-
-        # sic4dvar
-        gb_grp = moi_grp["sic4dvar"]
-        self.__insert_var(gb_grp, "q", moi_dict["sic4dvar"])
-        self.__insert_var(gb_grp, "a0", moi_dict["sic4dvar"])
-        self.__insert_var(gb_grp, "n", moi_dict["sic4dvar"])
-        self.__insert_var(gb_grp, "qbar_reachScale", moi_dict["sic4dvar"])
-        self.__insert_var(gb_grp, "qbar_basinScale", moi_dict["sic4dvar"])
-        
-        sos_ds.close()
-
-    def __insert_var(self, grp, name, moi_dict):
-        """Insert new MOI data into NetCDF variable.
-        
-        Parameters
-        ----------
-        grp: netCDF4._netCDF4.Group
-            dicharge NetCDF4 group to write data to
-        name: str
-            name of variable
-        moi_dict: dict
-            dictionary of geoBAM result data
-        """
-
-        grp[name][:] = np.nan_to_num(moi_dict[name], copy=True, nan=self.FILL_VALUE)

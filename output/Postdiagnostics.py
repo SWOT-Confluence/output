@@ -87,10 +87,7 @@ class Postdiagnostics:
         """
 
         pd_dict = self.__get_pd_data()
-        if int(version) == 1:
-            self.__create_pd_data(pd_dict)
-        else:
-            self.__insert_pd_data(pd_dict)
+        self.__create_pd_data(pd_dict)
 
     def __get_pd_data(self):
         """Extract Postdiagnostics results from NetCDF files."""
@@ -224,46 +221,3 @@ class Postdiagnostics:
 
         var = grp.createVariable(name, "f8", dims, fill_value=self.FILL_VALUE)
         var[:] = np.nan_to_num(pd_dict[name], copy=True, nan=self.FILL_VALUE)
-
-    def __insert_pd_data(self, pd_dict):
-        """Insert Postdiagnostics data into existing variables of new SoS.
-        
-        Parameters
-        ----------
-        pd_dict: dict
-            dictionary of Postdiagnostics variables
-        """
-
-        sos_ds = Dataset(self.sos_new, 'a')
-        pd_grp = sos_ds["postdiagnostics"]
-
-        pd_grp["num_algos"][:] = range(1, pd_dict["num_algos"] + 1)
-        pd_grp["algo_names"][:] = stringtochar(np.array(pd_dict["algo_names"], dtype="S8"))
-
-        # Basin
-        b_grp = pd_grp["basin"]
-        self.__insert_var(b_grp, "realism_flags", pd_dict["basin"])
-        self.__insert_var(b_grp, "stability_flags", pd_dict["basin"])
-        self.__insert_var(b_grp, "prepost_flags", pd_dict["basin"])
-
-        # Reach
-        r_grp = pd_grp["reach"]
-        self.__insert_var(r_grp, "realism_flags", pd_dict["reach"])
-        self.__insert_var(r_grp, "stability_flags", pd_dict["reach"])
-        
-        sos_ds.close()
-
-    def __insert_var(self, grp, name, pd_dict):
-        """Insert new Postdiagnostic data into NetCDF variable.
-        
-        Parameters
-        ----------
-        grp: netCDF4._netCDF4.Group
-            dicharge NetCDF4 group to write data to
-        name: str
-            name of variable
-        pd_dict: dict
-            dictionary of geoBAM result data
-        """
-
-        grp[name][:] = np.nan_to_num(pd_dict[name], copy=True, nan=self.FILL_VALUE)

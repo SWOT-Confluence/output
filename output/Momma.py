@@ -92,10 +92,7 @@ class Momma:
         """
 
         mm_dict = self.__get_mm_data(nt)
-        if int(version) == 1:
-            self.__create_mm_data(mm_dict)
-        else:
-            self.__insert_mm_data(mm_dict)
+        self.__create_mm_data(mm_dict)
 
     def __get_mm_data(self, nt):
         """Extract MOMMA results from NetCDF files.
@@ -324,73 +321,3 @@ class Momma:
 
         var = grp.createVariable(name, "f8", dims, fill_value=self.FILL_VALUE)
         var[:] = np.nan_to_num(mm_dict[name], copy=True, nan=self.FILL_VALUE)
-
-    def __insert_mm_data(self, mm_dict):
-        """Insert MOMMA data into existing variables of new SoS.
-        
-        Parameters
-        ----------
-        mm_dict: dict
-            dictionary of MOMMA variables
-        """
-
-        sos_ds = Dataset(self.sos_new, 'a')
-        mm_grp = sos_ds["momma"]
-
-        self.__insert_var(mm_grp, "stage", mm_dict)
-        self.__insert_var(mm_grp, "width", mm_dict)
-        self.__insert_var(mm_grp, "slope", mm_dict)
-        self.__insert_var(mm_grp, "Qgage", mm_dict)
-        self.__insert_var(mm_grp, "seg", mm_dict)
-        self.__insert_var(mm_grp, "n", mm_dict)
-        self.__insert_var(mm_grp, "Y", mm_dict)
-        self.__insert_var(mm_grp, "v", mm_dict)
-        self.__insert_var(mm_grp, "Q", mm_dict)
-        self.__insert_var(mm_grp, "Q_constrained", mm_dict)
-        self.__insert_var(mm_grp, "gage_constrained", mm_dict)
-        self.__insert_var(mm_grp, "input_MBL_prior", mm_dict)
-        self.__insert_var(mm_grp, "input_Qm_prior", mm_dict)
-        self.__insert_var(mm_grp, "input_Qb_prior", mm_dict)
-        self.__insert_var(mm_grp, "input_Yb_prior", mm_dict)
-        self.__insert_var(mm_grp, "input_known_ezf", mm_dict)
-        self.__insert_var(mm_grp, "input_known_bkfl_stage", mm_dict)
-        self.__insert_var(mm_grp, "input_known_nb_seg1", mm_dict)
-        self.__insert_var(mm_grp, "input_known_x_seg1", mm_dict)
-        self.__insert_var(mm_grp, "Qgage_constrained_nb_seg1", mm_dict)
-        self.__insert_var(mm_grp, "Qgage_constrained_x_seg1", mm_dict)
-        self.__insert_var(mm_grp, "input_known_nb_seg2", mm_dict)
-        self.__insert_var(mm_grp, "input_known_x_seg2", mm_dict)
-        self.__insert_var(mm_grp, "Qgage_constrained_nb_seg2", mm_dict)
-        self.__insert_var(mm_grp, "Qgage_constrained_x_seg2", mm_dict)
-        self.__insert_var(mm_grp, "n_bkfl_Qb_prior", mm_dict)
-        self.__insert_var(mm_grp, "n_bkfl_final_used", mm_dict)
-        self.__insert_var(mm_grp, "vel_bkfl_Qb_prior", mm_dict)
-        self.__insert_var(mm_grp, "vel_bkfl_diag_MBL", mm_dict)
-        self.__insert_var(mm_grp, "Froude_bkfl_diag_Smean", mm_dict)
-        self.__insert_var(mm_grp, "width_bkfl_empirical", mm_dict)
-        self.__insert_var(mm_grp, "width_bkfl_solved_obs", mm_dict)
-        self.__insert_var(mm_grp, "depth_bkfl_solved_obs", mm_dict)
-        self.__insert_var(mm_grp, "depth_bkfl_diag_MBL", mm_dict)
-        self.__insert_var(mm_grp, "depth_bkfl_diag_Wb_Smean", mm_dict)
-        self.__insert_var(mm_grp, "zero_flow_stage", mm_dict)
-        self.__insert_var(mm_grp, "bankfull_stage", mm_dict)
-        self.__insert_var(mm_grp, "Qmean_prior", mm_dict)
-        self.__insert_var(mm_grp, "Qmean_momma", mm_dict)
-        self.__insert_var(mm_grp, "Qmean_momma.constrained", mm_dict)
-        
-        sos_ds.close()
-
-    def __insert_var(self, grp, name, mm_dict):
-        """Insert new MOMMA data into NetCDF variable.
-        
-        Parameters
-        ----------
-        grp: netCDF4._netCDF4.Group
-            dicharge NetCDF4 group to write data to
-        name: str
-            name of variable
-        mm_dict: dict
-            dictionary of geoBAM result data
-        """
-
-        grp[name][:] = np.nan_to_num(mm_dict[name], copy=True, nan=self.FILL_VALUE)
