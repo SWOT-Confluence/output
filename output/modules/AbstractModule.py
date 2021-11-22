@@ -72,10 +72,12 @@ class AbstractModule(metaclass=ABCMeta):
     
     @classmethod
     def __subclasshook__(cls, subclass):
-        return (hasattr(subclass, 'pull') and 
-                callable(subclass.pull) and 
-                hasattr(subclass, 'run') and 
-                callable(subclass.run) or 
+        return (hasattr(subclass, 'get_module_data') and 
+                callable(subclass.get_module_data) and 
+                hasattr(subclass, 'create_data_dict') and 
+                callable(subclass.create_data_dict) and
+                hasattr(subclass, 'append_module_data') and 
+                callable(subclass.append_module_data) or 
                 NotImplemented)
         
     def append_module(self, nt):
