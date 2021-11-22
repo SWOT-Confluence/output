@@ -37,6 +37,7 @@ from output.modules.Moi import Moi
 from output.modules.Momma import Momma
 from output.modules.Offline import Offline
 from output.modules.Postdiagnostics import Postdiagnostics
+from output.modules.Prediagnostics import Prediagnostics
 from output.modules.Sad import Sad
 from output.modules.Sic4dvar import Sic4dvar
 from output.modules.Validation import Validation
@@ -87,7 +88,7 @@ class Append:
     """
 
     MODULES_LIST = ["geobam", "hivdi", "metroman", "moi", "momma", "offline", \
-        "postdiagnostics", "sad", "sic4dvar", "validation"]
+        "postdiagnostics", "prediagnostics", "sad", "sic4dvar", "validation"]
     # PRIORS_SUFFIX = "sword_v11_SOS_priors"
     PRIORS_SUFFIX = "apriori_rivers_v07_SOS_priors"
     # RESULTS_SUFFIX = "sword_v11_SOS_results"
@@ -158,17 +159,17 @@ class Append:
         for module in self.modules:
             module.append_module(nt=self.nt.shape[0])
         
-    def create_modules(self, flpe_dir, moi_dir, postd_dir, off_dir, val_dir):
+    def create_modules(self, diag_dir, flpe_dir, moi_dir, off_dir, val_dir):
         """Create and stores a list of AbstractModule objects.
         
         Parameters
         ----------
+        diag_dir: Path
+            path to diagnostics directory
         flpe_dir: Path
             path to reach-level FLPE directory
         moi_dir: Path
             path to basin-level MOI directory
-        postd_dir: Path
-            path to Postdiagnostics directory
         off_dir: Path
             path to Offline directory
         val_dir: Path
@@ -202,8 +203,12 @@ class Append:
                     self.sos_nids))
             if module == "postdiagnostics":
                 self.modules.append(Postdiagnostics(list(self.cont.values())[0], \
-                    postd_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
-                    self.sos_nids))
+                    diag_dir / "postdiagnostics", self.sos_file, self.sos_rids, \
+                    self.sos_nrids, self.sos_nids))
+            if module == "prediagnostics":
+                self.modules.append(Prediagnostics(list(self.cont.values())[0], \
+                    diag_dir / "prediagnostics", self.sos_file, self.sos_rids, \
+                    self.sos_nrids, self.sos_nids))
             if module == "sad":
                 self.modules.append(Sad(list(self.cont.values())[0], \
                     flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
