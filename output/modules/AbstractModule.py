@@ -45,7 +45,9 @@ class AbstractModule(metaclass=ABCMeta):
         "S1": "x"
     }
     
-    def __init__(self, cont_ids, input_dir, sos_new, rids, nrids, nids):
+    def __init__(self, cont_ids, input_dir, sos_new, rids=None, nrids=None, \
+        nids=None):
+        
         """
         Parameters
         ----------
@@ -77,9 +79,7 @@ class AbstractModule(metaclass=ABCMeta):
                 hasattr(subclass, 'create_data_dict') and 
                 callable(subclass.create_data_dict) and
                 hasattr(subclass, 'append_module_data') and 
-                callable(subclass.append_module_data) and
-                hasattr(subclass, 'get_nc_attrs') and 
-                callable(subclass.get_nc_attrs) or 
+                callable(subclass.append_module_data) or
                 NotImplemented)
         
     def append_module(self, nt):
@@ -114,24 +114,6 @@ class AbstractModule(metaclass=ABCMeta):
         ----------
         nt: int
             number of time steps
-            
-        Raises
-        -----
-            NotImplementedError
-        """
-        
-        raise NotImplementedError
-    
-    @abstractmethod
-    def get_nc_attrs(self, nc_file, data_dict):
-        """Store netCDF attributes for each variable
-
-        Parameters
-        ----------
-        nc_file: Path
-            path to NetCDF file
-        data_dict: dict
-            dictionary of data result variables
             
         Raises
         -----
