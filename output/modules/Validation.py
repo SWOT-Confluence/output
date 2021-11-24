@@ -30,6 +30,8 @@ class Validation(AbstractModule):
         creates and returns module data dictionary.
     get_module_data(nt=None)
         retrieve module results from NetCDF files.
+    get_nc_attrs(nc_file, data_dict)
+        get NetCDF attributes for each NetCDF variable.
     __retrieve_dimensions(val_dir, reach_id)
         retrieve num_algos and nchar dimensions
     """

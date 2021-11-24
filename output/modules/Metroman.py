@@ -27,6 +27,8 @@ class Metroman(AbstractModule):
         creates and returns module data dictionary.
     get_module_data(nt=None)
         retrieve module results from NetCDF files.
+    get_nc_attrs(nc_file, data_dict)
+        get NetCDF attributes for each NetCDF variable.
     __insert_nr(name, index, mn_ds, mn_dict)
         insert discharge values into dictionary with nr dimension
     __insert_nt(self, name, index, mn_ds, mn_dict):
