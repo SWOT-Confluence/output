@@ -92,7 +92,7 @@ class Append:
         "postdiagnostics", "prediagnostics", "priors", "sad", "sic4dvar", \
         "validation"]
     # PRIORS_SUFFIX = "sword_v11_SOS"
-    PRIORS_SUFFIX = "apriori_rivers_v07_SOS_priors"
+    PRIORS_SUFFIX = "apriori_rivers_v07_SOS"
     # RESULTS_SUFFIX = "sword_v11_SOS_results"
     RESULTS_SUFFIX = "apriori_rivers_v07_SOS_results"
     VERS_LENGTH = 4
@@ -161,11 +161,15 @@ class Append:
         for module in self.modules:
             module.append_module(nt=self.nt.shape[0])
         
-    def create_modules(self, diag_dir, flpe_dir, moi_dir, off_dir, val_dir):
+    def create_modules(self, run_type, diag_dir, flpe_dir, moi_dir, off_dir, \
+        val_dir):
+        
         """Create and stores a list of AbstractModule objects.
         
         Parameters
         ----------
+        run_type: str
+            either "constrained" or "unconstrained"
         diag_dir: Path
             path to diagnostics directory
         flpe_dir: Path
@@ -211,7 +215,7 @@ class Append:
                 self.modules.append(Prediagnostics(list(self.cont.values())[0], \
                     diag_dir / "prediagnostics", self.sos_file, self.sos_rids, \
                     self.sos_nrids, self.sos_nids))  
-            if module == "priors":
+            if module == "priors" and run_type == "constrained":
                 self.modules.append(Priors(list(self.cont.values())[0], \
                     self.sos_cur, self.sos_file, self.PRIORS_SUFFIX))
             if module == "sad":

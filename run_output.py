@@ -46,7 +46,9 @@ def main():
     # Append SoS data
     append = Append(INPUT / continent_json, index, INPUT, OUTPUT)
     append.create_new_version()
-    append.append_data(FLPE, MOI, DIAGNOSTICS, OFFLINE, VALIDATION / "stats")
+    append.create_modules(run_type, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
+        VALIDATION / "stats")
+    append.append_data()
 
     # Login
     login = Login()
