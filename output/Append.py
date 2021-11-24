@@ -38,6 +38,7 @@ from output.modules.Momma import Momma
 from output.modules.Offline import Offline
 from output.modules.Postdiagnostics import Postdiagnostics
 from output.modules.Prediagnostics import Prediagnostics
+from output.modules.Priors import Priors
 from output.modules.Sad import Sad
 from output.modules.Sic4dvar import Sic4dvar
 from output.modules.Validation import Validation
@@ -88,8 +89,9 @@ class Append:
     """
 
     MODULES_LIST = ["geobam", "hivdi", "metroman", "moi", "momma", "offline", \
-        "postdiagnostics", "prediagnostics", "sad", "sic4dvar", "validation"]
-    # PRIORS_SUFFIX = "sword_v11_SOS_priors"
+        "postdiagnostics", "prediagnostics", "priors", "sad", "sic4dvar", \
+        "validation"]
+    # PRIORS_SUFFIX = "sword_v11_SOS"
     PRIORS_SUFFIX = "apriori_rivers_v07_SOS_priors"
     # RESULTS_SUFFIX = "sword_v11_SOS_results"
     RESULTS_SUFFIX = "apriori_rivers_v07_SOS_results"
@@ -128,7 +130,7 @@ class Append:
         # Create directory and file
         self.sos_file.parent.mkdir(parents=True, exist_ok=True)
         file_name = '_'.join(self.sos_file.name.split('_')[:-1])
-        prior_sos = Dataset(self.sos_cur / f"{file_name}_priors.nc")
+        prior_sos = Dataset(self.sos_cur / f"{file_name}.nc")
         result_sos = Dataset(self.sos_file, 'w')
         
         # Global attributes
@@ -208,7 +210,10 @@ class Append:
             if module == "prediagnostics":
                 self.modules.append(Prediagnostics(list(self.cont.values())[0], \
                     diag_dir / "prediagnostics", self.sos_file, self.sos_rids, \
-                    self.sos_nrids, self.sos_nids))
+                    self.sos_nrids, self.sos_nids))  
+            if module == "priors":
+                self.modules.append(Priors(list(self.cont.values())[0], \
+                    self.sos_cur, self.sos_file, self.PRIORS_SUFFIX))
             if module == "sad":
                 self.modules.append(Sad(list(self.cont.values())[0], \
                     flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
