@@ -77,7 +77,9 @@ class AbstractModule(metaclass=ABCMeta):
                 hasattr(subclass, 'create_data_dict') and 
                 callable(subclass.create_data_dict) and
                 hasattr(subclass, 'append_module_data') and 
-                callable(subclass.append_module_data) or 
+                callable(subclass.append_module_data) and
+                hasattr(subclass, 'get_nc_attrs') and 
+                callable(subclass.get_nc_attrs) or 
                 NotImplemented)
         
     def append_module(self, nt):
@@ -112,6 +114,28 @@ class AbstractModule(metaclass=ABCMeta):
         ----------
         nt: int
             number of time steps
+            
+        Raises
+        -----
+            NotImplementedError
+        """
+        
+        raise NotImplementedError
+    
+    @abstractmethod
+    def get_nc_attrs(self, nc_file, data_dict):
+        """Store netCDF attributes for each variable
+
+        Parameters
+        ----------
+        nc_file: Path
+            path to NetCDF file
+        data_dict: dict
+            dictionary of data result variables
+            
+        Raises
+        -----
+            NotImplementedError
         """
         
         raise NotImplementedError
@@ -124,6 +148,10 @@ class AbstractModule(metaclass=ABCMeta):
         ----------
         data_dict: dict
             dictionary of module data
+            
+        Raises
+        ------
+            NotImplementedError
         """
         
         raise NotImplementedError
@@ -146,6 +174,7 @@ class AbstractModule(metaclass=ABCMeta):
             """
 
             var = grp.createVariable(name, type, dims, fill_value=self.FILL[type])
+            if data_dict["attrs"][name]: var.setncatts(data_dict["attrs"][name])
             if type == "f8" or type == "i4": 
                 var[:] = np.nan_to_num(data_dict[name], copy=True, nan=self.FILL[type])
             else:

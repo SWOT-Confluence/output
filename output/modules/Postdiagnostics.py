@@ -70,6 +70,10 @@ class Postdiagnostics(AbstractModule):
 
             # Storage initialization
             pd_dict = self.create_data_dict()
+            
+            # Storage of variable attributes
+            self.get_nc_attrs(self.input_dir / pd_basin_files[0], pd_dict)
+            self.get_nc_attrs(self.input_dir / "reach" / f"{pd_rids[0]}_flpe_diag.nc", pd_dict)
 
             # Data extraction
             index = 0
@@ -102,13 +106,42 @@ class Postdiagnostics(AbstractModule):
             "basin" : {
                 "realism_flags" : np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
                 "stability_flags" : np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
-                "prepost_flags" : np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64)
+                "prepost_flags" : np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
+                "attrs": {
+                    "realism_flags": None,
+                    "stability_flags": None,
+                    "prepost_flags": None
+                }
             },
             "reach" : {
                 "realism_flags" : np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
-                "stability_flags" : np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64)
+                "stability_flags" : np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
+                "attrs": {
+                    "realism_flags": None,
+                    "stability_flags": None
+                }
             }
         }
+    
+    def get_nc_attrs(self, nc_file, data_dict):
+        """Get NetCDF attributes for each NetCDF variable.
+
+        Parameters
+        ----------
+        nc_file: Path
+            path to NetCDF file
+        data_dict: dict
+            dictionary of MOI variables
+        """
+        ds = Dataset(nc_file, 'r')
+        level = nc_file.name.split('_')[1]
+        if level == "moi":
+            for key in data_dict["basin"]["attrs"].keys():
+                data_dict["basin"]["attrs"][key] = ds[key].__dict__
+        if level == "flpe":
+            for key in data_dict["reach"]["attrs"].keys():
+                data_dict["reach"]["attrs"][key] = ds[key].__dict__
+        ds.close()
     
     def append_module_data(self, data_dict):
         """Append Postdiagnostic data to the new version of the SoS.
@@ -132,13 +165,13 @@ class Postdiagnostics(AbstractModule):
 
         # Basin
         b_grp = pd_grp.createGroup("basin")
-        self.write_var(b_grp, "realism_flags", "f8", ("num_reaches", "num_algos"), data_dict["basin"])
-        self.write_var(b_grp, "stability_flags", "f8", ("num_reaches", "num_algos"), data_dict["basin"])
-        self.write_var(b_grp, "prepost_flags", "f8", ("num_reaches", "num_algos"), data_dict["basin"])
+        self.write_var(b_grp, "realism_flags", "i4", ("num_reaches", "num_algos"), data_dict["basin"])
+        self.write_var(b_grp, "stability_flags", "i4", ("num_reaches", "num_algos"), data_dict["basin"])
+        self.write_var(b_grp, "prepost_flags", "i4", ("num_reaches", "num_algos"), data_dict["basin"])
 
         # Reach
         r_grp = pd_grp.createGroup("reach")
-        self.write_var(r_grp, "realism_flags", "f8", ("num_reaches", "num_algos"), data_dict["reach"])
-        self.write_var(r_grp, "stability_flags", "f8", ("num_reaches", "num_algos"), data_dict["reach"])
+        self.write_var(r_grp, "realism_flags", "i4", ("num_reaches", "num_algos"), data_dict["reach"])
+        self.write_var(r_grp, "stability_flags", "i4", ("num_reaches", "num_algos"), data_dict["reach"])
 
         sos_ds.close()

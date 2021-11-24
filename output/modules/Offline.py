@@ -61,8 +61,11 @@ class Offline(AbstractModule):
         off_rids = [ off_file.name.split('_')[0].split('-') for off_file in off_files ]
         off_rids = [ int(rid) for rid_list in off_rids for rid in rid_list ]
 
-        # # Storage of results data
+        # Storage of results data
         off_dict = self.create_data_dict(nt)
+        
+        # Storage of variable attributes
+        self.get_nc_attrs(off_dir / off_files[0], off_dict)
         
         if len(off_files) != 0:
             # Data extraction
@@ -115,8 +118,41 @@ class Offline(AbstractModule):
             "hivdi_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
             "momma_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
             "sads_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "consensus_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64)
+            "consensus_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+            "attrs": {
+                "d_x_area" : None,
+                "d_x_area_u" : None,
+                "metro_q_c" : None,
+                "bam_q_c" : None,
+                "hivdi_q_c" : None,
+                "momma_q_c" : None,
+                "sads_q_c" : None,
+                "consensus_q_c" : None,
+                "metro_q_uc" : None,
+                "bam_q_uc" : None,
+                "hivdi_q_uc" : None,
+                "momma_q_uc" : None,
+                "sads_q_uc" : None,
+                "consensus_q_uc" : None
+            }
         }
+    
+    def get_nc_attrs(self, nc_file, data_dict):
+        """Get NetCDF attributes for each NetCDF variable.
+
+        Parameters
+        ----------
+        nc_file: Path
+            path to NetCDF file
+        data_dict: dict
+            dictionary of Offline variables
+        """
+        
+        ds = Dataset(nc_file, 'r')
+        for key in data_dict["attrs"].keys():
+            if key == "d_x_area_u" and "d_x_area_u" not in ds.variables.keys(): continue
+            data_dict["attrs"][key] = ds[key].__dict__        
+        ds.close()
 
     def append_module_data(self, data_dict):
         """Append Offline data to the new version of the SoS.

@@ -282,12 +282,12 @@ def get_nt(input_dir):
     return nt
 
 def write_reaches(prior_sos, result_sos):
-        """Write reach_id variable and associated dimension to the SoS."""
-        
-        sos_reach = result_sos.createGroup("reaches")
-        reach_var = sos_reach.createVariable("reach_id", "i8", ("num_reaches",))
-        reach_var.format = prior_sos["reaches"]["reach_id"].format
-        reach_var[:] = prior_sos["reaches"]["reach_id"][:]
+    """Write reach_id variable and associated dimension to the SoS."""
+    
+    sos_reach = result_sos.createGroup("reaches")
+    reach_var = sos_reach.createVariable("reach_id", "i8", ("num_reaches",))
+    reach_var.setncatts(prior_sos["reaches"]["reach_id"].__dict__)
+    reach_var[:] = prior_sos["reaches"]["reach_id"][:]
 
 def write_nodes(prior_sos, result_sos):
     """Write node_id and reach_id variables with associated dimension to the
@@ -296,9 +296,9 @@ def write_nodes(prior_sos, result_sos):
     sos_node = result_sos.createGroup("nodes")
     
     node_var = sos_node.createVariable("node_id", "i8", ("num_nodes",))
-    node_var.format = prior_sos["nodes"]["node_id"].format
+    node_var.setncatts(prior_sos["nodes"]["node_id"].__dict__)
     node_var[:] = prior_sos["nodes"]["node_id"][:]
     
     reach_var = sos_node.createVariable("reach_id", "i8", ("num_nodes",))
-    reach_var.format = prior_sos["nodes"]["reach_id"].format
+    reach_var.setncatts(prior_sos["nodes"]["reach_id"].__dict__)
     reach_var[:] = prior_sos["nodes"]["reach_id"][:]

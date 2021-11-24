@@ -66,6 +66,9 @@ class Sad(AbstractModule):
         # Storage of results data
         sd_dict = self.create_data_dict(nt)
         
+        # Storage of variable attributes
+        self.get_nc_attrs(sd_dir / sd_files[0], sd_dict)
+        
         if len(sd_files) != 0:
             # Data extraction
             index = 0
@@ -94,8 +97,32 @@ class Sad(AbstractModule):
             "A0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "n" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "Qa" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "Q_u" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64)
+            "Q_u" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+            "attrs": {
+                "A0" : None,
+                "n" : None,
+                "Qa" : None,
+                "Q_u" : None
+            }
         }
+        
+    def get_nc_attrs(self, nc_file, data_dict):
+        """Get NetCDF attributes for each NetCDF variable.
+
+        Parameters
+        ----------
+        nc_file: Path
+            path to NetCDF file
+        data_dict: dict
+            dictionary of SAD variables
+        """
+        
+        ds = Dataset(nc_file, 'r')
+        data_dict["attrs"]["A0"] = ds["A0"].__dict__
+        data_dict["attrs"]["n"] = ds["n"].__dict__
+        data_dict["attrs"]["Qa"] = ds["Qa"].__dict__
+        data_dict["attrs"]["Q_u"] = ds["Q_u"].__dict__
+        ds.close()
     
     def append_module_data(self, data_dict):
         """Append SAD data to the new version of the SoS.

@@ -65,6 +65,9 @@ class Prediagnostics(AbstractModule):
         # Storage of results data
         pre_dict = self.create_data_dict(nt)
         
+        # Storage of variable attributes
+        self.get_nc_attrs(pre_dir / pre_files[0], pre_dict)
+        
         if len(pre_files) != 0:
             # Data extraction
             index = 0
@@ -112,6 +115,16 @@ class Prediagnostics(AbstractModule):
                 "width_outliers": np.full((self.sos_rids.shape[0], nt), self.FILL["i4"], dtype=int),
                 "wse_outliers": np.full((self.sos_rids.shape[0], nt), self.FILL["i4"], dtype=int),
                 "slope2_outliers": np.full((self.sos_rids.shape[0], nt), self.FILL["i4"], dtype=int),
+                "attrs": {
+                    "ice_clim_f": None,
+                    "ice_dyn_f": None,
+                    "dark_frac": None,
+                    "n_good_nod": None,
+                    "obs_frac_n": None,
+                    "width_outliers": None,
+                    "wse_outliers": None,
+                    "slope2_outliers": None
+                }
             },
             "node": {
                 "ice_clim_f": np.full((self.sos_nids.shape[0], nt), self.FILL["i4"], dtype=int),
@@ -119,16 +132,54 @@ class Prediagnostics(AbstractModule):
                 "dark_frac": np.full((self.sos_nids.shape[0], nt), self.FILL["i4"], dtype=int),
                 "width_outliers": np.full((self.sos_nids.shape[0], nt), self.FILL["i4"], dtype=int),
                 "wse_outliers": np.full((self.sos_nids.shape[0], nt), self.FILL["i4"], dtype=int),
-                "slope2_outliers": np.full((self.sos_nids.shape[0], nt), self.FILL["i4"], dtype=int)
+                "slope2_outliers": np.full((self.sos_nids.shape[0], nt), self.FILL["i4"], dtype=int),
+                "attrs": {
+                    "ice_clim_f": None,
+                    "ice_dyn_f": None,
+                    "dark_frac": None,
+                    "width_outliers": None,
+                    "wse_outliers": None,
+                    "slope2_outliers": None
+                }
             }
         }
+        
+    def get_nc_attrs(self, nc_file, data_dict):
+        """Get NetCDF attributes for each NetCDF variable.
+
+        Parameters
+        ----------
+        nc_file: Path
+            path to NetCDF file
+        data_dict: dict
+            dictionary of Prediagnostic variables
+        """
+        
+        ds = Dataset(nc_file, 'r')
+        # Reach
+        data_dict["reach"]["attrs"]["ice_clim_f"] = ds["reach"]["ice_clim_f"].__dict__
+        data_dict["reach"]["attrs"]["ice_dyn_f"] = ds["reach"]["ice_dyn_f"].__dict__
+        data_dict["reach"]["attrs"]["dark_frac"] = ds["reach"]["dark_frac"].__dict__
+        data_dict["reach"]["attrs"]["n_good_nod"] = ds["reach"]["n_good_nod"].__dict__
+        data_dict["reach"]["attrs"]["obs_frac_n"] = ds["reach"]["obs_frac_n"].__dict__
+        data_dict["reach"]["attrs"]["width_outliers"] = ds["reach"]["width_outliers"].__dict__
+        data_dict["reach"]["attrs"]["wse_outliers"] = ds["reach"]["wse_outliers"].__dict__
+        data_dict["reach"]["attrs"]["slope2_outliers"] = ds["reach"]["slope2_outliers"].__dict__
+        # Node
+        data_dict["node"]["attrs"]["ice_clim_f"] = ds["node"]["ice_clim_f"].__dict__
+        data_dict["node"]["attrs"]["ice_dyn_f"] = ds["node"]["ice_dyn_f"].__dict__
+        data_dict["node"]["attrs"]["dark_frac"] = ds["node"]["dark_frac"].__dict__
+        data_dict["node"]["attrs"]["width_outliers"] = ds["node"]["width_outliers"].__dict__
+        data_dict["node"]["attrs"]["wse_outliers"] = ds["node"]["wse_outliers"].__dict__
+        data_dict["node"]["attrs"]["slope2_outliers"] = ds["node"]["slope2_outliers"].__dict__
+        ds.close()
         
     def append_module_data(self, data_dict):
         """Append Prediagnostic data to the new version of the SoS.
         
         Parameters
         ----------
-        val_dict: dict
+        data_dict: dict
             dictionary of Prediagnostic variables
         """
         

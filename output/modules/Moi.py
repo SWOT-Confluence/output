@@ -65,6 +65,9 @@ class Moi(AbstractModule):
         # Storage of results data
         moi_dict = self.create_data_dict(nt)
         
+        # Storage of variable attributes
+        self.get_nc_attrs(moi_dir / moi_files[0], moi_dict)
+        
         if len(moi_files) != 0:
             # Data extraction
             index = 0
@@ -130,7 +133,14 @@ class Moi(AbstractModule):
                 "a0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "n" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64)
+                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "q": None,
+                    "a0": None,
+                    "n": None,
+                    "qbar_reachScale": None,
+                    "qbar_basinScale": None
+                }
             },
             "hivdi" : {
                 "q" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
@@ -138,7 +148,15 @@ class Moi(AbstractModule):
                 "alpha" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "beta" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64)
+                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "q": None,
+                    "Abar": None,
+                    "alpha": None,
+                    "beta": None,
+                    "qbar_reachScale": None,
+                    "qbar_basinScale": None
+                }
             },
             "metroman" : {
                 "q" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
@@ -146,7 +164,15 @@ class Moi(AbstractModule):
                 "na" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "x1" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64)
+                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "q": None,
+                    "Abar": None,
+                    "na": None,
+                    "x1": None,
+                    "qbar_reachScale": None,
+                    "qbar_basinScale": None
+                }
             },
             "momma" : {
                 "q" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
@@ -154,23 +180,63 @@ class Moi(AbstractModule):
                 "H" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "Save" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64)
+                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "q": None,
+                    "B": None,
+                    "H": None,
+                    "Save": None,
+                    "qbar_reachScale": None,
+                    "qbar_basinScale": None
+                }
             },
             "sad" : {
                 "q" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
                 "a0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "n" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64)
+                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "q": None,
+                    "a0": None,
+                    "n": None,
+                    "qbar_reachScale": None,
+                    "qbar_basinScale": None
+                }
             },
             "sic4dvar" : {
                 "q" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
                 "a0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "n" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64)
+                "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "q": None,
+                    "a0": None,
+                    "n": None,
+                    "qbar_reachScale": None,
+                    "qbar_basinScale": None
+                }
             }
         }
+        
+    def get_nc_attrs(self, nc_file, data_dict):
+        """Get NetCDF attributes for each NetCDF variable.
+
+        Parameters
+        ----------
+        nc_file: Path
+            path to NetCDF file
+        data_dict: dict
+            dictionary of MOI variables
+        """
+        
+        ds = Dataset(nc_file, 'r')
+        for key1, value in data_dict.items():
+            if key1 == "nt": continue
+            for key2 in value["attrs"].keys():
+                value["attrs"][key2] = ds[key1][key2].__dict__
+        ds.close()
 
     def append_module_data(self, data_dict):
         """Append MOI data to the new version of the SoS.

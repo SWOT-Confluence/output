@@ -66,6 +66,9 @@ class Momma(AbstractModule):
         # Storage of results data
         mm_dict = self.create_data_dict(nt)
         
+        # Storage of variable attributes
+        self.get_nc_attrs(mm_dir / mm_files[0], mm_dict)
+        
         if len(mm_files) != 0:
             # Data extraction
             index = 0
@@ -168,8 +171,66 @@ class Momma(AbstractModule):
             "bankfull_stage" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "Qmean_prior" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "Qmean_momma" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            "Qmean_momma.constrained" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64)
+            "Qmean_momma.constrained" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+            "attrs": {
+                "stage" : None,
+                "width" : None,
+                "slope" : None,
+                "Qgage" : None,
+                "seg" : None,
+                "n" : None,
+                "Y" : None,
+                "v" : None,
+                "Q" : None,
+                "Q_constrained" : None,
+                "gage_constrained" : None,
+                "input_MBL_prior" : None,
+                "input_Qm_prior" : None,
+                "input_Qb_prior" : None,
+                "input_Yb_prior" : None,
+                "input_known_ezf" : None,
+                "input_known_bkfl_stage" : None,
+                "input_known_nb_seg1" : None,
+                "input_known_x_seg1" : None,
+                "Qgage_constrained_nb_seg1" : None,
+                "Qgage_constrained_x_seg1" : None,
+                "input_known_nb_seg2" : None,
+                "input_known_x_seg2" : None,
+                "Qgage_constrained_nb_seg2" : None,
+                "Qgage_constrained_x_seg2" : None,
+                "n_bkfl_Qb_prior" : None,
+                "n_bkfl_final_used" : None,
+                "vel_bkfl_Qb_prior" : None,
+                "vel_bkfl_diag_MBL" : None,
+                "Froude_bkfl_diag_Smean" : None,
+                "width_bkfl_empirical" : None,
+                "width_bkfl_solved_obs" : None,
+                "depth_bkfl_solved_obs" : None,
+                "depth_bkfl_diag_MBL" : None,
+                "depth_bkfl_diag_Wb_Smean" : None,
+                "zero_flow_stage" : None,
+                "bankfull_stage" : None,
+                "Qmean_prior" : None,
+                "Qmean_momma" : None,
+                "Qmean_momma.constrained" : None,
+            }
         }
+        
+    def get_nc_attrs(self, nc_file, data_dict):
+        """Get NetCDF attributes for each NetCDF variable.
+
+        Parameters
+        ----------
+        nc_file: Path
+            path to NetCDF file
+        data_dict: dict
+            dictionary of MOMMA variables
+        """
+        
+        ds = Dataset(nc_file, 'r')
+        for key in data_dict["attrs"].keys():
+            data_dict["attrs"][key] = ds[key].__dict__        
+        ds.close()
     
     def append_module_data(self, data_dict):
         """Append MOMMA data to the new version of the SoS.

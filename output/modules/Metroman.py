@@ -71,6 +71,9 @@ class Metroman(AbstractModule):
         # Storage of results data
         mn_dict = self.create_data_dict(nt)
         
+        # Storage of variable attributes
+        self.get_nc_attrs(mn_dir / mn_files[0], mn_dict)
+        
         if len(mn_files) != 0:
             # Data extraction
             index = 0
@@ -103,7 +106,33 @@ class Metroman(AbstractModule):
             "nahat" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "x1hat" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "q_u" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+            "attrs" : {
+                "allq": None,
+                "A0hat": None,
+                "nahat": None,
+                "x1hat": None,
+                "q_u": None
+            }
         }
+        
+    def get_nc_attrs(self, nc_file, data_dict):
+        """Get NetCDF attributes for each NetCDF variable.
+
+        Parameters
+        ----------
+        nc_file: Path
+            path to NetCDF file
+        data_dict: dict
+            dictionary of MetroMan variables
+        """
+        
+        ds = Dataset(nc_file, 'r')
+        data_dict["attrs"]["allq"] = ds["allq"].__dict__
+        data_dict["attrs"]["A0hat"] = ds["A0hat"].__dict__
+        data_dict["attrs"]["nahat"] = ds["nahat"].__dict__
+        data_dict["attrs"]["x1hat"] = ds["x1hat"].__dict__
+        data_dict["attrs"]["q_u"] = ds["q_u"].__dict__
+        ds.close()
 
     def __insert_nr(self, s_rid, name, index, mn_ds, mn_dict):
         """Insert discharge values into dictionary with nr dimension.

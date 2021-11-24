@@ -66,6 +66,9 @@ class Hivdi(AbstractModule):
         # Storage of results data
         hv_dict = self.create_data_dict(nt)
         
+        # Storage of variable attributes
+        self.get_nc_attrs(hv_dir / hv_files[0], hv_dict)
+        
         if len(hv_files) != 0:
             # Data extraction
             index = 0
@@ -95,10 +98,34 @@ class Hivdi(AbstractModule):
                 "Q" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
                 "A0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "alpha" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-                "beta" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64)
+                "beta" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "attrs" : {
+                    "Q": None,
+                    "A0": None,
+                    "alpha": None,
+                    "beta": None
+                }
             }
         }
-    
+        
+    def get_nc_attrs(self, nc_file, data_dict):
+        """Get NetCDF attributes for each NetCDF variable.
+
+        Parameters
+        ----------
+        nc_file: Path
+            path to NetCDF file
+        data_dict: dict
+            dictionary of H2iVDI variables
+        """
+        
+        ds = Dataset(nc_file, 'r')
+        data_dict["reach"]["attrs"]["A0"] = ds["reach"]["A0"].__dict__
+        data_dict["reach"]["attrs"]["alpha"] = ds["reach"]["alpha"].__dict__
+        data_dict["reach"]["attrs"]["beta"] = ds["reach"]["beta"].__dict__
+        data_dict["reach"]["attrs"]["Q"] = ds["reach"]["Q"].__dict__
+        ds.close()
+        
     def append_module_data(self, data_dict):
         """Append HiVDI data to the new version of the SoS.
         

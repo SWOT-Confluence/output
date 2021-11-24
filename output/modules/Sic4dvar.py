@@ -69,6 +69,9 @@ class Sic4dvar(AbstractModule):
         # Storage of results data
         sv_dict = self.create_data_dict(nt)
         
+        # Storage of variable attributes
+        self.get_nc_attrs(sv_dir / sv_files[0], sv_dict)
+        
         if len(sv_files) != 0:
             # Data extraction
             index = 0
@@ -104,9 +107,32 @@ class Sic4dvar(AbstractModule):
             "Qalgo31" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
             "half_width": np.full((self.sos_nids.shape[0],1), np.array([np.nan]), dtype=object),
             "elevation": np.full((self.sos_nids.shape[0],1), np.array([np.nan]), dtype=object),
-            "node_id" : np.zeros(self.sos_nids.shape[0], dtype=np.int64)
+            "node_id" : np.zeros(self.sos_nids.shape[0], dtype=np.int64),
+            "attrs": {
+                "A0" : None,
+                "n" : None,
+                "Qalgo5" : None,
+                "Qalgo31" : None,
+                "half_width": None,
+                "elevation": None
+            }
         }
+    def get_nc_attrs(self, nc_file, data_dict):
+        """Get NetCDF attributes for each NetCDF variable.
 
+        Parameters
+        ----------
+        nc_file: Path
+            path to NetCDF file
+        data_dict: dict
+            dictionary of SIC4DVar variables
+        """
+        
+        ds = Dataset(nc_file, 'r')
+        for key in data_dict["attrs"].keys():
+            data_dict["attrs"][key] = ds[key].__dict__        
+        ds.close()
+        
     def __insert_nx(self, rid, name, sv_ds, sv_dict):
         """Append SIC4DVar result data to dictionary with nx dimension.
 

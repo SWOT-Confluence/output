@@ -74,6 +74,9 @@ class GeoBAM(AbstractModule):
         # Storage of results data
         gb_dict = self.create_data_dict(nt)
         
+        # Storage of variable attributes
+        self.get_nc_attrs(gb_dir / gb_files[0], gb_dict)
+        
         if len(gb_files) != 0:
             # Data extraction
             index = 0
@@ -121,7 +124,15 @@ class GeoBAM(AbstractModule):
                 "mean_chain3" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
                 "sd_chain1" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
                 "sd_chain2" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-                "sd_chain3" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64)
+                "sd_chain3" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+                "attrs": {
+                    "mean_chain1": None,
+                    "mean_chain2": None,
+                    "mean_chain3": None,
+                    "sd_chain1": None,
+                    "sd_chain2": None,
+                    "sd_chain3": None,
+                }
             },
             "logWc" : {
                 "mean_chain1" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
@@ -129,7 +140,15 @@ class GeoBAM(AbstractModule):
                 "mean_chain3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain1" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-                "sd_chain3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64)
+                "sd_chain3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "mean_chain1": None,
+                    "mean_chain2": None,
+                    "mean_chain3": None,
+                    "sd_chain1": None,
+                    "sd_chain2": None,
+                    "sd_chain3": None,
+                }
             },
             "logQc" : {
                 "mean_chain1" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
@@ -137,7 +156,15 @@ class GeoBAM(AbstractModule):
                 "mean_chain3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain1" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-                "sd_chain3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64)
+                "sd_chain3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "mean_chain1": None,
+                    "mean_chain2": None,
+                    "mean_chain3": None,
+                    "sd_chain1": None,
+                    "sd_chain2": None,
+                    "sd_chain3": None,
+                }
             },
             "logn_man": {
                 "mean_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
@@ -145,7 +172,15 @@ class GeoBAM(AbstractModule):
                 "mean_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
-                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64)
+                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "mean_chain1": None,
+                    "mean_chain2": None,
+                    "mean_chain3": None,
+                    "sd_chain1": None,
+                    "sd_chain2": None,
+                    "sd_chain3": None,
+                }
             },
             "logn_amhg": {
                 "mean_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
@@ -153,7 +188,15 @@ class GeoBAM(AbstractModule):
                 "mean_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
-                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64)
+                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "mean_chain1": None,
+                    "mean_chain2": None,
+                    "mean_chain3": None,
+                    "sd_chain1": None,
+                    "sd_chain2": None,
+                    "sd_chain3": None,
+                }
             },
             "A0": {
                 "mean_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
@@ -161,7 +204,15 @@ class GeoBAM(AbstractModule):
                 "mean_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
-                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64)
+                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "mean_chain1": None,
+                    "mean_chain2": None,
+                    "mean_chain3": None,
+                    "sd_chain1": None,
+                    "sd_chain2": None,
+                    "sd_chain3": None,
+                }
             },
             "b": {
                 "mean_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
@@ -169,7 +220,15 @@ class GeoBAM(AbstractModule):
                 "mean_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
-                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64)
+                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "mean_chain1": None,
+                    "mean_chain2": None,
+                    "mean_chain3": None,
+                    "sd_chain1": None,
+                    "sd_chain2": None,
+                    "sd_chain3": None,
+                }
             },
             "logr": {
                 "mean_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
@@ -177,7 +236,15 @@ class GeoBAM(AbstractModule):
                 "mean_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
-                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64)
+                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "mean_chain1": None,
+                    "mean_chain2": None,
+                    "mean_chain3": None,
+                    "sd_chain1": None,
+                    "sd_chain2": None,
+                    "sd_chain3": None,
+                }
             },
             "logWb": {
                 "mean_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
@@ -185,7 +252,15 @@ class GeoBAM(AbstractModule):
                 "mean_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
-                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64)
+                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "mean_chain1": None,
+                    "mean_chain2": None,
+                    "mean_chain3": None,
+                    "sd_chain1": None,
+                    "sd_chain2": None,
+                    "sd_chain3": None,
+                }
             },
             "logDb": {
                 "mean_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
@@ -193,9 +268,36 @@ class GeoBAM(AbstractModule):
                 "mean_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain1" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
-                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64)
+                "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
+                "attrs": {
+                    "mean_chain1": None,
+                    "mean_chain2": None,
+                    "mean_chain3": None,
+                    "sd_chain1": None,
+                    "sd_chain2": None,
+                    "sd_chain3": None,
+                }
             }
         }
+        
+    def get_nc_attrs(self, nc_file, data_dict):
+        """Get NetCDF attributes for each NetCDF variable.
+
+        Parameters
+        ----------
+        nc_file: Path
+            path to NetCDF file
+        data_dict: dict
+            dictionary of geoBAM variables
+        """
+        
+        ds = Dataset(nc_file, 'r')
+        for key1, value in data_dict.items():
+            if key1 == "nt": continue
+            for key2 in value["attrs"].keys():
+                value["attrs"][key2] = ds[key1][key2].__dict__
+        ds.close()
+                
     
     def __insert_nr(self, name, chain, index, gb_ds, gb_dict):
         """Insert discharge values into dictionary with nr dimension.
@@ -345,8 +447,13 @@ class GeoBAM(AbstractModule):
         """
 
         c1 = grp.createVariable(f"{chain}_chain1", "f8", dims, fill_value=self.FILL["f8"])
+        c1.setncatts(gb_dict[name]["attrs"][f"{chain}_chain1"])
         c1[:] = np.nan_to_num(gb_dict[name][f"{chain}_chain1"], copy=True, nan=self.FILL["f8"])
+        
         c2 = grp.createVariable(f"{chain}_chain2", "f8", dims, fill_value=self.FILL["f8"])
+        c2.setncatts(gb_dict[name]["attrs"][f"{chain}_chain2"])
         c2[:] = np.nan_to_num(gb_dict[name][f"{chain}_chain2"], copy=True, nan=self.FILL["f8"])
+        
         c3 = grp.createVariable(f"{chain}_chain3", "f8", dims, fill_value=self.FILL["f8"])
+        c3.setncatts(gb_dict[name]["attrs"][f"{chain}_chain3"])
         c3[:] = np.nan_to_num(gb_dict[name][f"{chain}_chain3"], copy=True, nan=self.FILL["f8"])

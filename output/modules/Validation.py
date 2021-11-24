@@ -30,6 +30,8 @@ class Validation(AbstractModule):
         creates and returns module data dictionary.
     get_module_data(nt=None)
         retrieve module results from NetCDF files.
+    __retrieve_dimensions(val_dir, reach_id)
+        retrieve num_algos and nchar dimensions
     """
 
     def __init__(self, cont_ids, input_dir, sos_new, rids, nrids, nids):
@@ -67,15 +69,13 @@ class Validation(AbstractModule):
         val_files = [ Path(val_file) for val_file in glob.glob(f"{val_dir}/{self.cont_ids}*.nc") ] 
         val_rids = [ int(val_file.name.split('_')[0]) for val_file in val_files ]
 
-        # Retrieve number of algorithms and nchar
-        # temp = Dataset(val_files[0], 'r')    ## TODO
-        temp = Dataset(f"{val_dir}/77444000031_validation.nc", 'r')    ## TODO remove for NA
-        self.num_algos = temp.dimensions["num_algos"].size
-        self.nchar = temp.dimensions["nchar"].size
-        temp.close()
+        # Retrieve dimensions and storage of results data
+        self.__retrieve_dimensions(val_dir, val_rids[0])
         val_dict = self.create_data_dict()
         
-        # Storage of results data       
+        # Storage of variable attributes
+        self.get_nc_attrs(val_dir / val_files[0], val_dict)
+             
         if len(val_files) != 0:
             # Data extraction
             index = 0
@@ -92,6 +92,22 @@ class Validation(AbstractModule):
                     val_ds.close()
                 index += 1
         return val_dict
+    
+    def __retrieve_dimensions(self, val_dir, reach_id):
+        """Retrieve num_algos and nchar dimensions.
+
+        Parameters
+        ----------
+        val_dir: Path
+            path to validation directory of results
+        reach_id: int
+            unique integer reach identifier
+        """
+        
+        temp = Dataset(f"{val_dir}/{reach_id}_validation.nc", 'r')
+        self.num_algos = temp.dimensions["num_algos"].size
+        self.nchar = temp.dimensions["nchar"].size
+        temp.close()
     
     def create_data_dict(self, nt=None):
         """Creates and returns Validation data dictionary.
@@ -111,8 +127,37 @@ class Validation(AbstractModule):
             "rsq": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
             "kge": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
             "rmse": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
-            "testn": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64)
+            "testn": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
+            "attrs": {
+                "algo_names": None,
+                "nse": None,
+                "rsq": None,
+                "kge": None,
+                "rmse": None,
+                "testn": None,
+                "has_validation": None,
+            }
         }
+        
+    def get_nc_attrs(self, nc_file, data_dict):
+        """Get NetCDF attributes for each NetCDF variable.
+
+        Parameters
+        ----------
+        nc_file: Path
+            path to NetCDF file
+        data_dict: dict
+            dictionary of Validation variables
+        """
+        
+        ds = Dataset(nc_file, 'r')
+        data_dict["attrs"]["algo_names"] = ds["algorithm"].__dict__               
+        data_dict["attrs"]["nse"] = ds["NSE"].__dict__
+        data_dict["attrs"]["rsq"] = ds["Rsq"].__dict__
+        data_dict["attrs"]["kge"] = ds["KGE"].__dict__
+        data_dict["attrs"]["rmse"] = ds["RMSE"].__dict__
+        data_dict["attrs"]["testn"] = ds["testn"].__dict__
+        ds.close()
 
     def append_module_data(self, data_dict):
         """Append Validation data to the new version of the SoS.
