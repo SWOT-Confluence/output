@@ -55,7 +55,7 @@ class Upload:
         sos_ds.close()
 
         # Upload new SoS file to the S3 bucket
-        self.sos_fs.put(str(output_dir / self.sos_file), f"confluence-sos/{run_type}/{vers}/{self.sos_file}")
+        self.sos_fs.put(str(output_dir / self.sos_file), f"confluence-sos/{run_type}/{vers}/{self.sos_file.name}")
 
         # Upload validation figures to S3 bucket
         with scandir(val_dir) as entries:
