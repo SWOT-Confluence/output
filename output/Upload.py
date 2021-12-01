@@ -14,13 +14,17 @@ class Upload:
     sos_fs: S3FileSystem
         references SWORD of Science S3 bucket
     sos_file: Path
-            path to new SoS file to upload
+        path to new SoS file to upload
+    VERS_LENGTH: int
+        number of integers in SoS identifier
 
     Methods
     -------
     upload()
         Transfers SOS data to S3 from EFS
     """
+    
+    VERS_LENGTH = 4
 
     def __init__(self, sos_fs, sos_file):
         """
@@ -51,9 +55,12 @@ class Upload:
 
         # Get new SoS version
         sos_ds = Dataset(output_dir / self.sos_file, 'r')
-        vers = sos_ds.version
+        vers = str(int(sos_ds.version) + 1)
         sos_ds.close()
-
+        
+        padding = ['0'] * (self.VERS_LENGTH - len(vers))
+        vers = f"{''.join(padding)}{vers}"
+        
         # Upload new SoS file to the S3 bucket
         self.sos_fs.put(str(output_dir / self.sos_file), f"confluence-sos/{run_type}/{vers}/{self.sos_file.name}")
 
