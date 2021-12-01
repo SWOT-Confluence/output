@@ -84,7 +84,7 @@ class Upload:
         new_dir = output_dir / run_type / vers
         if not new_dir.exists():
             makedirs(new_dir)
-        copy(output_dir / self.sos_file, new_dir / self.sos_file)
+        copy(output_dir / self.sos_file, new_dir / self.sos_file.name)
 
         # Copy figures to a new directory
         figs_dir = output_dir / "figs" / run_type / vers
