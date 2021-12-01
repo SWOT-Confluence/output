@@ -76,10 +76,10 @@ class GeoBAM(AbstractModule):
         # Storage of results data
         gb_dict = self.create_data_dict(nt)
         
-        # Storage of variable attributes
-        self.get_nc_attrs(gb_dir / gb_files[0], gb_dict)
-        
         if len(gb_files) != 0:
+            # Storage of variable attributes
+            self.get_nc_attrs(gb_dir / gb_files[0], gb_dict)
+        
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:
@@ -128,12 +128,12 @@ class GeoBAM(AbstractModule):
                 "sd_chain2" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
                 "sd_chain3" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
                 "attrs": {
-                    "mean_chain1": None,
-                    "mean_chain2": None,
-                    "mean_chain3": None,
-                    "sd_chain1": None,
-                    "sd_chain2": None,
-                    "sd_chain3": None,
+                    "mean_chain1": {},
+                    "mean_chain2": {},
+                    "mean_chain3": {},
+                    "sd_chain1": {},
+                    "sd_chain2": {},
+                    "sd_chain3": {},
                 }
             },
             "logWc" : {
@@ -144,12 +144,12 @@ class GeoBAM(AbstractModule):
                 "sd_chain2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "mean_chain1": None,
-                    "mean_chain2": None,
-                    "mean_chain3": None,
-                    "sd_chain1": None,
-                    "sd_chain2": None,
-                    "sd_chain3": None,
+                    "mean_chain1": {},
+                    "mean_chain2": {},
+                    "mean_chain3": {},
+                    "sd_chain1": {},
+                    "sd_chain2": {},
+                    "sd_chain3": {},
                 }
             },
             "logQc" : {
@@ -160,12 +160,12 @@ class GeoBAM(AbstractModule):
                 "sd_chain2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "mean_chain1": None,
-                    "mean_chain2": None,
-                    "mean_chain3": None,
-                    "sd_chain1": None,
-                    "sd_chain2": None,
-                    "sd_chain3": None,
+                    "mean_chain1": {},
+                    "mean_chain2": {},
+                    "mean_chain3": {},
+                    "sd_chain1": {},
+                    "sd_chain2": {},
+                    "sd_chain3": {},
                 }
             },
             "logn_man": {
@@ -176,12 +176,12 @@ class GeoBAM(AbstractModule):
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "mean_chain1": None,
-                    "mean_chain2": None,
-                    "mean_chain3": None,
-                    "sd_chain1": None,
-                    "sd_chain2": None,
-                    "sd_chain3": None,
+                    "mean_chain1": {},
+                    "mean_chain2": {},
+                    "mean_chain3": {},
+                    "sd_chain1": {},
+                    "sd_chain2": {},
+                    "sd_chain3": {},
                 }
             },
             "logn_amhg": {
@@ -192,12 +192,12 @@ class GeoBAM(AbstractModule):
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "mean_chain1": None,
-                    "mean_chain2": None,
-                    "mean_chain3": None,
-                    "sd_chain1": None,
-                    "sd_chain2": None,
-                    "sd_chain3": None,
+                    "mean_chain1": {},
+                    "mean_chain2": {},
+                    "mean_chain3": {},
+                    "sd_chain1": {},
+                    "sd_chain2": {},
+                    "sd_chain3": {},
                 }
             },
             "A0": {
@@ -208,12 +208,12 @@ class GeoBAM(AbstractModule):
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "mean_chain1": None,
-                    "mean_chain2": None,
-                    "mean_chain3": None,
-                    "sd_chain1": None,
-                    "sd_chain2": None,
-                    "sd_chain3": None,
+                    "mean_chain1": {},
+                    "mean_chain2": {},
+                    "mean_chain3": {},
+                    "sd_chain1": {},
+                    "sd_chain2": {},
+                    "sd_chain3": {},
                 }
             },
             "b": {
@@ -224,12 +224,12 @@ class GeoBAM(AbstractModule):
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "mean_chain1": None,
-                    "mean_chain2": None,
-                    "mean_chain3": None,
-                    "sd_chain1": None,
-                    "sd_chain2": None,
-                    "sd_chain3": None,
+                    "mean_chain1": {},
+                    "mean_chain2": {},
+                    "mean_chain3": {},
+                    "sd_chain1": {},
+                    "sd_chain2": {},
+                    "sd_chain3": {},
                 }
             },
             "logr": {
@@ -240,12 +240,12 @@ class GeoBAM(AbstractModule):
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "mean_chain1": None,
-                    "mean_chain2": None,
-                    "mean_chain3": None,
-                    "sd_chain1": None,
-                    "sd_chain2": None,
-                    "sd_chain3": None,
+                    "mean_chain1": {},
+                    "mean_chain2": {},
+                    "mean_chain3": {},
+                    "sd_chain1": {},
+                    "sd_chain2": {},
+                    "sd_chain3": {},
                 }
             },
             "logWb": {
@@ -256,12 +256,12 @@ class GeoBAM(AbstractModule):
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "mean_chain1": None,
-                    "mean_chain2": None,
-                    "mean_chain3": None,
-                    "sd_chain1": None,
-                    "sd_chain2": None,
-                    "sd_chain3": None,
+                    "mean_chain1": {},
+                    "mean_chain2": {},
+                    "mean_chain3": {},
+                    "sd_chain1": {},
+                    "sd_chain2": {},
+                    "sd_chain3": {},
                 }
             },
             "logDb": {
@@ -272,12 +272,12 @@ class GeoBAM(AbstractModule):
                 "sd_chain2" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "sd_chain3" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "mean_chain1": None,
-                    "mean_chain2": None,
-                    "mean_chain3": None,
-                    "sd_chain1": None,
-                    "sd_chain2": None,
-                    "sd_chain3": None,
+                    "mean_chain1": {},
+                    "mean_chain2": {},
+                    "mean_chain3": {},
+                    "sd_chain1": {},
+                    "sd_chain2": {},
+                    "sd_chain3": {},
                 }
             }
         }

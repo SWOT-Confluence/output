@@ -67,10 +67,10 @@ class Prediagnostics(AbstractModule):
         # Storage of results data
         pre_dict = self.create_data_dict(nt)
         
-        # Storage of variable attributes
-        self.get_nc_attrs(pre_dir / pre_files[0], pre_dict)
-        
         if len(pre_files) != 0:
+            # Storage of variable attributes
+            self.get_nc_attrs(pre_dir / pre_files[0], pre_dict)
+            
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:

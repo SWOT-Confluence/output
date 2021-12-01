@@ -68,10 +68,10 @@ class Hivdi(AbstractModule):
         # Storage of results data
         hv_dict = self.create_data_dict(nt)
         
-        # Storage of variable attributes
-        self.get_nc_attrs(hv_dir / hv_files[0], hv_dict)
-        
         if len(hv_files) != 0:
+            # Storage of variable attributes
+            self.get_nc_attrs(hv_dir / hv_files[0], hv_dict)
+        
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:

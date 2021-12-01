@@ -66,10 +66,10 @@ class Offline(AbstractModule):
         # Storage of results data
         off_dict = self.create_data_dict(nt)
         
-        # Storage of variable attributes
-        self.get_nc_attrs(off_dir / off_files[0], off_dict)
-        
         if len(off_files) != 0:
+            # Storage of variable attributes
+            self.get_nc_attrs(off_dir / off_files[0], off_dict)
+            
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:

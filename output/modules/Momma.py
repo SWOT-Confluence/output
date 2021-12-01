@@ -68,10 +68,10 @@ class Momma(AbstractModule):
         # Storage of results data
         mm_dict = self.create_data_dict(nt)
         
-        # Storage of variable attributes
-        self.get_nc_attrs(mm_dir / mm_files[0], mm_dict)
-        
         if len(mm_files) != 0:
+            # Storage of variable attributes
+            self.get_nc_attrs(mm_dir / mm_files[0], mm_dict)
+        
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:

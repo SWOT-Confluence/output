@@ -68,10 +68,10 @@ class Sad(AbstractModule):
         # Storage of results data
         sd_dict = self.create_data_dict(nt)
         
-        # Storage of variable attributes
-        self.get_nc_attrs(sd_dir / sd_files[0], sd_dict)
-        
         if len(sd_files) != 0:
+            # Storage of variable attributes
+            self.get_nc_attrs(sd_dir / sd_files[0], sd_dict)
+            
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:

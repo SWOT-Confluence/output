@@ -71,10 +71,10 @@ class Sic4dvar(AbstractModule):
         # Storage of results data
         sv_dict = self.create_data_dict(nt)
         
-        # Storage of variable attributes
-        self.get_nc_attrs(sv_dir / sv_files[0], sv_dict)
-        
         if len(sv_files) != 0:
+            # Storage of variable attributes
+            self.get_nc_attrs(sv_dir / sv_files[0], sv_dict)
+            
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:

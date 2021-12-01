@@ -71,14 +71,15 @@ class Validation(AbstractModule):
         val_files = [ Path(val_file) for val_file in glob.glob(f"{val_dir}/{self.cont_ids}*.nc") ] 
         val_rids = [ int(val_file.name.split('_')[0]) for val_file in val_files ]
 
-        # Retrieve dimensions and storage of results data
-        self.__retrieve_dimensions(val_dir, val_rids[0])
-        val_dict = self.create_data_dict()
-        
-        # Storage of variable attributes
-        self.get_nc_attrs(val_dir / val_files[0], val_dict)
-             
-        if len(val_files) != 0:
+        # Storage of results data
+        if len(val_files) == 0:
+            val_dict = self.create_data_dict()
+        else:
+            # Retrieve dimensions and storage of variable attributes
+            self.__retrieve_dimensions(val_dir, val_rids[0])
+            val_dict = self.create_data_dict()
+            self.get_nc_attrs(val_dir / val_files[0], val_dict)
+            
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:

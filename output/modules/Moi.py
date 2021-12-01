@@ -67,10 +67,10 @@ class Moi(AbstractModule):
         # Storage of results data
         moi_dict = self.create_data_dict(nt)
         
-        # Storage of variable attributes
-        self.get_nc_attrs(moi_dir / moi_files[0], moi_dict)
-        
         if len(moi_files) != 0:
+            # Storage of variable attributes
+            self.get_nc_attrs(moi_dir / moi_files[0], moi_dict)
+            
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:
