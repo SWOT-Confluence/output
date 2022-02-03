@@ -24,6 +24,10 @@ class AbstractModule(metaclass=ABCMeta):
         path to the current SoS
     sos_new: Path
             path to new SOS file
+    vlen_f: VLType
+        variable length float data type for NetCDF ragged arrays
+    vlen_i: VLType
+        variable length int data type for NEtCDF ragged arrays
     
     Methods
     -------
@@ -40,13 +44,13 @@ class AbstractModule(metaclass=ABCMeta):
     """
     
     FILL = {
-        "f8": -999999999999,
+        "f8": -999999999999.0,
         "i4": -999,
         "S1": "x"
     }
     
-    def __init__(self, cont_ids, input_dir, sos_new, rids=None, nrids=None, \
-        nids=None):
+    def __init__(self, cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
+        rids=None, nrids=None, nids=None):
         
         """
         Parameters
@@ -57,6 +61,12 @@ class AbstractModule(metaclass=ABCMeta):
             path to input directory
         sos_new: Path
             path to new SOS file
+        vlen_f: VLType
+            variable length float data type for NetCDF ragged arrays
+        vlen_i: VLType
+            variable length int data type for NEtCDF ragged arrays
+        vlen_s: VLType
+            variable length string data type for NEtCDF ragged arrays
         rids: nd.array
             array of SoS reach identifiers associated with continent
         nrids: nd.array
@@ -68,6 +78,9 @@ class AbstractModule(metaclass=ABCMeta):
         self.cont_ids = cont_ids
         self.input_dir = input_dir
         self.sos_new = sos_new
+        self.vlen_f = vlen_f
+        self.vlen_i = vlen_i
+        self.vlen_s = vlen_s
         self.sos_rids = rids
         self.sos_nrids = nrids
         self.sos_nids = nids
@@ -147,10 +160,10 @@ class AbstractModule(metaclass=ABCMeta):
                 dicharge NetCDF4 group to write data to
             name: str
                 name of variable
-            dims: tuple
-                tuple of NetCDF4 dimensions that matches shape of var data
             type: str
                 string type of NetCDF variable
+            dims: tuple
+                tuple of NetCDF4 dimensions that matches shape of var data
             data_dict: dict
                 dictionary of result data
             """
@@ -161,3 +174,26 @@ class AbstractModule(metaclass=ABCMeta):
                 var[:] = np.nan_to_num(data_dict[name], copy=True, nan=self.FILL[type])
             else:
                 var[:] = data_dict[name]
+    
+    def write_var_nt(self, grp, name, vlen, dims, data_dict):
+        """Create NetCDF variable length data variable and write module data.
+        
+        Parameters
+        ----------
+        grp: netCDF4._netCDF4.Group
+            dicharge NetCDF4 group to write data to
+        name: str
+            name of variable
+        vlen: netCDF4._netCDF4.VLType
+            variable length data type
+        dims: tuple
+            tuple of NetCDF4 dimensions that matches shape of var data
+        data_dict: dict
+            dictionary of result data
+        """
+        
+        var = grp.createVariable(name, vlen, dims)
+        if data_dict["attrs"][name]: 
+            data_dict["attrs"][name].pop("_FillValue", None)
+            var.setncatts(data_dict["attrs"][name])
+        var[:] = data_dict[name]
