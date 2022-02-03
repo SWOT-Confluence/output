@@ -137,12 +137,12 @@ class Swot(AbstractModule):
         ds.close()
         
     def append_module_data(self, data_dict):
-        """Append HiVDI data to the new version of the SoS.
+        """Append SWOT time data to the new version of the SoS.
         
         Parameters
         ----------
         data_dict: dict
-            dictionary of HiVDI variables
+            dictionary of SWOT time variables
         """
 
         sos_ds = Dataset(self.sos_new, 'a')        
