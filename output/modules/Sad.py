@@ -23,15 +23,17 @@ class Sad(AbstractModule):
     -------
     append_module_data(data_dict)
         append module data to the new version of the SoS result file.
-    create_data_dict(nt=None)
+    create_data_dict()
         creates and returns module data dictionary.
-    get_module_data(nt=None)
+    get_module_data()
         retrieve module results from NetCDF files.
     get_nc_attrs(nc_file, data_dict)
         get NetCDF attributes for each NetCDF variable.
     """
 
-    def __init__(self, cont_ids, input_dir, sos_new, rids, nrids, nids):
+    def __init__(self, cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s,
+                 rids, nrids, nids):
+        
         """
         Parameters
         ----------
@@ -41,6 +43,12 @@ class Sad(AbstractModule):
             path to input directory
         sos_new: Path
             path to new SOS file
+        vlen_f: VLType
+            variable length float data type for NetCDF ragged arrays
+        vlen_i: VLType
+            variable length int data type for NEtCDF ragged arrays
+        vlen_s: VLType
+            variable length string data type for NEtCDF ragged arrays
         rids: nd.array
             array of SoS reach identifiers associated with continent
         nrids: nd.array
@@ -49,16 +57,11 @@ class Sad(AbstractModule):
             array of SOS node identifiers
         """
 
-        super().__init__(cont_ids, input_dir, sos_new, rids, nrids, nids)
+        super().__init__(cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
+            rids, nrids, nids)
 
-    def get_module_data(self, nt=None):
-        """Extract SAD results from NetCDF files.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def get_module_data(self):
+        """Extract SAD results from NetCDF files."""
 
         # Files and reach identifiers
         sd_dir = self.input_dir / "sad"
@@ -66,7 +69,7 @@ class Sad(AbstractModule):
         sd_rids = [ int(sd_file.name.split('_')[0]) for sd_file in sd_files ]
 
         # Storage of results data
-        sd_dict = self.create_data_dict(nt)
+        sd_dict = self.create_data_dict()
         
         if len(sd_files) != 0:
             # Storage of variable attributes
@@ -79,27 +82,20 @@ class Sad(AbstractModule):
                     sd_ds = Dataset(sd_dir / f"{s_rid}_sad.nc", 'r')
                     sd_dict["A0"][index] = sd_ds["A0"][:].filled(np.nan)
                     sd_dict["n"][index] = sd_ds["n"][:].filled(np.nan)
-                    sd_dict["Qa"][index, :] = sd_ds["Qa"][:].filled(np.nan)
-                    sd_dict["Q_u"][index] = sd_ds["Q_u"][:].filled(np.nan)
+                    sd_dict["Qa"][index] = sd_ds["Qa"][:].filled(self.FILL["f8"])
+                    sd_dict["Q_u"][index] = sd_ds["Q_u"][:].filled(self.FILL["f8"])
                     sd_ds.close()               
                 index += 1
         return sd_dict
     
-    def create_data_dict(self, nt=None):
-        """Creates and returns SAD data dictionary.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def create_data_dict(self):
+        """Creates and returns SAD data dictionary."""
 
-        return {
-            "nt" : nt,
+        data_dict = {
             "A0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "n" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            "Qa" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "Q_u" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+            "Qa" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "Q_u" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "attrs": {
                 "A0" : None,
                 "n" : None,
@@ -107,6 +103,11 @@ class Sad(AbstractModule):
                 "Q_u" : None
             }
         }
+        
+        # Vlen variables
+        data_dict["Qa"].fill(np.array([self.FILL["f8"]]))
+        data_dict["Q_u"].fill(np.array([self.FILL["f8"]]))
+        return data_dict
         
     def get_nc_attrs(self, nc_file, data_dict):
         """Get NetCDF attributes for each NetCDF variable.
@@ -141,7 +142,6 @@ class Sad(AbstractModule):
         # SAD data
         self.write_var(sd_grp, "A0", "f8", ("num_reaches",), data_dict)
         self.write_var(sd_grp, "n", "f8", ("num_reaches",), data_dict)
-        self.write_var(sd_grp, "Qa", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(sd_grp, "Q_u", "f8", ("num_reaches", "time_steps"), data_dict)
-        
+        self.write_var_nt(sd_grp, "Qa", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(sd_grp, "Q_u", self.vlen_f, ("num_reaches"), data_dict)
         sos_ds.close()

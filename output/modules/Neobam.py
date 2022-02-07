@@ -23,9 +23,9 @@ class Neobam(AbstractModule):
     -------
     append_module_data(data_dict)
         append module data to the new version of the SoS result file.
-    create_data_dict(nt=None)
+    create_data_dict()
         creates and returns module data dictionary.
-    get_module_data(nt=None)
+    get_module_data()
         retrieve module results from NetCDF files.
     get_nc_attrs(nc_file, data_dict)
         get NetCDF attributes for each NetCDF variable.
@@ -59,14 +59,8 @@ class Neobam(AbstractModule):
         super().__init__(cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
             rids, nrids, nids)
 
-    def get_module_data(self, nt=None):
-        """Extract HiVDI results from NetCDF files.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def get_module_data(self):
+        """Extract HiVDI results from NetCDF files."""
 
         # Files and reach identifiers
         nb_dir = self.input_dir / "geobam"
@@ -74,7 +68,7 @@ class Neobam(AbstractModule):
         nb_rids = [ int(nb_file.name.split('_')[0]) for nb_file in nb_files ]
 
         # Storage of results data
-        nb_dict = self.create_data_dict(nt)
+        nb_dict = self.create_data_dict()
         
         if len(nb_files) != 0:
             # Storage of variable attributes
@@ -113,22 +107,16 @@ class Neobam(AbstractModule):
                     nb_dict["logDb"]["sd2"][index] = nb_ds["logDb"]["sd2"][:].filled(np.nan)
                     nb_dict["logDb"]["sd3"][index] = nb_ds["logDb"]["sd3"][:].filled(np.nan)
                     
-                    nb_dict["q"]["q1"][index] = nb_ds["q"]["q1"][:].filled(np.nan)
-                    nb_dict["q"]["q2"][index] = nb_ds["q"]["q2"][:].filled(np.nan)
-                    nb_dict["q"]["q3"][index] = nb_ds["q"]["q3"][:].filled(np.nan)
+                    nb_dict["q"]["q1"][index] = nb_ds["q"]["q1"][:].filled(self.FILL["f8"])
+                    nb_dict["q"]["q2"][index] = nb_ds["q"]["q2"][:].filled(self.FILL["f8"])
+                    nb_dict["q"]["q3"][index] = nb_ds["q"]["q3"][:].filled(self.FILL["f8"])
                     
                     nb_ds.close()
                 index += 1
         return nb_dict
     
-    def create_data_dict(self, nt=None):
-        """Creates and returns HiVDI data dictionary.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def create_data_dict(self):
+        """Creates and returns HiVDI data dictionary."""
 
         data_dict = {
             "r" : {
@@ -210,6 +198,7 @@ class Neobam(AbstractModule):
         data_dict["q"]["q1"].fill(np.array([self.FILL["f8"]]))
         data_dict["q"]["q2"].fill(np.array([self.FILL["f8"]]))
         data_dict["q"]["q3"].fill(np.array([self.FILL["f8"]]))
+        
         return data_dict
         
     def get_nc_attrs(self, nc_file, data_dict):

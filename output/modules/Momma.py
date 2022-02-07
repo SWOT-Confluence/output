@@ -23,15 +23,16 @@ class Momma(AbstractModule):
     -------
     append_module_data(data_dict)
         append module data to the new version of the SoS result file.
-    create_data_dict(nt=None)
+    create_data_dict()
         creates and returns module data dictionary.
-    get_module_data(nt=None)
+    get_module_data()
         retrieve module results from NetCDF files.
     get_nc_attrs(nc_file, data_dict)
         get NetCDF attributes for each NetCDF variable.
     """
 
-    def __init__(self, cont_ids, input_dir, sos_new, rids, nrids, nids):
+    def __init__(self, cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s,
+                 rids, nrids, nids):
         """
         Parameters
         ----------
@@ -41,6 +42,12 @@ class Momma(AbstractModule):
             path to input directory
         sos_new: Path
             path to new SOS file
+        vlen_f: VLType
+            variable length float data type for NetCDF ragged arrays
+        vlen_i: VLType
+            variable length int data type for NEtCDF ragged arrays
+        vlen_s: VLType
+            variable length string data type for NEtCDF ragged arrays
         rids: nd.array
             array of SoS reach identifiers associated with continent
         nrids: nd.array
@@ -49,16 +56,11 @@ class Momma(AbstractModule):
             array of SOS node identifiers
         """
 
-        super().__init__(cont_ids, input_dir, sos_new, rids, nrids, nids)
+        super().__init__(cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
+            rids, nrids, nids)
 
-    def get_module_data(self, nt=None):
-        """Extract MOMMA results from NetCDF files.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def get_module_data(self):
+        """Extract MOMMA results from NetCDF files."""
 
         # Files and reach identifiers
         mm_dir = self.input_dir / "momma"
@@ -66,7 +68,7 @@ class Momma(AbstractModule):
         mm_rids = [ int(mm_file.name.split('_')[0]) for mm_file in mm_files ]
 
         # Storage of results data
-        mm_dict = self.create_data_dict(nt)
+        mm_dict = self.create_data_dict()
         
         if len(mm_files) != 0:
             # Storage of variable attributes
@@ -77,16 +79,16 @@ class Momma(AbstractModule):
             for s_rid in self.sos_rids:
                 if s_rid in mm_rids:
                     mm_ds = Dataset(mm_dir / f"{s_rid}_momma.nc", 'r')
-                    mm_dict["stage"][index, :] = mm_ds["stage"][:].filled(np.nan)
-                    mm_dict["width"][index, :] = mm_ds["width"][:].filled(np.nan)
-                    mm_dict["slope"][index, :] = mm_ds["slope"][:].filled(np.nan)
-                    mm_dict["Qgage"][index, :] = mm_ds["Qgage"][:].filled(np.nan)
-                    mm_dict["seg"][index, :] = mm_ds["seg"][:].filled(np.nan)
-                    mm_dict["n"][index, :] = mm_ds["n"][:].filled(np.nan)
-                    mm_dict["Y"][index, :] = mm_ds["Y"][:].filled(np.nan)
-                    mm_dict["v"][index, :] = mm_ds["v"][:].filled(np.nan)
-                    mm_dict["Q"][index, :] = mm_ds["Q"][:].filled(np.nan)
-                    mm_dict["Q_constrained"][index, :] = mm_ds["Q_constrained"][:].filled(np.nan)
+                    mm_dict["stage"][index] = mm_ds["stage"][:].filled(self.FILL["f8"])
+                    mm_dict["width"][index] = mm_ds["width"][:].filled(self.FILL["f8"])
+                    mm_dict["slope"][index] = mm_ds["slope"][:].filled(self.FILL["f8"])
+                    mm_dict["Qgage"][index] = mm_ds["Qgage"][:].filled(self.FILL["f8"])
+                    mm_dict["seg"][index] = mm_ds["seg"][:].filled(self.FILL["f8"])
+                    mm_dict["n"][index] = mm_ds["n"][:].filled(self.FILL["f8"])
+                    mm_dict["Y"][index] = mm_ds["Y"][:].filled(self.FILL["f8"])
+                    mm_dict["v"][index] = mm_ds["v"][:].filled(self.FILL["f8"])
+                    mm_dict["Q"][index] = mm_ds["Q"][:].filled(self.FILL["f8"])
+                    mm_dict["Q_constrained"][index] = mm_ds["Q_constrained"][:].filled(self.FILL["f8"])
                     
                     mm_dict["gage_constrained"][index] = mm_ds["gage_constrained"][:].filled(np.nan)
                     mm_dict["input_MBL_prior"][index] = mm_ds["input_MBL_prior"][:].filled(np.nan)
@@ -123,27 +125,20 @@ class Momma(AbstractModule):
                 index += 1
         return mm_dict
     
-    def create_data_dict(self, nt=None):
-        """Creates and returns MOMMA data dictionary.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def create_data_dict(self):
+        """Creates and returns MOMMA data dictionary."""
 
-        return {
-            "nt" : nt,
-            "stage" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "width" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "slope" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "Qgage" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "seg" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "n" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "Y" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "v" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "Q" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "Q_constrained" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+        data_dict = {
+            "stage" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "width" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "slope" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "Qgage" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "seg" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "n" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "Y" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "v" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "Q" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "Q_constrained" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "gage_constrained" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "input_MBL_prior" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "input_Qm_prior" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
@@ -218,6 +213,19 @@ class Momma(AbstractModule):
             }
         }
         
+        # Vlen variables
+        data_dict["stage"].fill(np.array([self.FILL["f8"]]))
+        data_dict["width"].fill(np.array([self.FILL["f8"]]))
+        data_dict["slope"].fill(np.array([self.FILL["f8"]]))
+        data_dict["Qgage"].fill(np.array([self.FILL["f8"]]))
+        data_dict["seg"].fill(np.array([self.FILL["f8"]]))
+        data_dict["n"].fill(np.array([self.FILL["f8"]]))
+        data_dict["Y"].fill(np.array([self.FILL["f8"]]))
+        data_dict["v"].fill(np.array([self.FILL["f8"]]))
+        data_dict["Q"].fill(np.array([self.FILL["f8"]]))
+        data_dict["Q_constrained"].fill(np.array([self.FILL["f8"]]))
+        return data_dict
+        
     def get_nc_attrs(self, nc_file, data_dict):
         """Get NetCDF attributes for each NetCDF variable.
 
@@ -247,16 +255,16 @@ class Momma(AbstractModule):
         mm_grp = sos_ds.createGroup("momma")
 
         # MOMMA data
-        self.write_var(mm_grp, "stage", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(mm_grp, "width", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(mm_grp, "slope", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(mm_grp, "Qgage", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(mm_grp, "seg", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(mm_grp, "n", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(mm_grp, "Y", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(mm_grp, "v", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(mm_grp, "Q", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(mm_grp, "Q_constrained", "f8", ("num_reaches", "time_steps"), data_dict)
+        self.write_var_nt(mm_grp, "stage", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(mm_grp, "width", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(mm_grp, "slope", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(mm_grp, "Qgage", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(mm_grp, "seg", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(mm_grp, "n", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(mm_grp, "Y", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(mm_grp, "v", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(mm_grp, "Q", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(mm_grp, "Q_constrained", self.vlen_f, ("num_reaches"), data_dict)
         self.write_var(mm_grp, "gage_constrained", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "input_MBL_prior", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "input_Qm_prior", "f8", ("num_reaches",), data_dict)

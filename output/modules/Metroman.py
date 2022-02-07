@@ -23,9 +23,9 @@ class Metroman(AbstractModule):
     -------
     append_module_data(data_dict)
         append module data to the new version of the SoS result file.
-    create_data_dict(nt=None)
+    create_data_dict()
         creates and returns module data dictionary.
-    get_module_data(nt=None)
+    get_module_data()
         retrieve module results from NetCDF files.
     get_nc_attrs(nc_file, data_dict)
         get NetCDF attributes for each NetCDF variable.
@@ -35,7 +35,8 @@ class Metroman(AbstractModule):
         insert discharge values into dictionary with nr by nt dimensions
     """
     
-    def __init__(self, cont_ids, input_dir, sos_new, rids, nrids, nids):
+    def __init__(self, cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s,
+                 rids, nrids, nids):
         """
         Parameters
         ----------
@@ -45,6 +46,12 @@ class Metroman(AbstractModule):
             path to input directory
         sos_new: Path
             path to new SOS file
+        vlen_f: VLType
+            variable length float data type for NetCDF ragged arrays
+        vlen_i: VLType
+            variable length int data type for NEtCDF ragged arrays
+        vlen_s: VLType
+            variable length string data type for NEtCDF ragged arrays
         rids: nd.array
             array of SoS reach identifiers associated with continent
         nrids: nd.array
@@ -53,16 +60,11 @@ class Metroman(AbstractModule):
             array of SOS node identifiers
         """
 
-        super().__init__(cont_ids, input_dir, sos_new, rids, nrids, nids)
+        super().__init__(cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
+            rids, nrids, nids)
 
-    def get_module_data(self, nt=None):
-        """Extract MetroMan results from NetCDF files.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def get_module_data(self):
+        """Extract MetroMan results from NetCDF files."""
 
         # Files and reach identifiers
         mn_dir = self.input_dir / "metroman"
@@ -71,7 +73,7 @@ class Metroman(AbstractModule):
         mn_rids = [ int(rid) for rid_list in mn_rids for rid in rid_list ]
 
         # Storage of results data
-        mn_dict = self.create_data_dict(nt)
+        mn_dict = self.create_data_dict()
         
         if len(mn_files) != 0:
              # Storage of variable attributes
@@ -90,24 +92,18 @@ class Metroman(AbstractModule):
                     self.__insert_nr(s_rid, "x1hat", index, mn_ds, mn_dict)
                     mn_ds.close()
                 index += 1
+
         return mn_dict
 
-    def create_data_dict(self, nt=None):
-        """Creates and returns MetroMan data dictionary.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def create_data_dict(self):
+        """Creates and returns MetroMan data dictionary."""
 
-        return {
-            "nt" : nt,
-            "allq" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+        data_dict = {
+            "allq" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "A0hat" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "nahat" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "x1hat" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            "q_u" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+            "q_u" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "attrs" : {
                 "allq": None,
                 "A0hat": None,
@@ -116,6 +112,11 @@ class Metroman(AbstractModule):
                 "q_u": None
             }
         }
+        # Vlen variables
+        data_dict["allq"].fill(np.array([self.FILL["f8"]]))
+        data_dict["q_u"].fill(np.array([self.FILL["f8"]]))
+        
+        return data_dict
         
     def get_nc_attrs(self, nc_file, data_dict):
         """Get NetCDF attributes for each NetCDF variable.
@@ -174,7 +175,7 @@ class Metroman(AbstractModule):
         """
 
         mn_index = np.where(mn_ds["reach_id"][:] == s_rid)[0][0]
-        mn_dict[name][index, :] = mn_ds[name][mn_index,:].filled(np.nan)
+        mn_dict[name][index] = mn_ds[name][mn_index,:].filled(self.FILL["f8"])
 
     def append_module_data(self, data_dict):
         """Append MetroMan data to the new version of the SoS.
@@ -189,10 +190,10 @@ class Metroman(AbstractModule):
         mn_grp = sos_ds.createGroup("metroman")
 
         # MetroMan data
-        self.write_var(mn_grp, "allq", "f8", ("num_reaches", "time_steps"), data_dict)
+        self.write_var_nt(mn_grp, "allq", self.vlen_f, ("num_reaches"), data_dict)
         self.write_var(mn_grp, "A0hat", "f8", ("num_reaches",), data_dict)
         self.write_var(mn_grp, "nahat", "f8", ("num_reaches",), data_dict)
         self.write_var(mn_grp, "x1hat", "f8", ("num_reaches",), data_dict)
-        self.write_var(mn_grp, "q_u", "f8", ("num_reaches", "time_steps"), data_dict)
+        self.write_var_nt(mn_grp, "q_u", self.vlen_f, ("num_reaches"), data_dict)
 
         sos_ds.close()

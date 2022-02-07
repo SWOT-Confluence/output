@@ -26,9 +26,9 @@ class Validation(AbstractModule):
     -------
     append_module_data(data_dict)
         append module data to the new version of the SoS result file.
-    create_data_dict(nt=None)
+    create_data_dict()
         creates and returns module data dictionary.
-    get_module_data(nt=None)
+    get_module_data()
         retrieve module results from NetCDF files.
     get_nc_attrs(nc_file, data_dict)
         get NetCDF attributes for each NetCDF variable.
@@ -56,15 +56,12 @@ class Validation(AbstractModule):
 
         self.num_algos = 0
         self.nchar = 0
-        super().__init__(cont_ids, input_dir, sos_new, rids, nrids, nids)
+        super().__init__(cont_ids, input_dir, sos_new, rids=rids, nrids=nrids, 
+                         nids=nids)
 
 
-    def get_module_data(self, nt=None):
-        """Extract Validation results from NetCDF files.
-        
-        TODO
-        - Remove NA netcdf explicit call for num algos and nchar
-        """
+    def get_module_data(self):
+        """Extract Validation results from NetCDF files."""
 
         # Files and reach identifiers
         val_dir = self.input_dir
@@ -112,14 +109,8 @@ class Validation(AbstractModule):
         self.nchar = temp.dimensions["nchar"].size
         temp.close()
     
-    def create_data_dict(self, nt=None):
-        """Creates and returns Validation data dictionary.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def create_data_dict(self):
+        """Creates and returns Validation data dictionary."""
 
         return {
             "num_algos" : self.num_algos,

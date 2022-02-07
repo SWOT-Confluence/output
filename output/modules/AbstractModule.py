@@ -49,8 +49,8 @@ class AbstractModule(metaclass=ABCMeta):
         "S1": "x"
     }
     
-    def __init__(self, cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
-        rids=None, nrids=None, nids=None):
+    def __init__(self, cont_ids, input_dir, sos_new, vlen_f=None, vlen_i=None, 
+                 vlen_s=None, rids=None, nrids=None, nids=None):
         
         """
         Parameters
@@ -95,43 +95,21 @@ class AbstractModule(metaclass=ABCMeta):
                 callable(subclass.append_module_data) or
                 NotImplemented)
         
-    def append_module(self, nt):
-        """Append module results to the SoS.
+    def append_module(self):
+        """Append module results to the SoS."""
         
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
-        
-        data_dict = self.get_module_data(nt)
+        data_dict = self.get_module_data()
         self.append_module_data(data_dict)
         
     @abstractmethod
-    def get_module_data(self, nt=None):
-        """Retrieve module results from NetCDF files.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def get_module_data(self):
+        """Retrieve module results from NetCDF files."""
         
         raise NotImplementedError
     
     @abstractmethod
-    def create_data_dict(self, nt=None):
-        """Creates and returns module data dictionary.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-            
-        Raises
-        -----
-            NotImplementedError
-        """
+    def create_data_dict(self):
+        """Creates and returns module data dictionary."""
         
         raise NotImplementedError
     
@@ -143,10 +121,6 @@ class AbstractModule(metaclass=ABCMeta):
         ----------
         data_dict: dict
             dictionary of module data
-            
-        Raises
-        ------
-            NotImplementedError
         """
         
         raise NotImplementedError

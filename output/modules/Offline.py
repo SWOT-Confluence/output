@@ -20,15 +20,17 @@ class Offline(AbstractModule):
     -------
     append_module_data(data_dict)
         append module data to the new version of the SoS result file.
-    create_data_dict(nt=None)
+    create_data_dict()
         creates and returns module data dictionary.
-    get_module_data(nt=None)
+    get_module_data()
         retrieve module results from NetCDF files.
     get_nc_attrs(nc_file, data_dict)
         get NetCDF attributes for each NetCDF variable.
     """
 
-    def __init__(self, cont_ids, input_dir, sos_new, rids, nrids, nids):
+    def __init__(self, cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s,
+                 rids, nrids, nids):
+        
         """
         Parameters
         ----------
@@ -38,6 +40,12 @@ class Offline(AbstractModule):
             path to input directory
         sos_new: Path
             path to new SOS file
+        vlen_f: VLType
+            variable length float data type for NetCDF ragged arrays
+        vlen_i: VLType
+            variable length int data type for NEtCDF ragged arrays
+        vlen_s: VLType
+            variable length string data type for NEtCDF ragged arrays
         rids: nd.array
             array of SoS reach identifiers associated with continent
         nrids: nd.array
@@ -46,25 +54,19 @@ class Offline(AbstractModule):
             array of SOS node identifiers
         """
 
-        super().__init__(cont_ids, input_dir, sos_new, rids, nrids, nids)
+        super().__init__(cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
+            rids, nrids, nids)
 
-    def get_module_data(self, nt=None):
-        """Extract Offline results from NetCDF files.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def get_module_data(self):
+        """Extract Offline results from NetCDF files."""
 
         # Files and reach identifiers
         off_dir = self.input_dir
         off_files = [ Path(off_file) for off_file in glob.glob(f"{off_dir}/{self.cont_ids}*.nc") ] 
-        off_rids = [ off_file.name.split('_')[0].split('-') for off_file in off_files ]
-        off_rids = [ int(rid) for rid_list in off_rids for rid in rid_list ]
-
+        off_rids = [ int(off_file.name.split('_')[0]) for off_file in off_files ]
+        
         # Storage of results data
-        off_dict = self.create_data_dict(nt)
+        off_dict = self.create_data_dict()
         
         if len(off_files) != 0:
             # Storage of variable attributes
@@ -74,53 +76,44 @@ class Offline(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in off_rids:
-                    off_file = [ f for f in glob.glob(f"{off_dir}/*{s_rid}*.nc") ][0]
-                    off_ds = Dataset(off_file, 'r')
-                    off_dict["d_x_area"][index, :] = off_ds["d_x_area"][:].filled(np.nan)
+                    off_ds = Dataset(off_dir / f"{s_rid}_offline.nc", 'r')
+                    off_dict["d_x_area"][index] = off_ds["d_x_area"][:].filled(self.FILL["f8"])
                     if "d_x_area_u" in off_ds.variables.keys(): 
-                        off_dict["d_x_area_u"][index, :] = off_ds["d_x_area_u"][:].filled(np.nan)
-                    off_dict["metro_q_c"][index, :] = off_ds["metro_q_c"][:].filled(np.nan)
-                    off_dict["bam_q_c"][index, :] = off_ds["bam_q_c"][:].filled(np.nan)
-                    off_dict["hivdi_q_c"][index, :] = off_ds["hivdi_q_c"][:].filled(np.nan)
-                    off_dict["momma_q_c"][index, :] = off_ds["momma_q_c"][:].filled(np.nan)
-                    off_dict["sads_q_c"][index, :] = off_ds["sads_q_c"][:].filled(np.nan)
-                    off_dict["consensus_q_c"][index, :] = off_ds["consensus_q_c"][:].filled(np.nan)
-                    off_dict["metro_q_uc"][index, :] = off_ds["metro_q_uc"][:].filled(np.nan)
-                    off_dict["bam_q_uc"][index, :] = off_ds["bam_q_uc"][:].filled(np.nan)
-                    off_dict["hivdi_q_uc"][index, :] = off_ds["hivdi_q_uc"][:].filled(np.nan)
-                    off_dict["momma_q_uc"][index, :] = off_ds["momma_q_uc"][:].filled(np.nan)
-                    off_dict["sads_q_uc"][index, :] = off_ds["sads_q_uc"][:].filled(np.nan)
-                    off_dict["consensus_q_uc"][index, :] = off_ds["consensus_q_uc"][:].filled(np.nan)
-                    
+                        off_dict["d_x_area_u"][index] = off_ds["d_x_area_u"][:].filled(self.FILL["f8"])
+                    off_dict["metro_q_c"][index] = off_ds["metro_q_c"][:].filled(self.FILL["f8"])
+                    off_dict["bam_q_c"][index] = off_ds["bam_q_c"][:].filled(self.FILL["f8"])
+                    off_dict["hivdi_q_c"][index] = off_ds["hivdi_q_c"][:].filled(self.FILL["f8"])
+                    off_dict["momma_q_c"][index] = off_ds["momma_q_c"][:].filled(self.FILL["f8"])
+                    off_dict["sads_q_c"][index] = off_ds["sads_q_c"][:].filled(self.FILL["f8"])
+                    off_dict["consensus_q_c"][index] = off_ds["consensus_q_c"][:].filled(self.FILL["f8"])
+                    off_dict["metro_q_uc"][index] = off_ds["metro_q_uc"][:].filled(self.FILL["f8"])
+                    off_dict["bam_q_uc"][index] = off_ds["bam_q_uc"][:].filled(self.FILL["f8"])
+                    off_dict["hivdi_q_uc"][index] = off_ds["hivdi_q_uc"][:].filled(self.FILL["f8"])
+                    off_dict["momma_q_uc"][index] = off_ds["momma_q_uc"][:].filled(self.FILL["f8"])
+                    off_dict["sads_q_uc"][index] = off_ds["sads_q_uc"][:].filled(self.FILL["f8"])
+                    off_dict["consensus_q_uc"][index] = off_ds["consensus_q_uc"][:].filled(self.FILL["f8"])
                     off_ds.close()
                 index += 1
         return off_dict
 
-    def create_data_dict(self, nt=None):
-        """Creates and returns Offline data dictionary.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def create_data_dict(self):
+        """Creates and returns Offline data dictionary."""
 
-        return {
-            "nt" : nt,
-            "d_x_area" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "d_x_area_u" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "metro_q_c" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "bam_q_c" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "hivdi_q_c" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "momma_q_c" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "sads_q_c" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "consensus_q_c" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "metro_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "bam_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "hivdi_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "momma_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "sads_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "consensus_q_uc" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+        data_dict = {
+            "d_x_area" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "d_x_area_u" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "metro_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "bam_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "hivdi_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "momma_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "sads_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "consensus_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "metro_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "bam_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "hivdi_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "momma_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "sads_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "consensus_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "attrs": {
                 "d_x_area" : None,
                 "d_x_area_u" : None,
@@ -138,6 +131,23 @@ class Offline(AbstractModule):
                 "consensus_q_uc" : None
             }
         }
+        
+        # Vlen variables
+        data_dict["d_x_area"].fill(np.array([self.FILL["f8"]]))
+        data_dict["d_x_area_u"].fill(np.array([self.FILL["f8"]]))
+        data_dict["metro_q_c"].fill(np.array([self.FILL["f8"]]))
+        data_dict["bam_q_c"].fill(np.array([self.FILL["f8"]]))
+        data_dict["hivdi_q_c"].fill(np.array([self.FILL["f8"]]))
+        data_dict["momma_q_c"].fill(np.array([self.FILL["f8"]]))
+        data_dict["sads_q_c"].fill(np.array([self.FILL["f8"]]))
+        data_dict["consensus_q_c"].fill(np.array([self.FILL["f8"]]))
+        data_dict["metro_q_uc"].fill(np.array([self.FILL["f8"]]))
+        data_dict["bam_q_uc"].fill(np.array([self.FILL["f8"]]))
+        data_dict["hivdi_q_uc"].fill(np.array([self.FILL["f8"]]))
+        data_dict["momma_q_uc"].fill(np.array([self.FILL["f8"]]))
+        data_dict["sads_q_uc"].fill(np.array([self.FILL["f8"]]))
+        data_dict["consensus_q_uc"].fill(np.array([self.FILL["f8"]]))
+        return data_dict
     
     def get_nc_attrs(self, nc_file, data_dict):
         """Get NetCDF attributes for each NetCDF variable.
@@ -169,19 +179,18 @@ class Offline(AbstractModule):
         off_grp = sos_ds.createGroup("offline")
 
         # Offline data
-        self.write_var(off_grp, "d_x_area", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(off_grp, "d_x_area_u", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(off_grp, "metro_q_c", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(off_grp, "bam_q_c", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(off_grp, "hivdi_q_c", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(off_grp, "momma_q_c", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(off_grp, "sads_q_c", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(off_grp, "consensus_q_c", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(off_grp, "metro_q_uc", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(off_grp, "bam_q_uc", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(off_grp, "hivdi_q_uc", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(off_grp, "momma_q_uc", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(off_grp, "sads_q_uc", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(off_grp, "consensus_q_uc", "f8", ("num_reaches", "time_steps"), data_dict)
-
+        self.write_var_nt(off_grp, "d_x_area", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(off_grp, "d_x_area_u", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(off_grp, "metro_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(off_grp, "bam_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(off_grp, "hivdi_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(off_grp, "momma_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(off_grp, "sads_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(off_grp, "consensus_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(off_grp, "metro_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(off_grp, "bam_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(off_grp, "hivdi_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(off_grp, "momma_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(off_grp, "sads_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(off_grp, "consensus_q_uc", self.vlen_f, ("num_reaches"), data_dict)
         sos_ds.close()

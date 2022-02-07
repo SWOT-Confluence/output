@@ -27,9 +27,9 @@ class Postdiagnostics(AbstractModule):
     -------
     append_module_data(data_dict)
         append module data to the new version of the SoS result file.
-    create_data_dict(nt=None)
+    create_data_dict()
         creates and returns module data dictionary.
-    get_module_data(nt=None)
+    get_module_data()
         retrieve module results from NetCDF files.
     get_nc_attrs(nc_file, data_dict)
         get NetCDF attributes for each NetCDF variable.
@@ -57,9 +57,10 @@ class Postdiagnostics(AbstractModule):
         self.basin_num_algos = 0
         self.reach_algo_names = np.array([])
         self.reach_num_algos = 0
-        super().__init__(cont_ids, input_dir, sos_new, rids, nrids, nids)
+        super().__init__(cont_ids, input_dir, sos_new, rids=rids, nrids=nrids, 
+                         nids=nids)
 
-    def get_module_data(self, nt=None):
+    def get_module_data(self):
         """Extract Postdiagnostics results from NetCDF files."""
 
         # Files and reach identifiers
@@ -68,7 +69,7 @@ class Postdiagnostics(AbstractModule):
         
         if len(pd_basin_files) == 0:
             # Store empty data
-            pd_dict = self.create_data_dict(0)
+            pd_dict = self.create_data_dict()
         else:
             # Get names number of algorithms processed
             self.__get_algo_data(pd_basin_files, pd_rids)
@@ -117,14 +118,8 @@ class Postdiagnostics(AbstractModule):
         self.reach_num_algos = pd_r_ds.dimensions["num_algos"].size
         pd_r_ds.close()
     
-    def create_data_dict(self, nt=None):
-        """Creates and returns Postdiagnostics data dictionary.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def create_data_dict(self):
+        """Creates and returns Postdiagnostics data dictionary."""
 
         return {
             "basin_algo_names" : self.basin_algo_names,

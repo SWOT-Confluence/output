@@ -23,9 +23,9 @@ class Swot(AbstractModule):
     -------
     append_module_data(data_dict)
         append module data to the new version of the SoS result file.
-    create_data_dict(nt=None)
+    create_data_dict()
         creates and returns module data dictionary.
-    get_module_data(nt=None)
+    get_module_data()
         retrieve module results from NetCDF files.
     get_nc_attrs(nc_file, data_dict)
         get NetCDF attributes for each NetCDF variable.
@@ -59,14 +59,8 @@ class Swot(AbstractModule):
         super().__init__(cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
             rids, nrids, nids)
 
-    def get_module_data(self, nt=None):
-        """Extract SWOT time data from NetCDF files.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def get_module_data(self):
+        """Extract SWOT time data from NetCDF files."""
 
         # Files and reach identifiers
         swot_dir = self.input_dir / "swot"
@@ -74,7 +68,7 @@ class Swot(AbstractModule):
         swot_rids = [ int(swot_file.name.split('_')[0]) for swot_file in swot_files ]
 
         # Storage of time data
-        swot_dict = self.create_data_dict(nt)
+        swot_dict = self.create_data_dict()
         
         if len(swot_files) != 0:
             # Storage of variable attributes
@@ -92,14 +86,8 @@ class Swot(AbstractModule):
                 index += 1
         return swot_dict
     
-    def create_data_dict(self, nt=None):
-        """Creates and returns SWOT time data dictionary.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def create_data_dict(self):
+        """Creates and returns SWOT time data dictionary."""
 
         data_dict = {
             "observations": np.empty((self.sos_rids.shape[0]), dtype=object),

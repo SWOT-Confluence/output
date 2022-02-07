@@ -23,9 +23,9 @@ class Sic4dvar(AbstractModule):
     -------
     append_module_data(data_dict)
         append module data to the new version of the SoS result file.
-    create_data_dict(nt=None)
+    create_data_dict()
         creates and returns module data dictionary.
-    get_module_data(nt=None)
+    get_module_data()
         retrieve module results from NetCDF files.
     get_nc_attrs(nc_file, data_dict)
         get NetCDF attributes for each NetCDF variable.
@@ -33,7 +33,9 @@ class Sic4dvar(AbstractModule):
         append SIC4DVar result data to dictionary with nx dimension
     """
 
-    def __init__(self, cont_ids, input_dir, sos_new, rids, nrids, nids):
+    def __init__(self, cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s,
+                 rids, nrids, nids):
+        
         """
         Parameters
         ----------
@@ -43,6 +45,12 @@ class Sic4dvar(AbstractModule):
             path to input directory
         sos_new: Path
             path to new SOS file
+        vlen_f: VLType
+            variable length float data type for NetCDF ragged arrays
+        vlen_i: VLType
+            variable length int data type for NEtCDF ragged arrays
+        vlen_s: VLType
+            variable length string data type for NEtCDF ragged arrays
         rids: nd.array
             array of SoS reach identifiers associated with continent
         nrids: nd.array
@@ -51,17 +59,12 @@ class Sic4dvar(AbstractModule):
             array of SOS node identifiers
         """
 
-        super().__init__(cont_ids, input_dir, sos_new, rids, nrids, nids)
+        super().__init__(cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
+            rids, nrids, nids)
         
     
-    def get_module_data(self, nt=None):
-        """Extract SIC4DVar results from NetCDF files.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def get_module_data(self):
+        """Extract SIC4DVar results from NetCDF files."""
 
         # Files and reach identifiers
         sv_dir = self.input_dir / "sic4dvar"
@@ -69,12 +72,11 @@ class Sic4dvar(AbstractModule):
         sv_rids = [ int(sv_file.name.split('_')[0]) for sv_file in sv_files ]
 
         # Storage of results data
-        sv_dict = self.create_data_dict(nt)
+        sv_dict = self.create_data_dict()
         
         if len(sv_files) != 0:
             # Storage of variable attributes
             self.get_nc_attrs(sv_dir / sv_files[0], sv_dict)
-            
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:
@@ -82,33 +84,25 @@ class Sic4dvar(AbstractModule):
                     sv_ds = Dataset(sv_dir / f"{s_rid}_sic4dvar.nc", 'r')
                     sv_dict["A0"][index] = sv_ds["A0"][:].filled(np.nan)
                     sv_dict["n"][index] = sv_ds["n"][:].filled(np.nan)                    
-                    sv_dict["Qalgo5"][index, :] = sv_ds["Qalgo5"][:].filled(np.nan)
-                    sv_dict["Qalgo31"][index, :] = sv_ds["Qalgo31"][:].filled(np.nan)
-                    self.__insert_nx(s_rid, "half_width", sv_ds, sv_dict)
-                    self.__insert_nx(s_rid, "elevation", sv_ds, sv_dict)
+                    sv_dict["Qalgo5"][index] = sv_ds["Qalgo5"][:].filled(self.FILL["f8"])
+                    sv_dict["Qalgo31"][index] = sv_ds["Qalgo31"][:].filled(self.FILL["f8"])
                     indexes = np.where(s_rid == self.sos_nrids)
                     sv_dict["node_id"][indexes] = self.sos_nids[indexes]
+                    self.__insert_nx(sv_dict, sv_ds, indexes)
                     sv_ds.close()
                 index += 1
         return sv_dict
     
-    def create_data_dict(self, nt=None):
-        """Creates and returns SIC4DVar data dictionary.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def create_data_dict(self):
+        """Creates and returns SIC4DVar data dictionary."""
 
-        return {
-            "nt" : nt,
+        data_dict = {
             "A0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "n" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            "Qalgo5" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "Qalgo31" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
-            "half_width": np.full((self.sos_nids.shape[0],1), np.array([np.nan]), dtype=object),
-            "elevation": np.full((self.sos_nids.shape[0],1), np.array([np.nan]), dtype=object),
+            "Qalgo5" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "Qalgo31" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "half_width": np.empty((self.sos_nids.shape[0]), dtype=object),
+            "elevation": np.empty((self.sos_nids.shape[0]), dtype=object),
             "node_id" : np.zeros(self.sos_nids.shape[0], dtype=np.int64),
             "attrs": {
                 "A0" : None,
@@ -119,6 +113,14 @@ class Sic4dvar(AbstractModule):
                 "elevation": None
             }
         }
+        
+        # Vlen variables
+        data_dict["Qalgo5"].fill(np.array([self.FILL["f8"]]))
+        data_dict["Qalgo31"].fill(np.array([self.FILL["f8"]]))
+        data_dict["half_width"].fill(np.array([self.FILL["f8"]]))
+        data_dict["elevation"].fill(np.array([self.FILL["f8"]]))
+        return data_dict
+    
     def get_nc_attrs(self, nc_file, data_dict):
         """Get NetCDF attributes for each NetCDF variable.
 
@@ -135,46 +137,24 @@ class Sic4dvar(AbstractModule):
             data_dict["attrs"][key] = ds[key].__dict__        
         ds.close()
         
-    def __insert_nx(self, rid, name, sv_ds, sv_dict):
+    def __insert_nx(self, sv_dict, sv_ds, indexes):
         """Append SIC4DVar result data to dictionary with nx dimension.
-
-        Note that for two reaches certain nodes are missing from topology.
         
         Parameters
         ----------
-        rid: int
-            unique reach identifier
-        name: str
-            name of data variable
-        sv_ds: netCDF4.Dataset
-            SIC4DVar NetCDF that contains result data
         sv_dict: dict
-            dictionary to store SIC4DVar results in
+            dictionary of sic4dvar results
+        sv_ds: netCDF4.Dataset
+            sic4dvar NetCDF dataset reference
+        indexes: list
+            list of integer indexes to insert node flags at
         """
 
-        indexes = np.where(self.sos_nrids == rid)
-        if rid == 77444000061:
-            size = sv_ds[name][0].shape[0]
-            # Nodes with data
-            i = indexes[0][0:-2]
-            sv_dict[name][i,0] = sv_ds[name][:]
-            # Fill in last two nodes that do not have any data for this reach
-            j = indexes[0][-2]
-            sv_dict[name][j,0] = np.full(size, np.nan)
-            k = indexes[0][-1]
-            sv_dict[name][k,0] = np.full(size, np.nan)
-        
-        elif rid == 77444000073:
-            size = sv_ds[name][0].shape[0]
-            # Nodes with data
-            i = indexes[0][1:]
-            sv_dict[name][i,0] = sv_ds[name][:]
-            # Fill in first node that does not have data for this reach
-            j = indexes[0][0] 
-            sv_dict[name][j,0] = np.full(size, np.nan)
-        
-        else:
-            sv_dict[name][indexes, 0] = sv_ds[name][:]
+        j = 0
+        for i in indexes[0]:
+            sv_dict["half_width"][i] = np.nan_to_num(sv_ds["half_width"][j], copy=True, nan=self.FILL["f8"])
+            sv_dict["elevation"][i] = np.nan_to_num(sv_ds["elevation"][j], copy=True, nan=self.FILL["f8"])
+            j += 1
 
     def append_module_data(self, data_dict):
         """Append SIC4DVar data to the new version of the SoS.
@@ -191,24 +171,24 @@ class Sic4dvar(AbstractModule):
         # SIC4DVar data
         self.write_var(sv_grp, "A0", "f8", ("num_reaches",), data_dict)
         self.write_var(sv_grp, "n", "f8", ("num_reaches",), data_dict)
-        self.write_var(sv_grp, "Qalgo31", "f8", ("num_reaches", "time_steps"), data_dict)
-        self.write_var(sv_grp, "Qalgo5", "f8", ("num_reaches", "time_steps"), data_dict)
+        self.write_var_nt(sv_grp, "Qalgo31", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(sv_grp, "Qalgo5", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(sv_grp, "elevation", self.vlen_f, ("num_nodes"), data_dict)
+        self.write_var_nt(sv_grp, "half_width", self.vlen_f, ("num_nodes"), data_dict)
 
         # Variable length data
-        indexes = np.where(data_dict["node_id"] != 0)
-        
-        sv_grp.createDimension("num_sic4dvar_nodes", None)
-        nid = sv_grp.createVariable("sic4dvar_node_id", "i8", ("num_sic4dvar_nodes",))
-        nid[:] = data_dict["node_id"][indexes]
+        # indexes = np.where(data_dict["node_id"] != 0)
+        # sv_grp.createDimension("num_sic4dvar_nodes", None)
+        # nid = sv_grp.createVariable("sic4dvar_node_id", "i8", ("num_sic4dvar_nodes",))
+        # nid[:] = data_dict["node_id"][indexes]
+        # rid = sv_grp.createVariable("sic4dvar_reach_id", "i8", ("num_sic4dvar_nodes",))
+        # rid[:] = self.sos_nrids[indexes]
 
-        rid = sv_grp.createVariable("sic4dvar_reach_id", "i8", ("num_sic4dvar_nodes",))
-        rid[:] = self.sos_nrids[indexes]
+        # vlen_t = sv_grp.createVLType(np.float64, "vlen")
+        # hw = sv_grp.createVariable("half_width", vlen_t, ("num_sic4dvar_nodes"))
+        # hw[:] = data_dict["half_width"][indexes]
 
-        vlen_t = sv_grp.createVLType(np.float64, "vlen")
-        hw = sv_grp.createVariable("half_width", vlen_t, ("num_sic4dvar_nodes"))
-        hw[:] = data_dict["half_width"][indexes]
-
-        e = sv_grp.createVariable("elevation", vlen_t, ("num_sic4dvar_nodes"))
-        e[:] = data_dict["elevation"][indexes]
+        # e = sv_grp.createVariable("elevation", vlen_t, ("num_sic4dvar_nodes"))
+        # e[:] = data_dict["elevation"][indexes]
         
         sos_ds.close()

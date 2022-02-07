@@ -23,15 +23,16 @@ class Hivdi(AbstractModule):
     -------
     append_module_data(data_dict)
         append module data to the new version of the SoS result file.
-    create_data_dict(nt=None)
+    create_data_dict()
         creates and returns module data dictionary.
-    get_module_data(nt=None)
+    get_module_data()
         retrieve module results from NetCDF files.
     get_nc_attrs(nc_file, data_dict)
         get NetCDF attributes for each NetCDF variable.
     """
 
-    def __init__(self, cont_ids, input_dir, sos_new, rids, nrids, nids):
+    def __init__(self, cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s,
+                 rids, nrids, nids):
         """
         Parameters
         ----------
@@ -41,6 +42,12 @@ class Hivdi(AbstractModule):
             path to input directory
         sos_new: Path
             path to new SOS file
+        vlen_f: VLType
+            variable length float data type for NetCDF ragged arrays
+        vlen_i: VLType
+            variable length int data type for NEtCDF ragged arrays
+        vlen_s: VLType
+            variable length string data type for NEtCDF ragged arrays
         rids: nd.array
             array of SoS reach identifiers associated with continent
         nrids: nd.array
@@ -49,16 +56,11 @@ class Hivdi(AbstractModule):
             array of SOS node identifiers
         """
 
-        super().__init__(cont_ids, input_dir, sos_new, rids, nrids, nids)
+        super().__init__(cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
+            rids, nrids, nids)
 
-    def get_module_data(self, nt=None):
-        """Extract HiVDI results from NetCDF files.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def get_module_data(self):
+        """Extract HiVDI results from NetCDF files."""
 
         # Files and reach identifiers
         hv_dir = self.input_dir / "hivdi"
@@ -66,7 +68,7 @@ class Hivdi(AbstractModule):
         hv_rids = [ int(hv_file.name.split('_')[0]) for hv_file in hv_files ]
 
         # Storage of results data
-        hv_dict = self.create_data_dict(nt)
+        hv_dict = self.create_data_dict()
         
         if len(hv_files) != 0:
             # Storage of variable attributes
@@ -77,27 +79,20 @@ class Hivdi(AbstractModule):
             for s_rid in self.sos_rids:
                 if s_rid in hv_rids:
                     hv_ds = Dataset(hv_dir / f"{s_rid}_hivdi.nc", 'r')
-                    hv_dict["reach"]["Q"][index, :] = hv_ds["reach"]["Q"][:].filled(np.nan)
+                    hv_dict["reach"]["Q"][index] = hv_ds["reach"]["Q"][:].filled(self.FILL["f8"])
                     hv_dict["reach"]["A0"][index] = hv_ds["reach"]["A0"][:].filled(np.nan)
                     hv_dict["reach"]["alpha"][index] = hv_ds["reach"]["alpha"][:].filled(np.nan)
                     hv_dict["reach"]["beta"][index] = hv_ds["reach"]["beta"][:].filled(np.nan)
                     hv_ds.close()
-                index += 1
+                index += 1    
         return hv_dict
     
-    def create_data_dict(self, nt=None):
-        """Creates and returns HiVDI data dictionary.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def create_data_dict(self):
+        """Creates and returns HiVDI data dictionary."""
 
-        return {
-            "nt" : nt,
+        data_dict = {
             "reach" : {
-                "Q" : np.full((self.sos_rids.shape[0], nt), np.nan, dtype=np.float64),
+                "Q" : np.empty((self.sos_rids.shape[0]), dtype=object),
                 "A0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "alpha" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "beta" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
@@ -109,6 +104,10 @@ class Hivdi(AbstractModule):
                 }
             }
         }
+        
+        # Vlen variables
+        data_dict["reach"]["Q"].fill(np.array([self.FILL["f8"]]))
+        return data_dict
         
     def get_nc_attrs(self, nc_file, data_dict):
         """Get NetCDF attributes for each NetCDF variable.
@@ -139,7 +138,8 @@ class Hivdi(AbstractModule):
 
         sos_ds = Dataset(self.sos_new, 'a')
         hv_grp = sos_ds.createGroup("hivdi")
-        self.write_var(hv_grp, "Q", "f8", ("num_reaches", "time_steps"), data_dict["reach"])
+        
+        self.write_var_nt(hv_grp, "Q", self.vlen_f, ("num_reaches"), data_dict["reach"])       
         self.write_var(hv_grp, "A0", "f8", ("num_reaches",), data_dict["reach"])
         self.write_var(hv_grp, "beta", "f8", ("num_reaches",), data_dict["reach"])
         self.write_var(hv_grp, "alpha", "f8", ("num_reaches",), data_dict["reach"])

@@ -12,8 +12,6 @@ get_cont_data(cont_json)
     extract and return the continent data needs to be extracted for
 get_continent_sos_data(sos_cur)
     return a dictionary of continents with associated identifier data
-get_nt(input_dir)
-    return time steps (nt) from first SWOT NetCDF file
 write_reaches(prior_sos, result_sos)
     write reach_id variable and associated dimension to the SoS
 write_nodes(prior_sos, result_sos)
@@ -23,24 +21,24 @@ write_nodes(prior_sos, result_sos)
 # Standard imports
 from datetime import datetime
 import json
-from os import scandir
-from pathlib import Path
 
 # Third-party imports
 from netCDF4 import Dataset
+import numpy as np
 
 # Local imports
-from output.modules.GeoBam import GeoBAM
 from output.modules.Hivdi import Hivdi
 from output.modules.Metroman import Metroman
 from output.modules.Moi import Moi
 from output.modules.Momma import Momma
+from output.modules.Neobam import Neobam
 from output.modules.Offline import Offline
 from output.modules.Postdiagnostics import Postdiagnostics
 from output.modules.Prediagnostics import Prediagnostics
 from output.modules.Priors import Priors
 from output.modules.Sad import Sad
 from output.modules.Sic4dvar import Sic4dvar
+from output.modules.Swot import Swot
 from output.modules.Validation import Validation
 
 class Append:
@@ -77,6 +75,12 @@ class Append:
         number of integers in SoS identifier
     version: int
         unique identifier for new version of the SoS
+    vlen_f: VLType
+        variable length float data type for NetCDF ragged arrays
+    vlen_i: VLType
+        variable length int data type for NEtCDF ragged arrays
+    vlen_s: VLType
+        variable length string data type for NEtCDF ragged arrays
         
     Methods
     -------
@@ -88,13 +92,11 @@ class Append:
         create new version of the SoS
     """
 
-    MODULES_LIST = ["geobam", "hivdi", "metroman", "moi", "momma", "offline", \
-        "postdiagnostics", "prediagnostics", "priors", "sad", "sic4dvar", \
-        "validation"]
-    # PRIORS_SUFFIX = "sword_v11_SOS"
-    PRIORS_SUFFIX = "apriori_rivers_v07_SOS"
-    # RESULTS_SUFFIX = "sword_v11_SOS_results"
-    RESULTS_SUFFIX = "apriori_rivers_v07_SOS_results"
+    MODULES_LIST = ["neobam", "hivdi", "metroman", "moi", "momma", "offline",
+                    "postdiagnostics", "prediagnostics", "priors", "sad", 
+                    "sic4dvar", "swot", "validation"]
+    PRIORS_SUFFIX = "sword_v11_SOS"
+    RESULTS_SUFFIX = "sword_v11_SOS_results"
     VERS_LENGTH = 4
 
     def __init__(self, cont_json, index, input_dir, output_dir):
@@ -121,8 +123,10 @@ class Append:
         self.sos_nrids = sos_data["node_reaches"]
         self.sos_nids = sos_data["nodes"]
         self.modules = []
-        self.nt = get_nt(input_dir)
         self.version = "9999"
+        self.vlen_f = None
+        self.vlen_i = None
+        self.vlen_s = None
 
     def create_new_version(self):
         """Create new version of the SoS."""
@@ -142,11 +146,11 @@ class Append:
         # Global dimensions
         result_sos.createDimension("num_reaches", prior_sos["reaches"]["reach_id"][:].shape[0])             
         result_sos.createDimension("num_nodes", prior_sos["nodes"]["node_id"][:].shape[0])
-        result_sos.createDimension("time_steps", self.nt.shape[0])
 
-        # Global variables
-        time_var = result_sos.createVariable("time", "i8", ("time_steps",))
-        time_var[:] = self.nt
+        # Variable length time steps
+        self.vlen_f = result_sos.createVLType(np.float64, "vlen_float")
+        self.vlen_i = result_sos.createVLType(np.int32, "vlen_int")
+        self.vlen_s = result_sos.createVLType("S1", "vlen_str")
 
         # Node and reach group
         write_reaches(prior_sos, result_sos)
@@ -159,10 +163,10 @@ class Append:
         """Append data to the SoS by executing module storage operations."""
         
         for module in self.modules:
-            module.append_module(nt=self.nt.shape[0])
+            module.append_module()
         
-    def create_modules(self, run_type, diag_dir, flpe_dir, moi_dir, off_dir, \
-        val_dir):
+    def create_modules(self, run_type, input_dir, diag_dir, flpe_dir, moi_dir, \
+                       off_dir, val_dir):
         
         """Create and stores a list of AbstractModule objects.
         
@@ -170,6 +174,8 @@ class Append:
         ----------
         run_type: str
             either "constrained" or "unconstrained"
+        input_dir: Path
+            path to input directory
         diag_dir: Path
             path to diagnostics directory
         flpe_dir: Path
@@ -183,49 +189,54 @@ class Append:
         """
         
         for module in self.MODULES_LIST:
-            if module == "geobam":
-                self.modules.append(GeoBAM(list(self.cont.values())[0], \
-                flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
-                self.sos_nids))
             if module == "hivdi":
                 self.modules.append(Hivdi(list(self.cont.values())[0], \
-                    flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
-                    self.sos_nids))
+                    flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "metroman":
                 self.modules.append(Metroman(list(self.cont.values())[0], \
-                    flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
-                    self.sos_nids))
+                    flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "moi":
                 self.modules.append(Moi(list(self.cont.values())[0], \
-                    moi_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
-                    self.sos_nids))
+                    moi_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "momma":
                 self.modules.append(Momma(list(self.cont.values())[0], \
-                    flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
-                    self.sos_nids))
+                    flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
+            if module == "neobam":
+                self.modules.append(Neobam(list(self.cont.values())[0], \
+                    flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "offline":
                 self.modules.append(Offline(list(self.cont.values())[0], \
-                    off_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
-                    self.sos_nids))
+                    off_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "postdiagnostics":
                 self.modules.append(Postdiagnostics(list(self.cont.values())[0], \
                     diag_dir / "postdiagnostics", self.sos_file, self.sos_rids, \
                     self.sos_nrids, self.sos_nids))
             if module == "prediagnostics":
                 self.modules.append(Prediagnostics(list(self.cont.values())[0], \
-                    diag_dir / "prediagnostics", self.sos_file, self.sos_rids, \
-                    self.sos_nrids, self.sos_nids))  
+                    diag_dir / "prediagnostics", self.sos_file, self.vlen_f, \
+                    self.vlen_i, self.vlen_s, self.sos_rids, self.sos_nrids, \
+                    self.sos_nids)) 
             if module == "priors" and run_type == "constrained":
                 self.modules.append(Priors(list(self.cont.values())[0], \
                     self.sos_cur, self.sos_file, self.PRIORS_SUFFIX))
             if module == "sad":
                 self.modules.append(Sad(list(self.cont.values())[0], \
-                    flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
-                    self.sos_nids))
+                    flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "sic4dvar":
                 self.modules.append(Sic4dvar(list(self.cont.values())[0], \
-                    flpe_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
-                    self.sos_nids))
+                    flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
+            if module == "swot":
+                self.modules.append(Swot(list(self.cont.values())[0], \
+                    input_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "validation":
                 self.modules.append(Validation(list(self.cont.values())[0], \
                     val_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
@@ -272,23 +283,6 @@ def get_continent_sos_data(sos_cur, continent, priors_suffix):
     nc.close()
 
     return { "reaches": rids, "node_reaches": nrids, "nodes": nids }
-
-def get_nt(input_dir):
-    """Return time steps (nt) from first SWOT NetCDF file.
-    
-    Parameters
-    ----------
-    input_dir: Path
-        Path to input directory with a SWOT directory and files.
-    """
-
-    with scandir(input_dir / "swot") as entries:
-        files = [ Path(entry) for entry in entries ]
-    
-    swot_ds = Dataset(files[0], 'r')
-    nt = swot_ds["nt"][:]
-    swot_ds.close()
-    return nt
 
 def write_reaches(prior_sos, result_sos):
     """Write reach_id variable and associated dimension to the SoS."""

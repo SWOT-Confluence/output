@@ -22,9 +22,9 @@ class Priors(AbstractModule):
     -------
     append_module_data(data_dict)
         append module data to the new version of the SoS result file.
-    create_data_dict(nt=None)
+    create_data_dict()
         creates and returns module data dictionary.
-    get_module_data(nt=None)
+    get_module_data()
         retrieve module results from NetCDF files.
     open_sos(self)
         open current SoS dataset for reading.
@@ -50,27 +50,15 @@ class Priors(AbstractModule):
         self.suffix = suffix
         super().__init__(cont_ids, input_dir, sos_new)
         
-    def get_module_data(self, nt=None):
-        """Extract and return model group from priors SoS file.
-        
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def get_module_data(self):
+        """Extract and return model group from priors SoS file."""
         
         self.open_sos()
         pri_dict = self.create_data_dict()
         return pri_dict        
         
-    def create_data_dict(self, nt=None):
-        """Creates and returns Priors NetCDF 'model' group data dictionary.
-    
-        Parameters
-        ----------
-        nt: int
-            number of time steps
-        """
+    def create_data_dict(self):
+        """Creates and returns Priors NetCDF 'model' group data dictionary."""
 
         model = self.sos["model"]
         return { 
