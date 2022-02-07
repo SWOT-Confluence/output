@@ -115,20 +115,20 @@ class Offline(AbstractModule):
             "sads_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "consensus_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "attrs": {
-                "d_x_area" : None,
-                "d_x_area_u" : None,
-                "metro_q_c" : None,
-                "bam_q_c" : None,
-                "hivdi_q_c" : None,
-                "momma_q_c" : None,
-                "sads_q_c" : None,
-                "consensus_q_c" : None,
-                "metro_q_uc" : None,
-                "bam_q_uc" : None,
-                "hivdi_q_uc" : None,
-                "momma_q_uc" : None,
-                "sads_q_uc" : None,
-                "consensus_q_uc" : None
+                "d_x_area" : {},
+                "d_x_area_u" : {},
+                "metro_q_c" : {},
+                "bam_q_c" : {},
+                "hivdi_q_c" : {},
+                "momma_q_c" : {},
+                "sads_q_c" : {},
+                "consensus_q_c" : {},
+                "metro_q_uc" : {},
+                "bam_q_uc" : {},
+                "hivdi_q_uc" : {},
+                "momma_q_uc" : {},
+                "sads_q_uc" : {},
+                "consensus_q_uc" : {}
             }
         }
         

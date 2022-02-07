@@ -105,11 +105,11 @@ class Metroman(AbstractModule):
             "x1hat" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "q_u" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "attrs" : {
-                "allq": None,
-                "A0hat": None,
-                "nahat": None,
-                "x1hat": None,
-                "q_u": None
+                "allq": {},
+                "A0hat": {},
+                "nahat": {},
+                "x1hat": {},
+                "q_u": {}
             }
         }
         # Vlen variables

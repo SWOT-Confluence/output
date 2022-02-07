@@ -97,10 +97,10 @@ class Hivdi(AbstractModule):
                 "alpha" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "beta" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs" : {
-                    "Q": None,
-                    "A0": None,
-                    "alpha": None,
-                    "beta": None
+                    "Q": {},
+                    "A0": {},
+                    "alpha": {},
+                    "beta": {}
                 }
             }
         }

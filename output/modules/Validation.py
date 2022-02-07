@@ -123,13 +123,13 @@ class Validation(AbstractModule):
             "rmse": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
             "testn": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
             "attrs": {
-                "algo_names": None,
-                "nse": None,
-                "rsq": None,
-                "kge": None,
-                "rmse": None,
-                "testn": None,
-                "has_validation": None,
+                "algo_names": {},
+                "nse": {},
+                "rsq": {},
+                "kge": {},
+                "rmse": {},
+                "testn": {},
+                "has_validation": {},
             }
         }
         

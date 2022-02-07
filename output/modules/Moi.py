@@ -133,11 +133,11 @@ class Moi(AbstractModule):
                 "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "q": None,
-                    "a0": None,
-                    "n": None,
-                    "qbar_reachScale": None,
-                    "qbar_basinScale": None
+                    "q": {},
+                    "a0": {},
+                    "n": {},
+                    "qbar_reachScale": {},
+                    "qbar_basinScale": {}
                 }
             },
             "hivdi" : {
@@ -148,12 +148,12 @@ class Moi(AbstractModule):
                 "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "q": None,
-                    "Abar": None,
-                    "alpha": None,
-                    "beta": None,
-                    "qbar_reachScale": None,
-                    "qbar_basinScale": None
+                    "q": {},
+                    "Abar": {},
+                    "alpha": {},
+                    "beta": {},
+                    "qbar_reachScale": {},
+                    "qbar_basinScale": {}
                 }
             },
             "metroman" : {
@@ -164,12 +164,12 @@ class Moi(AbstractModule):
                 "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "q": None,
-                    "Abar": None,
-                    "na": None,
-                    "x1": None,
-                    "qbar_reachScale": None,
-                    "qbar_basinScale": None
+                    "q": {},
+                    "Abar": {},
+                    "na": {},
+                    "x1": {},
+                    "qbar_reachScale": {},
+                    "qbar_basinScale": {}
                 }
             },
             "momma" : {
@@ -180,12 +180,12 @@ class Moi(AbstractModule):
                 "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "q": None,
-                    "B": None,
-                    "H": None,
-                    "Save": None,
-                    "qbar_reachScale": None,
-                    "qbar_basinScale": None
+                    "q": {},
+                    "B": {},
+                    "H": {},
+                    "Save": {},
+                    "qbar_reachScale": {},
+                    "qbar_basinScale": {}
                 }
             },
             "sad" : {
@@ -195,11 +195,11 @@ class Moi(AbstractModule):
                 "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "q": None,
-                    "a0": None,
-                    "n": None,
-                    "qbar_reachScale": None,
-                    "qbar_basinScale": None
+                    "q": {},
+                    "a0": {},
+                    "n": {},
+                    "qbar_reachScale": {},
+                    "qbar_basinScale": {}
                 }
             },
             "sic4dvar" : {
@@ -209,11 +209,11 @@ class Moi(AbstractModule):
                 "qbar_reachScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "qbar_basinScale" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs": {
-                    "q": None,
-                    "a0": None,
-                    "n": None,
-                    "qbar_reachScale": None,
-                    "qbar_basinScale": None
+                    "q": {},
+                    "a0": {},
+                    "n": {},
+                    "qbar_reachScale": {},
+                    "qbar_basinScale": {}
                 }
             }
         }

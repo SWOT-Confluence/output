@@ -97,10 +97,10 @@ class Sad(AbstractModule):
             "Qa" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "Q_u" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "attrs": {
-                "A0" : None,
-                "n" : None,
-                "Qa" : None,
-                "Q_u" : None
+                "A0" : {},
+                "n" : {},
+                "Qa" : {},
+                "Q_u" : {}
             }
         }
         

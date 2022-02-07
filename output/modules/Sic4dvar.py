@@ -105,12 +105,12 @@ class Sic4dvar(AbstractModule):
             "elevation": np.empty((self.sos_nids.shape[0]), dtype=object),
             "node_id" : np.zeros(self.sos_nids.shape[0], dtype=np.int64),
             "attrs": {
-                "A0" : None,
-                "n" : None,
-                "Qalgo5" : None,
-                "Qalgo31" : None,
-                "half_width": None,
-                "elevation": None
+                "A0" : {},
+                "n" : {},
+                "Qalgo5" : {},
+                "Qalgo31" : {},
+                "half_width": {},
+                "elevation": {}
             }
         }
         

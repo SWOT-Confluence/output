@@ -133,14 +133,14 @@ class Prediagnostics(AbstractModule):
                 "wse_outliers": np.empty((self.sos_rids.shape[0]), dtype=object),
                 "slope2_outliers": np.empty((self.sos_rids.shape[0]), dtype=object),
                 "attrs": {
-                    "ice_clim_f": None,
-                    "ice_dyn_f": None,
-                    "dark_frac": None,
-                    "n_good_nod": None,
-                    "obs_frac_n": None,
-                    "width_outliers": None,
-                    "wse_outliers": None,
-                    "slope2_outliers": None
+                    "ice_clim_f": {},
+                    "ice_dyn_f": {},
+                    "dark_frac": {},
+                    "n_good_nod": {},
+                    "obs_frac_n": {},
+                    "width_outliers": {},
+                    "wse_outliers": {},
+                    "slope2_outliers": {}
                 }
             },
             "node": {
@@ -151,12 +151,12 @@ class Prediagnostics(AbstractModule):
                 "wse_outliers": np.empty((self.sos_nids.shape[0]), dtype=object),
                 "slope2_outliers": np.empty((self.sos_nids.shape[0]), dtype=object),
                 "attrs": {
-                    "ice_clim_f": None,
-                    "ice_dyn_f": None,
-                    "dark_frac": None,
-                    "width_outliers": None,
-                    "wse_outliers": None,
-                    "slope2_outliers": None
+                    "ice_clim_f": {},
+                    "ice_dyn_f": {},
+                    "dark_frac": {},
+                    "width_outliers": {},
+                    "wse_outliers": {},
+                    "slope2_outliers": {}
                 }
             }
         }

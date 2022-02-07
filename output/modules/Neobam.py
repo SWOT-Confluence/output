@@ -127,12 +127,12 @@ class Neobam(AbstractModule):
                 "sd2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "sd3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs" : {
-                    "mean1": None,
-                    "mean2": None,
-                    "mean3": None,
-                    "sd1": None,
-                    "sd2": None,
-                    "sd3": None                    
+                    "mean1": {},
+                    "mean2": {},
+                    "mean3": {},
+                    "sd1": {},
+                    "sd2": {},
+                    "sd3": {}                    
                 }
             },
             "logn" : {
@@ -143,12 +143,12 @@ class Neobam(AbstractModule):
                 "sd2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "sd3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs" : {
-                    "mean1": None,
-                    "mean2": None,
-                    "mean3": None,
-                    "sd1": None,
-                    "sd2": None,
-                    "sd3": None                    
+                    "mean1": {},
+                    "mean2": {},
+                    "mean3": {},
+                    "sd1": {},
+                    "sd2": {},
+                    "sd3": {}                    
                 }
             },
             "logWb" : {
@@ -159,12 +159,12 @@ class Neobam(AbstractModule):
                 "sd2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "sd3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs" : {
-                    "mean1": None,
-                    "mean2": None,
-                    "mean3": None,
-                    "sd1": None,
-                    "sd2": None,
-                    "sd3": None                    
+                    "mean1": {},
+                    "mean2": {},
+                    "mean3": {},
+                    "sd1": {},
+                    "sd2": {},
+                    "sd3": {}                    
                 }
             },
             "logDb" : {
@@ -175,12 +175,12 @@ class Neobam(AbstractModule):
                 "sd2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "sd3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs" : {
-                    "mean1": None,
-                    "mean2": None,
-                    "mean3": None,
-                    "sd1": None,
-                    "sd2": None,
-                    "sd3": None                    
+                    "mean1": {},
+                    "mean2": {},
+                    "mean3": {},
+                    "sd1": {},
+                    "sd2": {},
+                    "sd3": {}                    
                 }
             },
             "q" : {
@@ -188,9 +188,9 @@ class Neobam(AbstractModule):
                 "q2" : np.empty((self.sos_rids.shape[0]), dtype=object),
                 "q3" : np.empty((self.sos_rids.shape[0]), dtype=object),
                 "attrs" : {
-                    "q1": None,
-                    "q2": None,
-                    "q3": None                  
+                    "q1": {},
+                    "q2": {},
+                    "q3": {}                  
                 }
             }
         }

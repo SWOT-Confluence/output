@@ -91,14 +91,14 @@ class Swot(AbstractModule):
 
         data_dict = {
             "observations": np.empty((self.sos_rids.shape[0]), dtype=object),
-            "attrs" : {"observations": None},
+            "attrs" : {"observations": {}},
             "reach": {
                 "time": np.empty((self.sos_rids.shape[0]), dtype=object),
-                "attrs": {"time": None}
+                "attrs": {"time": {}}
                 },
             "node": {
                 "time": np.empty((self.sos_rids.shape[0]), dtype=object),
-                "attrs": {"time": None}
+                "attrs": {"time": {}}
                 }            
         }
         # Vlen variables

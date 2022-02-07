@@ -131,17 +131,17 @@ class Postdiagnostics(AbstractModule):
                 "stability_flags" : np.full((self.sos_rids.shape[0], self.basin_num_algos), np.nan, dtype=np.float64),
                 "prepost_flags" : np.full((self.sos_rids.shape[0], self.basin_num_algos), np.nan, dtype=np.float64),
                 "attrs": {
-                    "realism_flags": None,
-                    "stability_flags": None,
-                    "prepost_flags": None
+                    "realism_flags": {},
+                    "stability_flags": {},
+                    "prepost_flags": {}
                 }
             },
             "reach" : {
                 "realism_flags" : np.full((self.sos_rids.shape[0], self.reach_num_algos), np.nan, dtype=np.float64),
                 "stability_flags" : np.full((self.sos_rids.shape[0], self.reach_num_algos), np.nan, dtype=np.float64),
                 "attrs": {
-                    "realism_flags": None,
-                    "stability_flags": None
+                    "realism_flags": {},
+                    "stability_flags": {}
                 }
             }
         }
