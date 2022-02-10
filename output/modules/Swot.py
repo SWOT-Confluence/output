@@ -79,7 +79,7 @@ class Swot(AbstractModule):
             for s_rid in self.sos_rids:
                 if s_rid in swot_rids:
                     swot_ds = Dataset(swot_dir / f"{s_rid}_SWOT.nc", 'r')
-                    swot_dict["observations"][index] = swot_ds["observations"][:].filled(np.nan)
+                    swot_dict["observations"][index] = swot_ds["observations"][:].filled(self.FILL["i4"])
                     swot_dict["reach"]["time"][index] = swot_ds["reach"]["time"][:].filled(np.nan)
                     swot_dict["node"]["time"][index] = swot_ds["node"]["time"][:].filled(np.nan)
                     swot_ds.close()
@@ -102,7 +102,7 @@ class Swot(AbstractModule):
                 }            
         }
         # Vlen variables
-        data_dict["observations"].fill(stringtochar(np.array(self.FILL["S1"], dtype="S10")))
+        data_dict["observations"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["reach"]["time"].fill(np.array([self.FILL["f8"]]))
         data_dict["node"]["time"].fill(np.array([self.FILL["f8"]]))
         return data_dict
@@ -134,7 +134,7 @@ class Swot(AbstractModule):
         """
 
         sos_ds = Dataset(self.sos_new, 'a')        
-        self.write_var_nt(sos_ds, "observations", self.vlen_s, ("num_reaches"), data_dict)
+        self.write_var_nt(sos_ds, "observations", self.vlen_i, ("num_reaches"), data_dict)
         self.write_var_nt(sos_ds["reaches"], "time", self.vlen_f, ("num_reaches"), data_dict["reach"])       
         self.write_var_nt(sos_ds["nodes"], "time", self.vlen_f, ("num_reaches"), data_dict["node"])       
         sos_ds.close()
