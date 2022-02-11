@@ -80,8 +80,9 @@ class Swot(AbstractModule):
                 if s_rid in swot_rids:
                     swot_ds = Dataset(swot_dir / f"{s_rid}_SWOT.nc", 'r')
                     swot_dict["observations"][index] = swot_ds["observations"][:].filled(self.FILL["i4"])
-                    swot_dict["reach"]["time"][index] = swot_ds["reach"]["time"][:].filled(np.nan)
-                    swot_dict["node"]["time"][index] = swot_ds["node"]["time"][:].filled(np.nan)
+                    swot_dict["reach"]["time"][index] = swot_ds["reach"]["time"][:].filled(self.FILL["f8"])
+                    indexes = np.where(self.sos_nrids == s_rid)
+                    self._insert_nx(swot_dict, swot_ds, indexes)
                     swot_ds.close()
                 index += 1
         return swot_dict
@@ -97,7 +98,7 @@ class Swot(AbstractModule):
                 "attrs": {"time": {}}
                 },
             "node": {
-                "time": np.empty((self.sos_rids.shape[0]), dtype=object),
+                "time": np.empty((self.sos_nids.shape[0]), dtype=object),
                 "attrs": {"time": {}}
                 }            
         }
@@ -124,6 +125,24 @@ class Swot(AbstractModule):
         data_dict["node"]["attrs"]["time"] = ds["node"]["time"].__dict__
         ds.close()
         
+    def _insert_nx(self, swot_dict, swot_ds, indexes):
+        """Insert node flags into prediagnostics dictionary.
+        
+        Parameters
+        ----------
+        swot_dict: dict
+            dictionary of SWOT data
+        swot_ds: netCDF4.Dataset
+            SWOT NetCDF dataset reference
+        indexes: list
+            list of integer indexes to insert node flags at
+        """
+        
+        j = 0
+        for i in indexes[0]:
+            swot_dict["node"]["time"][i] = swot_ds["node"]["time"][j,:].filled(self.FILL["f8"])
+            j +=1
+        
     def append_module_data(self, data_dict):
         """Append SWOT time data to the new version of the SoS.
         
@@ -136,5 +155,5 @@ class Swot(AbstractModule):
         sos_ds = Dataset(self.sos_new, 'a')        
         self.write_var_nt(sos_ds, "observations", self.vlen_i, ("num_reaches"), data_dict)
         self.write_var_nt(sos_ds["reaches"], "time", self.vlen_f, ("num_reaches"), data_dict["reach"])       
-        self.write_var_nt(sos_ds["nodes"], "time", self.vlen_f, ("num_reaches"), data_dict["node"])       
+        self.write_var_nt(sos_ds["nodes"], "time", self.vlen_f, ("num_nodes"), data_dict["node"])       
         sos_ds.close()
