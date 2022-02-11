@@ -16,6 +16,11 @@ class test_Moi(unittest.TestCase):
     SOS_NEW = Path(__file__).parent / "sos_new" / "na_apriori_rivers_v07_SOS_results.nc"
     MOI_DIR = Path(__file__).parent / "moi"
     MOI_SOS = Path(__file__).parent / "moi" / "na_apriori_rivers_v07_SOS_results.nc"
+    FILL = {
+        "f8": -999999999999.0,
+        "i4": -999,
+        "S1": "x"
+    }
     
     def get_sos_data(self):
         """Retrieve and return dictionary of SoS data."""
@@ -35,9 +40,9 @@ class test_Moi(unittest.TestCase):
         sos_data = self.get_sos_data()
         
         # Run method
-        moi = Moi([7,8,9], self.MOI_DIR, self.SOS_NEW, \
+        moi = Moi([7,8,9], self.MOI_DIR, self.SOS_NEW, None, None, None, \
             sos_data["reaches"], sos_data["node_reaches"], sos_data["nodes"])
-        moi_dict = moi.get_module_data(25)
+        moi_dict = moi.get_module_data()
         
         # Assert results
         i = np.where(sos_data["reaches"] == 77449100071)
@@ -58,10 +63,17 @@ class test_Moi(unittest.TestCase):
         copyfile(self.SOS_NEW, self.MOI_SOS)
         sos_data = self.get_sos_data()
         
+        # Create vlen types in SOS
+        sos = Dataset(self.MOI_SOS, 'a')
+        vlen_f = sos.createVLType(np.float64, "vlen_float")
+        vlen_i = sos.createVLType(np.int32, "vlen_int")
+        vlen_s = sos.createVLType("S1", "vlen_str")
+        sos.close()
+        
         # Run method
-        moi = Moi([7,8,9], self.MOI_DIR, self.MOI_SOS, \
+        moi = Moi([7,8,9], self.MOI_DIR, self.MOI_SOS, vlen_f, vlen_i, vlen_s, \
             sos_data["reaches"], sos_data["node_reaches"], sos_data["nodes"])
-        moi_dict = moi.get_module_data(25)
+        moi_dict = moi.get_module_data()
         moi.append_module_data(moi_dict)
         
         # Assert results

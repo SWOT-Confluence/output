@@ -38,7 +38,7 @@ class test_Postdiagnostics(unittest.TestCase):
         # Run method
         pd = Postdiagnostics([7,8,9], self.PD_DIR, self.SOS_NEW, \
             sos_data["reaches"], sos_data["node_reaches"], sos_data["nodes"])
-        pd_dict = pd.get_module_data(25)
+        pd_dict = pd.get_module_data()
         
         # Assert results
         i = np.where(sos_data["reaches"] == 77449100071)
@@ -72,7 +72,7 @@ class test_Postdiagnostics(unittest.TestCase):
         # Run method
         pd = Postdiagnostics([7,8,9], self.PD_DIR, self.PD_SOS, \
             sos_data["reaches"], sos_data["node_reaches"], sos_data["nodes"])
-        pd_dict = pd.get_module_data(25)
+        pd_dict = pd.get_module_data()
         pd.append_module_data(pd_dict)
         
         # Assert results

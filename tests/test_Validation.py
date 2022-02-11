@@ -38,7 +38,7 @@ class test_Validation(unittest.TestCase):
         # Run method
         val = Validation([7,8,9], self.V_DIR, self.SOS_NEW, \
             sos_data["reaches"], sos_data["node_reaches"], sos_data["nodes"])
-        val_dict = val.get_module_data(25)
+        val_dict = val.get_module_data()
         
         # Assert results
         i = np.where(sos_data["reaches"] == 77449100071)
@@ -68,7 +68,7 @@ class test_Validation(unittest.TestCase):
         # Run method
         val = Validation([7,8,9], self.V_DIR, self.V_SOS, \
             sos_data["reaches"], sos_data["node_reaches"], sos_data["nodes"])
-        val_dict = val.get_module_data(25)
+        val_dict = val.get_module_data()
         val.append_module_data(val_dict)
         
         # Assert results
