@@ -112,11 +112,11 @@ class Prediagnostics(AbstractModule):
         j = 0
         for i in indexes[0]:
             pre_dict["node"]["ice_clim_f"][i] = pre_ds["node"]["ice_clim_f"][:,j].filled(self.FILL["i4"])
-            pre_dict["node"]["ice_dyn_f"][i] = pre_ds["node"]["ice_clim_f"][:,j].filled(self.FILL["i4"])
-            pre_dict["node"]["dark_frac"][i] = pre_ds["node"]["ice_clim_f"][:,j].filled(self.FILL["i4"])
-            pre_dict["node"]["width_outliers"][i] = pre_ds["node"]["ice_clim_f"][:,j].filled(self.FILL["i4"])
-            pre_dict["node"]["wse_outliers"][i] = pre_ds["node"]["ice_clim_f"][:,j].filled(self.FILL["i4"])
-            pre_dict["node"]["slope2_outliers"][i] = pre_ds["node"]["ice_clim_f"][:,j].filled(self.FILL["i4"])
+            pre_dict["node"]["ice_dyn_f"][i] = pre_ds["node"]["ice_dyn_f"][:,j].filled(self.FILL["i4"])
+            pre_dict["node"]["dark_frac"][i] = pre_ds["node"]["dark_frac"][:,j].filled(self.FILL["i4"])
+            pre_dict["node"]["width_outliers"][i] = pre_ds["node"]["width_outliers"][:,j].filled(self.FILL["i4"])
+            pre_dict["node"]["wse_outliers"][i] = pre_ds["node"]["wse_outliers"][:,j].filled(self.FILL["i4"])
+            pre_dict["node"]["slope2_outliers"][i] = pre_ds["node"]["slope2_outliers"][:,j].filled(self.FILL["i4"])
             j +=1
     
     def create_data_dict(self):
