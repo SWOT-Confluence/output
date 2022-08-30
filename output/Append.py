@@ -97,7 +97,7 @@ class Append:
     RESULTS_SUFFIX = "sword_v11_SOS_results"
     VERS_LENGTH = 4
 
-    def __init__(self, cont_json, index, input_dir, output_dir, modules_list):
+    def __init__(self, cont_json, index, input_dir, output_dir, modules_json_path):
         """
         TODO: Remove "temp" from output_dir (self.sos_new)
 
@@ -111,8 +111,10 @@ class Append:
             path to input directory
         output_dir: Path
             path to output directory
+        modules_json_path: Path
+            path to modules_list JSON file
         """
-        self.MODULES_LIST = modules_list
+        self.MODULES_LIST = get_modules_list(modules_json_path)
         self.cont = get_cont_data(cont_json, index)
         self.sos_cur = input_dir / "sos"
         self.sos_file = output_dir / "sos" / f"{list(self.cont.keys())[0]}_{self.RESULTS_SUFFIX}.nc"
@@ -260,6 +262,24 @@ def get_cont_data(cont_json, index):
     with open(cont_json) as jsonfile:
         data = json.load(jsonfile)
     return data[index]
+
+def get_modules_list(modules_json_path):
+    """Extract and return the continent data needs to be extracted for.
+    
+    Parameters
+    ----------
+    cont_json : str
+        path to the file that contains the list of modules
+    
+    Returns
+    -------
+    list
+        List of modules
+    """
+
+    with open(modules_json_path) as jsonfile:
+        data = json.load(jsonfile)
+    return data['modules']
 
 def get_continent_sos_data(sos_cur, continent, priors_suffix):
     """Return a dictionary of continents with associated reach identifiers.
