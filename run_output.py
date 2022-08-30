@@ -36,19 +36,17 @@ def main():
     try:
         continent_json = sys.argv[1]
         run_type = sys.argv[2]
-        modules_list = sys.argv[3]
+        modules_json = sys.argv[3]
     except IndexError:
         continent_json = "continent.json"
         run_type = "unconstrained"
-        modules_list = ["neobam", "hivdi", "metroman", "moi", "momma", "offline",
-                        "postdiagnostics", "prediagnostics", "priors", "sad", 
-                        "sic4dvar", "swot", "validation"]
+        modules_json = "modules.json"
 
     # AWS Batch index
     index = int(os.environ.get("AWS_BATCH_JOB_ARRAY_INDEX"))
 
     # Append SoS data
-    append = Append(INPUT / continent_json, index, INPUT, OUTPUT, modules_list)
+    append = Append(INPUT / continent_json, index, INPUT, OUTPUT, INPUT / modules_json)
     append.create_new_version()
     append.create_modules(run_type, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
         VALIDATION / "stats")
