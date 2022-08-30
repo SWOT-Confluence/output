@@ -36,7 +36,7 @@ def main():
     try:
         continent_json = sys.argv[1]
         run_type = sys.argv[2]
-        module_list = sys.argv[3]
+        modules_list = sys.argv[3]
     except IndexError:
         continent_json = "continent.json"
         run_type = "unconstrained"
