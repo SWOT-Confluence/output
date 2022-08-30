@@ -92,14 +92,12 @@ class Append:
         create new version of the SoS
     """
 
-    MODULES_LIST = ["neobam", "hivdi", "metroman", "moi", "momma", "offline",
-                    "postdiagnostics", "prediagnostics", "priors", "sad", 
-                    "sic4dvar", "swot", "validation"]
+
     PRIORS_SUFFIX = "sword_v11_SOS"
     RESULTS_SUFFIX = "sword_v11_SOS_results"
     VERS_LENGTH = 4
 
-    def __init__(self, cont_json, index, input_dir, output_dir):
+    def __init__(self, cont_json, index, input_dir, output_dir, modules_list):
         """
         TODO: Remove "temp" from output_dir (self.sos_new)
 
@@ -114,7 +112,7 @@ class Append:
         output_dir: Path
             path to output directory
         """
-
+        self.MODULES_LIST = modules_list
         self.cont = get_cont_data(cont_json, index)
         self.sos_cur = input_dir / "sos"
         self.sos_file = output_dir / "sos" / f"{list(self.cont.keys())[0]}_{self.RESULTS_SUFFIX}.nc"
