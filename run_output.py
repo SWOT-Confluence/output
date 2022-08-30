@@ -21,7 +21,7 @@ import sys
 # Local imports
 from output.Append import Append
 from output.Login import Login
-from output.Upload import Upload 
+from output.Upload import Upload
 
 INPUT = Path("/mnt/data/input")
 FLPE = Path("/mnt/data/flpe")
@@ -36,15 +36,19 @@ def main():
     try:
         continent_json = sys.argv[1]
         run_type = sys.argv[2]
+        module_list = sys.argv[3]
     except IndexError:
         continent_json = "continent.json"
         run_type = "unconstrained"
+        modules_list = ["neobam", "hivdi", "metroman", "moi", "momma", "offline",
+                        "postdiagnostics", "prediagnostics", "priors", "sad", 
+                        "sic4dvar", "swot", "validation"]
 
     # AWS Batch index
     index = int(os.environ.get("AWS_BATCH_JOB_ARRAY_INDEX"))
 
     # Append SoS data
-    append = Append(INPUT / continent_json, index, INPUT, OUTPUT)
+    append = Append(INPUT / continent_json, index, INPUT, OUTPUT, modules_list)
     append.create_new_version()
     append.create_modules(run_type, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
         VALIDATION / "stats")
