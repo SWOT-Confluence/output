@@ -9,8 +9,9 @@ correct location in the SoS S3 bucket.
 
 Command line arguments:
 continent_json: Name of file that contains continent data in JSON format
-run_type: values should be "constrained" or "unconstrained"
-Default is to run unconstrained.
+run_type: values should be "constrained" or "unconstrained". Default is to run unconstrained.
+modules_json: Name of file that contains module names in JSON format
+config_py: Name of file that contains AWS login information in JSON format.
 """
 
 # Standard imports
@@ -37,10 +38,12 @@ def main():
         continent_json = sys.argv[1]
         run_type = sys.argv[2]
         modules_json = sys.argv[3]
+        config_json = sys.argv[4]
     except IndexError:
         continent_json = "continent.json"
         run_type = "unconstrained"
         modules_json = "modules.json"
+        config_json = 'output_conf.json'
 
     # AWS Batch index
     index = int(os.environ.get("AWS_BATCH_JOB_ARRAY_INDEX"))
@@ -54,7 +57,7 @@ def main():
 
     # Login
     login = Login()
-    login.login()
+    login.login(output_conf_path = INPUT / config_json)
     
     # Upload SoS data
     upload = Upload(login.sos_fs, append.sos_file)
