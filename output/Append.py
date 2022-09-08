@@ -264,7 +264,7 @@ def get_cont_data(cont_json, index):
     return data[index]
 
 def get_modules_list(modules_json_path):
-    """Extract and return the continent data needs to be extracted for.
+    """Extract and return the list of modules that output should extract data for.
     
     Parameters
     ----------
