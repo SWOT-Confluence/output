@@ -91,7 +91,7 @@ class Momma(AbstractModule):
                     mm_dict["Q_constrained"][index] = mm_ds["Q_constrained"][:].filled(self.FILL["f8"])
                     
                     mm_dict["gage_constrained"][index] = mm_ds["gage_constrained"][:].filled(np.nan)
-                    mm_dict["input_MBL_prior"][index] = mm_ds["input_MBL_prior"][:].filled(np.nan)
+                    # mm_dict["input_MBL_prior"][index] = mm_ds["input_MBL_prior"][:].filled(np.nan)
                     mm_dict["input_Qm_prior"][index] = mm_ds["input_Qm_prior"][:].filled(np.nan)
                     mm_dict["input_Qb_prior"][index] = mm_ds["input_Qb_prior"][:].filled(np.nan)
                     mm_dict["input_Yb_prior"][index] = mm_ds["input_Yb_prior"][:].filled(np.nan)
@@ -106,14 +106,14 @@ class Momma(AbstractModule):
                     mm_dict["Qgage_constrained_nb_seg2"][index] = mm_ds["Qgage_constrained_nb_seg2"][:].filled(np.nan)
                     mm_dict["Qgage_constrained_x_seg2"][index] = mm_ds["Qgage_constrained_x_seg2"][:].filled(np.nan)
                     mm_dict["n_bkfl_Qb_prior"][index] = mm_ds["n_bkfl_Qb_prior"][:].filled(np.nan)
-                    mm_dict["n_bkfl_final_used"][index] = mm_ds["n_bkfl_final_used"][:].filled(np.nan)
+                    mm_dict["n_bkfl_slope"][index] = mm_ds["n_bkfl_slope"][:].filled(np.nan) # here
                     mm_dict["vel_bkfl_Qb_prior"][index] = mm_ds["vel_bkfl_Qb_prior"][:].filled(np.nan)
-                    mm_dict["vel_bkfl_diag_MBL"][index] = mm_ds["vel_bkfl_diag_MBL"][:].filled(np.nan)
+                    # mm_dict["vel_bkfl_diag_MBL"][index] = mm_ds["vel_bkfl_diag_MBL"][:].filled(np.nan)
                     mm_dict["Froude_bkfl_diag_Smean"][index] = mm_ds["Froude_bkfl_diag_Smean"][:].filled(np.nan)
-                    mm_dict["width_bkfl_empirical"][index] = mm_ds["width_bkfl_empirical"][:].filled(np.nan)
+                    # mm_dict["width_bkfl_empirical"][index] = mm_ds["width_bkfl_empirical"][:].filled(np.nan)
                     mm_dict["width_bkfl_solved_obs"][index] = mm_ds["width_bkfl_solved_obs"][:].filled(np.nan)
                     mm_dict["depth_bkfl_solved_obs"][index] = mm_ds["depth_bkfl_solved_obs"][:].filled(np.nan)
-                    mm_dict["depth_bkfl_diag_MBL"][index] = mm_ds["depth_bkfl_diag_MBL"][:].filled(np.nan)
+                    # mm_dict["depth_bkfl_diag_MBL"][index] = mm_ds["depth_bkfl_diag_MBL"][:].filled(np.nan)
                     mm_dict["depth_bkfl_diag_Wb_Smean"][index] = mm_ds["depth_bkfl_diag_Wb_Smean"][:].filled(np.nan)
                     mm_dict["zero_flow_stage"][index] = mm_ds["zero_flow_stage"][:].filled(np.nan)
                     mm_dict["bankfull_stage"][index] = mm_ds["bankfull_stage"][:].filled(np.nan)
@@ -140,7 +140,7 @@ class Momma(AbstractModule):
             "Q" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "Q_constrained" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "gage_constrained" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            "input_MBL_prior" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+            # "input_MBL_prior" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "input_Qm_prior" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "input_Qb_prior" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "input_Yb_prior" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
@@ -155,14 +155,14 @@ class Momma(AbstractModule):
             "Qgage_constrained_nb_seg2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "Qgage_constrained_x_seg2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "n_bkfl_Qb_prior" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            "n_bkfl_final_used" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+            "n_bkfl_slope" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "vel_bkfl_Qb_prior" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            "vel_bkfl_diag_MBL" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+            # "vel_bkfl_diag_MBL" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "Froude_bkfl_diag_Smean" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            "width_bkfl_empirical" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+            # "width_bkfl_empirical" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "width_bkfl_solved_obs" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "depth_bkfl_solved_obs" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            "depth_bkfl_diag_MBL" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+            # "depth_bkfl_diag_MBL" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "depth_bkfl_diag_Wb_Smean" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "zero_flow_stage" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "bankfull_stage" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
@@ -181,7 +181,7 @@ class Momma(AbstractModule):
                 "Q" : {},
                 "Q_constrained" : {},
                 "gage_constrained" : {},
-                "input_MBL_prior" : {},
+                # "input_MBL_prior" : {},
                 "input_Qm_prior" : {},
                 "input_Qb_prior" : {},
                 "input_Yb_prior" : {},
@@ -196,14 +196,14 @@ class Momma(AbstractModule):
                 "Qgage_constrained_nb_seg2" : {},
                 "Qgage_constrained_x_seg2" : {},
                 "n_bkfl_Qb_prior" : {},
-                "n_bkfl_final_used" : {},
+                "n_bkfl_slope" : {},
                 "vel_bkfl_Qb_prior" : {},
-                "vel_bkfl_diag_MBL" : {},
+                # "vel_bkfl_diag_MBL" : {},
                 "Froude_bkfl_diag_Smean" : {},
-                "width_bkfl_empirical" : {},
+                # "width_bkfl_empirical" : {},
                 "width_bkfl_solved_obs" : {},
                 "depth_bkfl_solved_obs" : {},
-                "depth_bkfl_diag_MBL" : {},
+                # "depth_bkfl_diag_MBL" : {},
                 "depth_bkfl_diag_Wb_Smean" : {},
                 "zero_flow_stage" : {},
                 "bankfull_stage" : {},
@@ -266,7 +266,7 @@ class Momma(AbstractModule):
         self.write_var_nt(mm_grp, "Q", self.vlen_f, ("num_reaches"), data_dict)
         self.write_var_nt(mm_grp, "Q_constrained", self.vlen_f, ("num_reaches"), data_dict)
         self.write_var(mm_grp, "gage_constrained", "f8", ("num_reaches",), data_dict)
-        self.write_var(mm_grp, "input_MBL_prior", "f8", ("num_reaches",), data_dict)
+        # self.write_var(mm_grp, "input_MBL_prior", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "input_Qm_prior", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "input_Qb_prior", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "input_Yb_prior", "f8", ("num_reaches",), data_dict)
@@ -281,14 +281,14 @@ class Momma(AbstractModule):
         self.write_var(mm_grp, "Qgage_constrained_nb_seg2", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "Qgage_constrained_x_seg2", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "n_bkfl_Qb_prior", "f8", ("num_reaches",), data_dict)
-        self.write_var(mm_grp, "n_bkfl_final_used", "f8", ("num_reaches",), data_dict)
+        self.write_var(mm_grp, "n_bkfl_slope", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "vel_bkfl_Qb_prior", "f8", ("num_reaches",), data_dict)
-        self.write_var(mm_grp, "vel_bkfl_diag_MBL", "f8", ("num_reaches",), data_dict)
+        # self.write_var(mm_grp, "vel_bkfl_diag_MBL", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "Froude_bkfl_diag_Smean", "f8", ("num_reaches",), data_dict)
-        self.write_var(mm_grp, "width_bkfl_empirical", "f8", ("num_reaches",), data_dict)
+        # self.write_var(mm_grp, "width_bkfl_empirical", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "width_bkfl_solved_obs", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "depth_bkfl_solved_obs", "f8", ("num_reaches",), data_dict)
-        self.write_var(mm_grp, "depth_bkfl_diag_MBL", "f8", ("num_reaches",), data_dict)
+        # self.write_var(mm_grp, "depth_bkfl_diag_MBL", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "depth_bkfl_diag_Wb_Smean", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "zero_flow_stage", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "bankfull_stage", "f8", ("num_reaches",), data_dict)
