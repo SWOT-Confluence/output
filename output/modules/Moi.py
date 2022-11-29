@@ -78,7 +78,7 @@ class Moi(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in moi_rids:
-                    moi_ds = Dataset(moi_dir / f"{s_rid}_integrator.nc", 'r')
+                    moi_ds = Dataset(moi_dir / f"{int(s_rid)}_integrator.nc", 'r')
                     moi_dict["geobam"]["q"][index] = moi_ds["geobam"]["q"][:].filled(self.FILL["f8"])
                     moi_dict["geobam"]["a0"][index] = moi_ds["geobam"]["a0"][:].filled(np.nan)
                     moi_dict["geobam"]["n"][index] = moi_ds["geobam"]["n"][:].filled(np.nan)

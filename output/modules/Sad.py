@@ -79,7 +79,7 @@ class Sad(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in sd_rids:
-                    sd_ds = Dataset(sd_dir / f"{s_rid}_sad.nc", 'r')
+                    sd_ds = Dataset(sd_dir / f"{int(s_rid)}_sad.nc", 'r')
                     sd_dict["A0"][index] = sd_ds["A0"][:].filled(np.nan)
                     sd_dict["n"][index] = sd_ds["n"][:].filled(np.nan)
                     sd_dict["Qa"][index] = sd_ds["Qa"][:].filled(self.FILL["f8"])

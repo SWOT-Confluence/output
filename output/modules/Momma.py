@@ -78,7 +78,7 @@ class Momma(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in mm_rids:
-                    mm_ds = Dataset(mm_dir / f"{s_rid}_momma.nc", 'r')
+                    mm_ds = Dataset(mm_dir / f"{int(s_rid)}_momma.nc", 'r')
                     mm_dict["stage"][index] = mm_ds["stage"][:].filled(self.FILL["f8"])
                     mm_dict["width"][index] = mm_ds["width"][:].filled(self.FILL["f8"])
                     mm_dict["slope"][index] = mm_ds["slope"][:].filled(self.FILL["f8"])

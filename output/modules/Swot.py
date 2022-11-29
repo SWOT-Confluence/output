@@ -78,7 +78,7 @@ class Swot(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in swot_rids:
-                    swot_ds = Dataset(swot_dir / f"{s_rid}_SWOT.nc", 'r')
+                    swot_ds = Dataset(swot_dir / f"{int(s_rid)}_SWOT.nc", 'r')
                     swot_dict["observations"][index] = swot_ds["observations"][:].filled(self.FILL["i4"])
                     swot_dict["reach"]["time"][index] = swot_ds["reach"]["time"][:].filled(self.FILL["f8"])
                     indexes = np.where(self.sos_nrids == s_rid)

@@ -78,7 +78,7 @@ class Hivdi(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in hv_rids:
-                    hv_ds = Dataset(hv_dir / f"{s_rid}_hivdi.nc", 'r')
+                    hv_ds = Dataset(hv_dir / f"{int(s_rid)}_hivdi.nc", 'r')
                     hv_dict["reach"]["Q"][index] = hv_ds["reach"]["Q"][:].filled(self.FILL["f8"])
                     hv_dict["reach"]["A0"][index] = hv_ds["reach"]["A0"][:].filled(np.nan)
                     hv_dict["reach"]["alpha"][index] = hv_ds["reach"]["alpha"][:].filled(np.nan)

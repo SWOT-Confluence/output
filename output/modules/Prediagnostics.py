@@ -79,7 +79,7 @@ class Prediagnostics(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in pre_rids:
-                    pre_ds = Dataset(pre_dir / f"{s_rid}_prediagnostics.nc", 'r')
+                    pre_ds = Dataset(pre_dir / f"{int(s_rid)}_prediagnostics.nc", 'r')
                     # Reach
                     pre_dict["reach"]["ice_clim_f"][index] = pre_ds["reach"]["ice_clim_f"][:].filled(self.FILL["i4"])
                     pre_dict["reach"]["ice_dyn_f"][index] = pre_ds["reach"]["ice_dyn_f"][:].filled(self.FILL["i4"])

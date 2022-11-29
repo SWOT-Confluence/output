@@ -76,7 +76,7 @@ class Offline(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in off_rids:
-                    off_ds = Dataset(off_dir / f"{s_rid}_offline.nc", 'r')
+                    off_ds = Dataset(off_dir / f"{int(s_rid)}_offline.nc", 'r')
                     off_dict["d_x_area"][index] = off_ds["d_x_area"][:].filled(self.FILL["f8"])
                     if "d_x_area_u" in off_ds.variables.keys(): 
                         off_dict["d_x_area_u"][index] = off_ds["d_x_area_u"][:].filled(self.FILL["f8"])

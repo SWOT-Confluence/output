@@ -78,7 +78,7 @@ class Neobam(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in nb_rids:
-                    nb_ds = Dataset(nb_dir / f"{s_rid}_geobam.nc", 'r')
+                    nb_ds = Dataset(nb_dir / f"{int(s_rid)}_geobam.nc", 'r')
                     nb_dict["r"]["mean1"][index] = nb_ds["r"]["mean1"][:].filled(np.nan)
                     nb_dict["r"]["mean2"][index] = nb_ds["r"]["mean2"][:].filled(np.nan)
                     nb_dict["r"]["mean3"][index] = nb_ds["r"]["mean3"][:].filled(np.nan)
