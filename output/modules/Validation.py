@@ -81,7 +81,7 @@ class Validation(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in val_rids:
-                    val_ds = Dataset(val_dir / f"{s_rid}_validation.nc", 'r')
+                    val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
                     val_dict["has_validation"][index] = val_ds.has_validation
                     val_dict["algo_names"][index,:,:] = val_ds["algorithm"][:]
                     val_dict["nse"][index,:] = val_ds["NSE"][:].filled(np.nan)

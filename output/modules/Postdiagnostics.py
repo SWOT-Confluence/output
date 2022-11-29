@@ -85,8 +85,8 @@ class Postdiagnostics(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in pd_rids:
-                    pd_b_ds = Dataset(self.input_dir / "basin" / f"{s_rid}_moi_diag.nc", 'r')
-                    pd_r_ds = Dataset(self.input_dir / "reach" / f"{s_rid}_flpe_diag.nc", 'r')
+                    pd_b_ds = Dataset(self.input_dir / "basin" / f"{int(s_rid)}_moi_diag.nc", 'r')
+                    pd_r_ds = Dataset(self.input_dir / "reach" / f"{int(s_rid)}_flpe_diag.nc", 'r')
                     pd_dict["basin"]["realism_flags"][index, :] = pd_b_ds["realism_flags"][:].filled(np.nan)
                     pd_dict["basin"]["stability_flags"][index, :] = pd_b_ds["stability_flags"][:].filled(np.nan)
                     pd_dict["basin"]["prepost_flags"][index, :] = pd_b_ds["prepost_flags"][:].filled(np.nan)

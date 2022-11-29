@@ -83,7 +83,7 @@ class Metroman(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in mn_rids:
-                    mn_file = [ f for f in glob.glob(f"{mn_dir}/*{s_rid}*.nc") ][0]
+                    mn_file = [ f for f in glob.glob(f"{mn_dir}/*{int(s_rid)}*.nc") ][0]
                     mn_ds = Dataset(mn_file, 'r')
                     self.__insert_nt(s_rid, "allq", index, mn_ds, mn_dict)
                     self.__insert_nt(s_rid, "q_u", index, mn_ds, mn_dict)

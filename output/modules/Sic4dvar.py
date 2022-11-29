@@ -81,14 +81,14 @@ class Sic4dvar(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in sv_rids:
-                    sv_ds = Dataset(sv_dir / f"{s_rid}_sic4dvar.nc", 'r')
+                    sv_ds = Dataset(sv_dir / f"{int(s_rid)}_sic4dvar.nc", 'r')
                     sv_dict["A0"][index] = sv_ds["A0"][:].filled(np.nan)
                     sv_dict["n"][index] = sv_ds["n"][:].filled(np.nan)                    
                     sv_dict["Qalgo5"][index] = sv_ds["Qalgo5"][:].filled(self.FILL["f8"])
                     sv_dict["Qalgo31"][index] = sv_ds["Qalgo31"][:].filled(self.FILL["f8"])
                     indexes = np.where(s_rid == self.sos_nrids)
                     sv_dict["node_id"][indexes] = self.sos_nids[indexes]
-                    self.__insert_nx(sv_dict, sv_ds, indexes)
+                    # self.__insert_nx(sv_dict, sv_ds, indexes)
                     sv_ds.close()
                 index += 1
         return sv_dict
@@ -101,24 +101,24 @@ class Sic4dvar(AbstractModule):
             "n" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "Qalgo5" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "Qalgo31" : np.empty((self.sos_rids.shape[0]), dtype=object),
-            "half_width": np.empty((self.sos_nids.shape[0]), dtype=object),
-            "elevation": np.empty((self.sos_nids.shape[0]), dtype=object),
+            # "half_width": np.empty((self.sos_nids.shape[0]), dtype=object),
+            # "elevation": np.empty((self.sos_nids.shape[0]), dtype=object),
             "node_id" : np.zeros(self.sos_nids.shape[0], dtype=np.int64),
             "attrs": {
                 "A0" : {},
                 "n" : {},
                 "Qalgo5" : {},
                 "Qalgo31" : {},
-                "half_width": {},
-                "elevation": {}
+                # "half_width": {},
+                # "elevation": {}
             }
         }
         
         # Vlen variables
         data_dict["Qalgo5"].fill(np.array([self.FILL["f8"]]))
         data_dict["Qalgo31"].fill(np.array([self.FILL["f8"]]))
-        data_dict["half_width"].fill(np.array([self.FILL["f8"]]))
-        data_dict["elevation"].fill(np.array([self.FILL["f8"]]))
+        # data_dict["half_width"].fill(np.array([self.FILL["f8"]]))
+        # data_dict["elevation"].fill(np.array([self.FILL["f8"]]))
         return data_dict
     
     def get_nc_attrs(self, nc_file, data_dict):
@@ -173,8 +173,10 @@ class Sic4dvar(AbstractModule):
         self.write_var(sv_grp, "n", "f8", ("num_reaches",), data_dict)
         self.write_var_nt(sv_grp, "Qalgo31", self.vlen_f, ("num_reaches"), data_dict)
         self.write_var_nt(sv_grp, "Qalgo5", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(sv_grp, "elevation", self.vlen_f, ("num_nodes"), data_dict)
-        self.write_var_nt(sv_grp, "half_width", self.vlen_f, ("num_nodes"), data_dict)
+
+        # no longer using elevation or half width
+        # self.write_var_nt(sv_grp, "elevation", self.vlen_f, ("num_nodes"), data_dict)
+        # self.write_var_nt(sv_grp, "half_width", self.vlen_f, ("num_nodes"), data_dict)
 
         # Variable length data
         # indexes = np.where(data_dict["node_id"] != 0)
