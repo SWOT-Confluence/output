@@ -97,7 +97,7 @@ class Append:
     RESULTS_SUFFIX = "sword_v11_SOS_results"
     VERS_LENGTH = 4
 
-    def __init__(self, cont_json, index, input_dir, output_dir, modules_json_path):
+    def __init__(self, cont_json, index, input_dir, output_dir, modules):
         """
         TODO: Remove "temp" from output_dir (self.sos_new)
 
@@ -111,10 +111,10 @@ class Append:
             path to input directory
         output_dir: Path
             path to output directory
-        modules_json_path: Path
-            path to modules_list JSON file
+        modules: list
+            list of module results to append to the SoS
         """
-        self.MODULES_LIST = get_modules_list(modules_json_path)
+        
         self.cont = get_cont_data(cont_json, index)
         self.sos_cur = input_dir / "sos"
         self.sos_file = output_dir / "sos" / f"{list(self.cont.keys())[0]}_{self.RESULTS_SUFFIX}.nc"
@@ -122,6 +122,7 @@ class Append:
         self.sos_rids = sos_data["reaches"]
         self.sos_nrids = sos_data["node_reaches"]
         self.sos_nids = sos_data["nodes"]
+        self.modules_list = modules
         self.modules = []
         self.version = "9999"
         self.vlen_f = None
@@ -188,7 +189,7 @@ class Append:
             path to Validation directory
         """
         
-        for module in self.MODULES_LIST:
+        for module in self.modules_list:
             if module == "hivdi":
                 self.modules.append(Hivdi(list(self.cont.values())[0], \
                     flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \

@@ -15,6 +15,7 @@ config_py: Name of file that contains AWS login information in JSON format.
 """
 
 # Standard imports
+import argparse
 import os
 from pathlib import Path
 import sys
@@ -32,37 +33,49 @@ OFFLINE = Path("/mnt/data/offline")
 VALIDATION = Path("/mnt/data/validation")
 OUTPUT = Path("/mnt/data/output")
 
+def create_args():
+    """Create and return argparser with arguments."""
+
+    arg_parser = argparse.ArgumentParser(description="Append results of Confluence workflow execution to the SoS.")
+    arg_parser.add_argument("-i",
+                            "--index",
+                            type=int,
+                            help="Index to specify input data to execute on, value of -235 indicates AWS selection")
+    arg_parser.add_argument("-c",
+                            "--contjson",
+                            type=str,
+                            help="Name of the continent JSON file",
+                            default="continent.json")
+    arg_parser.add_argument("-r",
+                            "--runtype",
+                            type=str,
+                            choices=["constrained", "unconstrained"],
+                            help="Current run type of workflow: 'constrained' or 'unconstrained'",
+                            default="constrained")
+    arg_parser.add_argument("-m",
+                            "--modules",
+                            nargs="+",
+                            help="List of modules executed in current workflow.")
+    return arg_parser
+
 def main():
     # Command line arguments
-    try:
-        continent_json = sys.argv[1]
-        run_type = sys.argv[2]
-        modules_json = sys.argv[3]
-        config_json = sys.argv[4]
-    except IndexError:
-        continent_json = "continent.json"
-        run_type = "unconstrained"
-        modules_json = "modules.json"
-        config_json = 'output_conf.json'
+    arg_parser = create_args()
+    args = arg_parser.parse_args()
 
     # AWS Batch index
     index = int(os.environ.get("AWS_BATCH_JOB_ARRAY_INDEX"))
 
     # Append SoS data
-    append = Append(INPUT / continent_json, index, INPUT, OUTPUT, INPUT / modules_json)
+    append = Append(INPUT / args.contjson, index, INPUT, OUTPUT, args.modules)
     append.create_new_version()
-    append.create_modules(run_type, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
+    append.create_modules(args.runtype, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
         VALIDATION / "stats")
     append.append_data()
-
-    # Login
-    login = Login()
-    login.login(output_conf_path = INPUT / config_json)
     
     # Upload SoS data
-    upload = Upload(login.sos_fs, append.sos_file)
-    # upload.upload_data_local(OUTPUT, VALIDATION / "figs", run_type)
-    upload.upload_data(OUTPUT, VALIDATION / "figs", run_type)
+    upload = Upload(None, append.sos_file)
+    upload.upload_data(OUTPUT, VALIDATION / "figs", args.runtype)
 
 if __name__ == "__main__":
     from datetime import datetime
