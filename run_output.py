@@ -16,13 +16,12 @@ config_py: Name of file that contains AWS login information in JSON format.
 
 # Standard imports
 import argparse
+import logging
 import os
 from pathlib import Path
-import sys
 
 # Local imports
 from output.Append import Append
-from output.Login import Login
 from output.Upload import Upload
 
 INPUT = Path("/mnt/data/input")
@@ -58,16 +57,40 @@ def create_args():
                             help="List of modules executed in current workflow.")
     return arg_parser
 
+def get_logger():
+    """Return a formatted logger object."""
+    
+    # Create a Logger object and set log level
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+
+    # Create a handler to console and set level
+    console_handler = logging.StreamHandler()
+
+    # Create a formatter and add it to the handler
+    console_format = logging.Formatter("%(asctime)s - %(module)s - %(levelname)s : %(message)s")
+    console_handler.setFormatter(console_format)
+
+    # Add handlers to logger
+    logger.addHandler(console_handler)
+
+    # Return logger
+    return logger
+
 def main():
     # Command line arguments
     arg_parser = create_args()
     args = arg_parser.parse_args()
+    
+    # Logging
+    logger = get_logger()
 
     # AWS Batch index
-    index = int(os.environ.get("AWS_BATCH_JOB_ARRAY_INDEX"))
+    index = args.index if args.index != -235 else int(os.environ.get("AWS_BATCH_JOB_ARRAY_INDEX"))
+    logger.info(f"Job index: {index}.")
 
     # Append SoS data
-    append = Append(INPUT / args.contjson, index, INPUT, OUTPUT, args.modules)
+    append = Append(INPUT / args.contjson, index, INPUT, OUTPUT, args.modules, logger)
     append.create_new_version()
     append.create_modules(args.runtype, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
         VALIDATION / "stats")

@@ -97,7 +97,7 @@ class Append:
     RESULTS_SUFFIX = "sword_v11_SOS_results"
     VERS_LENGTH = 4
 
-    def __init__(self, cont_json, index, input_dir, output_dir, modules):
+    def __init__(self, cont_json, index, input_dir, output_dir, modules, logger):
         """
         TODO: Remove "temp" from output_dir (self.sos_new)
 
@@ -113,6 +113,8 @@ class Append:
             path to output directory
         modules: list
             list of module results to append to the SoS
+        logger: Logger
+            logger to use for logging state
         """
         
         self.cont = get_cont_data(cont_json, index)
@@ -122,6 +124,7 @@ class Append:
         self.sos_rids = sos_data["reaches"]
         self.sos_nrids = sos_data["node_reaches"]
         self.sos_nids = sos_data["nodes"]
+        self.logger = logger
         self.modules_list = modules
         self.modules = []
         self.version = "9999"
@@ -159,12 +162,14 @@ class Append:
 
         prior_sos.close()
         result_sos.close()
+        self.logger.info(f"Created new SoS results file: {self.sos_file.name}.")
 
     def append_data(self):
         """Append data to the SoS by executing module storage operations."""
         
         for module in self.modules:
             module.append_module()
+            self.logger.info(f"Appended {module.__class__.__name__} data to {self.sos_file.name}.")
         
     def create_modules(self, run_type, input_dir, diag_dir, flpe_dir, moi_dir, \
                        off_dir, val_dir):
