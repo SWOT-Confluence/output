@@ -93,7 +93,7 @@ class Append:
     """
 
 
-    PRIORS_SUFFIX = "sword_v11_SOS"
+    PRIORS_SUFFIX = "sword_v11_SOS_priors"
     RESULTS_SUFFIX = "sword_v11_SOS_results"
     VERS_LENGTH = 4
 
@@ -134,8 +134,8 @@ class Append:
         
         # Create directory and file
         self.sos_file.parent.mkdir(parents=True, exist_ok=True)
-        file_name = '_'.join(self.sos_file.name.split('_')[:-1])
-        prior_sos = Dataset(self.sos_cur / f"{file_name}.nc")
+        continent = self.sos_file.name.split('_')[0]        
+        prior_sos = Dataset(self.sos_cur / f"{continent}_{self.PRIORS_SUFFIX}.nc")
         result_sos = Dataset(self.sos_file, 'w')
         
         # Global attributes
