@@ -16,9 +16,14 @@ config_py: Name of file that contains AWS login information in JSON format.
 
 # Standard imports
 import argparse
+from datetime import datetime
 import logging
 import os
 from pathlib import Path
+import sys
+
+# Third-party imports
+import botocore
 
 # Local imports
 from output.Append import Append
@@ -78,6 +83,8 @@ def get_logger():
     return logger
 
 def main():
+    start = datetime.now()
+    
     # Command line arguments
     arg_parser = create_args()
     args = arg_parser.parse_args()
@@ -97,12 +104,17 @@ def main():
     append.append_data()
     
     # Upload SoS data
-    upload = Upload(None, append.sos_file)
-    upload.upload_data(OUTPUT, VALIDATION / "figs", args.runtype)
+    upload = Upload(append.sos_file, logger)
+    try:
+        upload.upload_data(OUTPUT, VALIDATION / "figs", args.runtype)
+    except botocore.exceptions.ClientError as error:
+        logger.error("Error encountered when trying to upload results file and figures.")
+        logger.error(error)
+        sys.exit(1)
+    
+    end = datetime.now()
+    logger.info(f"Execution time: {end - start}")
 
 if __name__ == "__main__":
-    from datetime import datetime
-    start = datetime.now()
     main()
-    end = datetime.now()
-    print(f"Execution time: {end - start}")
+    
