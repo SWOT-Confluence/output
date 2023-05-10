@@ -93,8 +93,8 @@ class Append:
     """
 
 
-    PRIORS_SUFFIX = "sword_v11_SOS_priors"
-    RESULTS_SUFFIX = "sword_v11_SOS_results"
+    PRIORS_SUFFIX = "sword_v15_SOS_priors"
+    RESULTS_SUFFIX = "sword_v15_SOS_results"
     VERS_LENGTH = 4
 
     def __init__(self, cont_json, index, input_dir, output_dir, modules, logger):
