@@ -93,11 +93,11 @@ class Append:
     """
 
 
-    PRIORS_SUFFIX = "sword_v11_SOS"
-    RESULTS_SUFFIX = "sword_v11_SOS_results"
+    PRIORS_SUFFIX = "sword_v15_SOS_priors"
+    RESULTS_SUFFIX = "sword_v15_SOS_results"
     VERS_LENGTH = 4
 
-    def __init__(self, cont_json, index, input_dir, output_dir, modules_json_path):
+    def __init__(self, cont_json, index, input_dir, output_dir, modules, logger):
         """
         TODO: Remove "temp" from output_dir (self.sos_new)
 
@@ -111,10 +111,12 @@ class Append:
             path to input directory
         output_dir: Path
             path to output directory
-        modules_json_path: Path
-            path to modules_list JSON file
+        modules: list
+            list of module results to append to the SoS
+        logger: Logger
+            logger to use for logging state
         """
-        self.MODULES_LIST = get_modules_list(modules_json_path)
+        
         self.cont = get_cont_data(cont_json, index)
         self.sos_cur = input_dir / "sos"
         self.sos_file = output_dir / "sos" / f"{list(self.cont.keys())[0]}_{self.RESULTS_SUFFIX}.nc"
@@ -122,6 +124,8 @@ class Append:
         self.sos_rids = sos_data["reaches"]
         self.sos_nrids = sos_data["node_reaches"]
         self.sos_nids = sos_data["nodes"]
+        self.logger = logger
+        self.modules_list = modules
         self.modules = []
         self.version = "9999"
         self.vlen_f = None
@@ -133,8 +137,8 @@ class Append:
         
         # Create directory and file
         self.sos_file.parent.mkdir(parents=True, exist_ok=True)
-        file_name = '_'.join(self.sos_file.name.split('_')[:-1])
-        prior_sos = Dataset(self.sos_cur / f"{file_name}.nc")
+        continent = self.sos_file.name.split('_')[0]        
+        prior_sos = Dataset(self.sos_cur / f"{continent}_{self.PRIORS_SUFFIX}.nc")
         result_sos = Dataset(self.sos_file, 'w')
         
         # Global attributes
@@ -158,12 +162,14 @@ class Append:
 
         prior_sos.close()
         result_sos.close()
+        self.logger.info(f"Created new SoS results file: {self.sos_file.name}.")
 
     def append_data(self):
         """Append data to the SoS by executing module storage operations."""
         
         for module in self.modules:
             module.append_module()
+            self.logger.info(f"Appended {module.__class__.__name__} data to {self.sos_file.name}.")
         
     def create_modules(self, run_type, input_dir, diag_dir, flpe_dir, moi_dir, \
                        off_dir, val_dir):
@@ -188,7 +194,7 @@ class Append:
             path to Validation directory
         """
         
-        for module in self.MODULES_LIST:
+        for module in self.modules_list:
             if module == "hivdi":
                 self.modules.append(Hivdi(list(self.cont.values())[0], \
                     flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \

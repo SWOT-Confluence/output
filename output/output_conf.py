@@ -1,6 +1,0 @@
-# Depreciated
-sos_creds = {
-    "key" : "",
-    "secret" : "",
-    "region" : ""
-}

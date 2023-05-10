@@ -15,13 +15,18 @@ config_py: Name of file that contains AWS login information in JSON format.
 """
 
 # Standard imports
+import argparse
+from datetime import datetime
+import logging
 import os
 from pathlib import Path
 import sys
 
+# Third-party imports
+import botocore
+
 # Local imports
 from output.Append import Append
-from output.Login import Login
 from output.Upload import Upload
 
 INPUT = Path("/mnt/data/input")
@@ -32,41 +37,84 @@ OFFLINE = Path("/mnt/data/offline")
 VALIDATION = Path("/mnt/data/validation")
 OUTPUT = Path("/mnt/data/output")
 
+def create_args():
+    """Create and return argparser with arguments."""
+
+    arg_parser = argparse.ArgumentParser(description="Append results of Confluence workflow execution to the SoS.")
+    arg_parser.add_argument("-i",
+                            "--index",
+                            type=int,
+                            help="Index to specify input data to execute on, value of -235 indicates AWS selection")
+    arg_parser.add_argument("-c",
+                            "--contjson",
+                            type=str,
+                            help="Name of the continent JSON file",
+                            default="continent.json")
+    arg_parser.add_argument("-r",
+                            "--runtype",
+                            type=str,
+                            choices=["constrained", "unconstrained"],
+                            help="Current run type of workflow: 'constrained' or 'unconstrained'",
+                            default="constrained")
+    arg_parser.add_argument("-m",
+                            "--modules",
+                            nargs="+",
+                            help="List of modules executed in current workflow.")
+    return arg_parser
+
+def get_logger():
+    """Return a formatted logger object."""
+    
+    # Create a Logger object and set log level
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+
+    # Create a handler to console and set level
+    console_handler = logging.StreamHandler()
+
+    # Create a formatter and add it to the handler
+    console_format = logging.Formatter("%(asctime)s - %(module)s - %(levelname)s : %(message)s")
+    console_handler.setFormatter(console_format)
+
+    # Add handlers to logger
+    logger.addHandler(console_handler)
+
+    # Return logger
+    return logger
+
 def main():
+    start = datetime.now()
+    
     # Command line arguments
-    try:
-        continent_json = sys.argv[1]
-        run_type = sys.argv[2]
-        modules_json = sys.argv[3]
-        config_json = sys.argv[4]
-    except IndexError:
-        continent_json = "continent.json"
-        run_type = "unconstrained"
-        modules_json = "modules.json"
-        config_json = 'output_conf.json'
+    arg_parser = create_args()
+    args = arg_parser.parse_args()
+    
+    # Logging
+    logger = get_logger()
 
     # AWS Batch index
-    index = int(os.environ.get("AWS_BATCH_JOB_ARRAY_INDEX"))
+    index = args.index if args.index != -235 else int(os.environ.get("AWS_BATCH_JOB_ARRAY_INDEX"))
+    logger.info(f"Job index: {index}.")
 
     # Append SoS data
-    append = Append(INPUT / continent_json, index, INPUT, OUTPUT, INPUT / modules_json)
+    append = Append(INPUT / args.contjson, index, INPUT, OUTPUT, args.modules, logger)
     append.create_new_version()
-    append.create_modules(run_type, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
+    append.create_modules(args.runtype, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
         VALIDATION / "stats")
     append.append_data()
-
-    # Login
-    login = Login()
-    login.login(output_conf_path = INPUT / config_json)
     
     # Upload SoS data
-    upload = Upload(login.sos_fs, append.sos_file)
-    # upload.upload_data_local(OUTPUT, VALIDATION / "figs", run_type)
-    upload.upload_data(OUTPUT, VALIDATION / "figs", run_type)
+    upload = Upload(append.sos_file, logger)
+    try:
+        upload.upload_data(OUTPUT, VALIDATION / "figs", args.runtype)
+    except botocore.exceptions.ClientError as error:
+        logger.error("Error encountered when trying to upload results file and figures.")
+        logger.error(error)
+        sys.exit(1)
+    
+    end = datetime.now()
+    logger.info(f"Execution time: {end - start}")
 
 if __name__ == "__main__":
-    from datetime import datetime
-    start = datetime.now()
     main()
-    end = datetime.now()
-    print(f"Execution time: {end - start}")
+    
