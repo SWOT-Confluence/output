@@ -76,7 +76,9 @@ class Swot(AbstractModule):
         
             # Data extraction
             index = 0
+            print(swot_rids)
             for s_rid in self.sos_rids:
+                # print('if', s_rid, 'in', self.sos_nrids)
                 if s_rid in swot_rids:
                     swot_ds = Dataset(swot_dir / f"{int(s_rid)}_SWOT.nc", 'r')
                     swot_dict["observations"][index] = swot_ds["observations"][:].filled(self.FILL["i4"])
@@ -85,6 +87,8 @@ class Swot(AbstractModule):
                     self._insert_nx(swot_dict, swot_ds, indexes)
                     swot_ds.close()
                 index += 1
+        else:
+            raise ValueError('no swot files found')
         return swot_dict
     
     def create_data_dict(self):
@@ -139,8 +143,15 @@ class Swot(AbstractModule):
         """
         
         j = 0
+
         for i in indexes[0]:
-            swot_dict["node"]["time"][i] = swot_ds["node"]["time"][j,:].filled(self.FILL["f8"])
+            # print(i, j)
+            try:
+                test = swot_ds["node"]["time"][j,:].filled(self.FILL["f8"])
+                swot_dict["node"]["time"][i] = test
+            except:
+                print('time variable filled, reach was partially observed')
+                return
             j +=1
         
     def append_module_data(self, data_dict):
