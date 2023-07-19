@@ -97,7 +97,8 @@ class Append:
     RESULTS_SUFFIX = "sword_v15_SOS_results"
     VERS_LENGTH = 4
 
-    def __init__(self, cont_json, index, input_dir, output_dir, modules, logger):
+    def __init__(self, cont_json, index, input_dir, output_dir, modules, logger,
+                 metadata_json):
         """
         TODO: Remove "temp" from output_dir (self.sos_new)
 
@@ -125,6 +126,7 @@ class Append:
         self.sos_nrids = sos_data["node_reaches"]
         self.sos_nids = sos_data["nodes"]
         self.logger = logger
+        self.metadata_json = metadata_json
         self.modules_list = modules
         self.modules = []
         self.version = "9999"
@@ -142,6 +144,12 @@ class Append:
         result_sos = Dataset(self.sos_file, 'w')
         
         # Global attributes
+        with open(self.metadata_json) as jf:
+            global_atts = json.load(jf)
+            
+        for name, value in global_atts.items():
+            setattr(result_sos, name, value)
+            
         result_sos.Name = prior_sos.Name
         result_sos.version = prior_sos.version
         result_sos.production_date = datetime.now().strftime('%d-%b-%Y %H:%M:%S')

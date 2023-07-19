@@ -60,6 +60,11 @@ def create_args():
                             "--modules",
                             nargs="+",
                             help="List of modules executed in current workflow.")
+    arg_parser.add_argument("-j",
+                            "--metadatajson",
+                            type=Path,
+                            default=Path(__file__).parent / "metadata" / "metadata.json",
+                            help="Path to JSON file that contains global attribute values")
     return arg_parser
 
 def get_logger():
@@ -97,7 +102,7 @@ def main():
     logger.info(f"Job index: {index}.")
 
     # Append SoS data
-    append = Append(INPUT / args.contjson, index, INPUT, OUTPUT, args.modules, logger)
+    append = Append(INPUT / args.contjson, index, INPUT, OUTPUT, args.modules, logger, args.metadatajson)
     append.create_new_version()
     append.create_modules(args.runtype, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
         VALIDATION / "stats")
