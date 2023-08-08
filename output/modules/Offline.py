@@ -71,7 +71,7 @@ class Offline(AbstractModule):
         if len(off_files) != 0:
             # Storage of variable attributes
             self.get_nc_attrs(off_dir / off_files[0], off_dict)
-            
+
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:
@@ -80,19 +80,37 @@ class Offline(AbstractModule):
                     off_dict["d_x_area"][index] = off_ds["d_x_area"][:].filled(self.FILL["f8"])
                     if "d_x_area_u" in off_ds.variables.keys(): 
                         off_dict["d_x_area_u"][index] = off_ds["d_x_area_u"][:].filled(self.FILL["f8"])
-                    off_dict["metro_q_c"][index] = off_ds["metro_q_c"][:].filled(self.FILL["f8"])
-                    off_dict["bam_q_c"][index] = off_ds["bam_q_c"][:].filled(self.FILL["f8"])
-                    off_dict["hivdi_q_c"][index] = off_ds["hivdi_q_c"][:].filled(self.FILL["f8"])
-                    off_dict["momma_q_c"][index] = off_ds["momma_q_c"][:].filled(self.FILL["f8"])
-                    off_dict["sads_q_c"][index] = off_ds["sads_q_c"][:].filled(self.FILL["f8"])
-                    off_dict["consensus_q_c"][index] = off_ds["consensus_q_c"][:].filled(self.FILL["f8"])
-                    off_dict["metro_q_uc"][index] = off_ds["metro_q_uc"][:].filled(self.FILL["f8"])
-                    off_dict["bam_q_uc"][index] = off_ds["bam_q_uc"][:].filled(self.FILL["f8"])
-                    off_dict["hivdi_q_uc"][index] = off_ds["hivdi_q_uc"][:].filled(self.FILL["f8"])
-                    off_dict["momma_q_uc"][index] = off_ds["momma_q_uc"][:].filled(self.FILL["f8"])
-                    off_dict["sads_q_uc"][index] = off_ds["sads_q_uc"][:].filled(self.FILL["f8"])
-                    off_dict["consensus_q_uc"][index] = off_ds["consensus_q_uc"][:].filled(self.FILL["f8"])
+                    off_dict["metro_q_c"][index] = off_ds["dschg_gm"][:].filled(self.FILL["f8"])
+                    off_dict["bam_q_c"][index] = off_ds["dschg_gb"][:].filled(self.FILL["f8"])
+                    off_dict["hivdi_q_c"][index] = off_ds["dschg_gh"][:].filled(self.FILL["f8"])
+                    off_dict["momma_q_c"][index] = off_ds["dschg_go"][:].filled(self.FILL["f8"])
+                    off_dict["sads_q_c"][index] = off_ds["dschg_gs"][:].filled(self.FILL["f8"])
+                    off_dict["consensus_q_c"][index] = off_ds["dschg_gc"][:].filled(self.FILL["f8"])
+                    off_dict["metro_q_uc"][index] = off_ds["dschg_m"][:].filled(self.FILL["f8"])
+                    off_dict["bam_q_uc"][index] = off_ds["dschg_b"][:].filled(self.FILL["f8"])
+                    off_dict["hivdi_q_uc"][index] = off_ds["dschg_h"][:].filled(self.FILL["f8"])
+                    off_dict["momma_q_uc"][index] = off_ds["dschg_o"][:].filled(self.FILL["f8"])
+                    off_dict["sads_q_uc"][index] = off_ds["dschg_s"][:].filled(self.FILL["f8"])
+                    # off_dict["sic4dvar_q_uc"][index] = off_ds["dschg_i"][:].filled(self.FILL["f8"])
+                    off_dict["consensus_q_uc"][index] = off_ds["dschg_c"][:].filled(self.FILL["f8"])
                     off_ds.close()
+                                        # off_ds = Dataset(off_dir / f"{int(s_rid)}_offline.nc", 'r')
+                    # off_dict["d_x_area"][index] = off_ds["d_x_area"][:].filled(self.FILL["f8"])
+                    # if "d_x_area_u" in off_ds.variables.keys(): 
+                    #     off_dict["d_x_area_u"][index] = off_ds["d_x_area_u"][:].filled(self.FILL["f8"])
+                    # off_dict["metro_q_c"][index] = off_ds["metro_q_c"][:].filled(self.FILL["f8"])
+                    # off_dict["bam_q_c"][index] = off_ds["bam_q_c"][:].filled(self.FILL["f8"])
+                    # off_dict["hivdi_q_c"][index] = off_ds["hivdi_q_c"][:].filled(self.FILL["f8"])
+                    # off_dict["momma_q_c"][index] = off_ds["momma_q_c"][:].filled(self.FILL["f8"])
+                    # off_dict["sads_q_c"][index] = off_ds["sads_q_c"][:].filled(self.FILL["f8"])
+                    # off_dict["consensus_q_c"][index] = off_ds["consensus_q_c"][:].filled(self.FILL["f8"])
+                    # off_dict["metro_q_uc"][index] = off_ds["metro_q_uc"][:].filled(self.FILL["f8"])
+                    # off_dict["bam_q_uc"][index] = off_ds["bam_q_uc"][:].filled(self.FILL["f8"])
+                    # off_dict["hivdi_q_uc"][index] = off_ds["hivdi_q_uc"][:].filled(self.FILL["f8"])
+                    # off_dict["momma_q_uc"][index] = off_ds["momma_q_uc"][:].filled(self.FILL["f8"])
+                    # off_dict["sads_q_uc"][index] = off_ds["sads_q_uc"][:].filled(self.FILL["f8"])
+                    # off_dict["consensus_q_uc"][index] = off_ds["consensus_q_uc"][:].filled(self.FILL["f8"])
+                    # off_ds.close()
                 index += 1
         return off_dict
 
@@ -160,10 +178,27 @@ class Offline(AbstractModule):
             dictionary of Offline variables
         """
         
+        convention_dict = {
+            "metro_q_c":"dschg_gm",
+            "bam_q_c":"dschg_gb",
+            "hivdi_q_c":"dschg_gh",
+            "momma_q_c":"dschg_go",
+            "sads_q_c":"dschg_gs",
+            "consensus_q_c":"dschg_gc",
+            "metro_q_uc":"dschg_m",
+            "bam_q_uc":"dschg_b",
+            "hivdi_q_uc":"dschg_h",
+            "momma_q_uc":"dschg_o",
+            "sads_q_uc":"dschg_s",
+            # "sic4dvar_q_uc":"dschg_i",
+            "consensus_q_uc":"dschg_c",
+            "d_x_area":"d_x_area",
+            "d_x_area_u":"d_x_area_u",
+        }
         ds = Dataset(nc_file, 'r')
         for key in data_dict["attrs"].keys():
             if key == "d_x_area_u" and "d_x_area_u" not in ds.variables.keys(): continue
-            data_dict["attrs"][key] = ds[key].__dict__        
+            data_dict["attrs"][key] = ds[convention_dict[key]].__dict__        
         ds.close()
 
     def append_module_data(self, data_dict):
