@@ -156,7 +156,7 @@ class Sic4dvar(AbstractModule):
             sv_dict["elevation"][i] = np.nan_to_num(sv_ds["elevation"][j], copy=True, nan=self.FILL["f8"])
             j += 1
 
-    def append_module_data(self, data_dict):
+    def append_module_data(self, data_dict, metadata_json):
         """Append SIC4DVar data to the new version of the SoS.
         
         Parameters
@@ -169,10 +169,14 @@ class Sic4dvar(AbstractModule):
         sv_grp = sos_ds.createGroup("sic4dvar")
 
         # SIC4DVar data
-        self.write_var(sv_grp, "A0", "f8", ("num_reaches",), data_dict)
-        self.write_var(sv_grp, "n", "f8", ("num_reaches",), data_dict)
-        self.write_var_nt(sv_grp, "Qalgo31", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(sv_grp, "Qalgo5", self.vlen_f, ("num_reaches"), data_dict)
+        var = self.write_var(sv_grp, "A0", "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["A0"])
+        var = self.write_var(sv_grp, "n", "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["n"])
+        var = self.write_var_nt(sv_grp, "Qalgo31", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["Qalgo31"])
+        var = self.write_var_nt(sv_grp, "Qalgo5", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["Qalgo5"])
 
         # no longer using elevation or half width
         # self.write_var_nt(sv_grp, "elevation", self.vlen_f, ("num_nodes"), data_dict)

@@ -1,38 +1,1353 @@
 {
-    "title" : "placeholder",
-    "summary" : "placeholder",
-    "keywords" : "placeholder",
-    "keywords_vocabulary" : "placeholder",
-    "Conventions" : "placeholder",
-    "uuid" : "placeholder",
-    "history" : "placeholder",
-    "source" : "placeholder",
-    "processing_level" : "placeholder",
-    "comment" : "placeholder",
-    "standard_name_vocabulary" : "placeholder",
-    "product_version" : "placeholder",
-    "references" : "placeholder",
-    "creator_name" : "placeholder",
-    "creator_email" : "placeholder",
-    "creator_url" : "placeholder",
-    "creator_type" : "placeholder",
-    "creator_institution" : "placeholder",
-    "institution" : "placeholder",
-    "project" : "placeholder",
-    "program" : "placeholder",
-    "publisher_name" : "placeholder",
-    "publisher_email" : "placeholder",
-    "publisher_url" : "placeholder",
-    "publisher_type" : "placeholder",
-    "publisher_institution" : "placeholder",
-    "geospatial_lat_min" : "placeholder",
-    "geospatial_lat_max" : "placeholder",
-    "geospatial_lat_units" : "placeholder",
-    "geospatial_lat_resolution" : "placeholder",
-    "geospatial_lon_min" : "placeholder",
-    "geospatial_lon_max" : "placeholder",
-    "geospatial_lon_units" : "placeholder",
-    "geospatial_lon_resolution" : "placeholder",
-    "time_coverage_start" : "placeholder",
-    "time_coverage_end" : "placeholder"
+  "global_attributes": {
+    "title": "placeholder",
+    "summary": "placeholder",
+    "keywords": "placeholder",
+    "keywords_vocabulary": "placeholder",
+    "Conventions": "placeholder",
+    "uuid": "placeholder",
+    "history": "placeholder",
+    "source": "placeholder",
+    "processing_level": "placeholder",
+    "comment": "placeholder",
+    "standard_name_vocabulary": "placeholder",
+    "product_version": "placeholder",
+    "references": "placeholder",
+    "creator_name": "placeholder",
+    "creator_email": "placeholder",
+    "creator_url": "placeholder",
+    "creator_type": "placeholder",
+    "creator_institution": "placeholder",
+    "institution": "placeholder",
+    "project": "placeholder",
+    "program": "placeholder",
+    "publisher_name": "placeholder",
+    "publisher_email": "placeholder",
+    "publisher_url": "placeholder",
+    "publisher_type": "placeholder",
+    "publisher_institution": "placeholder",
+    "geospatial_lat_min": "placeholder",
+    "geospatial_lat_max": "placeholder",
+    "geospatial_lat_units": "placeholder",
+    "geospatial_lat_resolution": "placeholder",
+    "geospatial_lon_min": "placeholder",
+    "geospatial_lon_max": "placeholder",
+    "geospatial_lon_units": "placeholder",
+    "geospatial_lon_resolution": "placeholder",
+    "time_coverage_start": "placeholder",
+    "time_coverage_end": "placeholder"
+  },
+  "observations": {
+    "observations": {
+      "long_name": "pass number that indicates cycle/pass observations",
+      "comment":  "A list of pass numbers that identify each reach and node observation.",
+      "units": "pass",
+      "valid_min": 1,
+      "valid_max": 584
+    }
+  },
+  "hivdi": {
+    "A0": {
+      "long_name": "unobserved cross-sectional area",
+      "comment": "placeholder",
+      "units": "m^2",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Q": {
+      "long_name": "discharge",
+      "comment": "placeholder",
+      "units": "m^3/s",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "beta": {
+      "long_name": "exponent for the Strickler power law",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "alpha": {
+      "long_name": "coefficient for the Strickler power law",
+      "comment": "placeholder",
+      "units": "M^(1/3)/s",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    }
+  },
+  "metroman": {
+    "allq": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "A0hat": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "nahat": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "x1hat": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "q_u": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    }
+  },
+  "moi": {
+    "geobam": {
+      "q": {
+        "long_name": "time_series_discharge",
+        "comment": "time series of discharge from geoBAM",
+        "units": "m^3/s",
+        "valid_min": 0.0,
+        "valid_max": 1000000.0
+      },
+      "a0": {
+        "long_name": "back_calculated_A0",
+        "comment": "back-calculated A0 to match SWOT discharge philosohpy",
+        "units": "m^2",
+        "valid_min": 0.0,
+        "valid_max": 1000000.0
+      },
+      "n": {
+        "long_name": "time_series_mannings_n",
+        "comment": "time series of Manning's n from geoBAM",
+        "units": "placeholder",
+        "valid_min": -8.0,
+        "valid_max": 1.0
+      },
+      "qbar_reachScale": {
+        "long_name": "average_discharge_reach",
+        "comment": "average discahrge per reach",
+        "units": "m^3/s",
+        "valid_min": 0.0,
+        "valid_max": 1000000.0
+      },
+      "qbar_basinScale": {
+        "long_name": "average_discharge_basin",
+        "comment": "average discharge per basin",
+        "units": "m^3/s",
+        "valid_min": 0.0,
+        "valid_max": 1000000.0
+      }
+    },
+    "hivdi": {
+      "q": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "Abar": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "alpha": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "beta": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "qbar_reachScale": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "qbar_basinScale": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      }
+    },
+    "metroman": {
+      "q": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "Abar": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "na": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "x1": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "qbar_reachScale": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "qbar_basinScale": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      }
+    },
+    "momma": {
+      "q": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "B": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "H": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "Save": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "qbar_reachScale": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "qbar_basinScale": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      }
+    },
+    "sad": {
+      "q": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "a0": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "n": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "qbar_reachScale": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "qbar_basinScale": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      }
+    },
+    "sic4dvar": {
+      "q": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "a0": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "n": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "qbar_reachScale": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      },
+      "qbar_basinScale": {
+        "long_name": "placeholder",
+        "comment": "placeholder",
+        "units": "placeholder",
+        "valid_min": -998,
+        "valid_max": 999999999999
+      }
+    }
+  },
+  "momma": {
+    "stage": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "width": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "slope": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Qgage": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "seg": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "n": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Y": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "v": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Q": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Q_constrained": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "gage_constrained": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "input_Qm_prior": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "input_Qb_prior": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "input_Yb_prior": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "input_known_ezf": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "input_known_bkfl_stage": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "input_known_nb_seg1": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "input_known_x_seg1": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Qgage_constrained_nb_seg1": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Qgage_constrained_x_seg1": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "input_known_nb_seg2": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "input_known_x_seg2": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Qgage_constrained_nb_seg2": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Qgage_constrained_x_seg2": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "n_bkfl_Qb_prior": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "n_bkfl_slope": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "vel_bkfl_Qb_prior": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Froude_bkfl_diag_Smean": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "width_bkfl_solved_obs": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "depth_bkfl_solved_obs": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "depth_bkfl_diag_Wb_Smean": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "zero_flow_stage": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "bankfull_stage": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Qmean_prior": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Qmean_momma": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Qmean_momma.constrained": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    }
+  },
+  "neobam": {
+    "logDb": {
+      "mean1": {
+        "long_name": "chain 1 mean bankfull depth from neobam",
+        "comment": "chain 1 mean bankfull depth from neobam",
+        "units": "placeholder",
+        "valid_min": -1.0,
+        "valid_max": 7.0
+      },
+      "mean2": {
+        "long_name": "chain 2 mean bankfull depth from neobam",
+        "comment": "chain 2 mean bankfull depth from neobam",
+        "units": "placeholder",
+        "valid_min": -1.0,
+        "valid_max": 7.0
+      },
+      "mean3": {
+        "long_name": "chain 3 mean bankfull depth from neobam",
+        "comment": "chain 3 mean bankfull depth from neobam",
+        "units": "placeholder",
+        "valid_min": -1.0,
+        "valid_max": 7.0
+      },
+      "sd1": {
+        "long_name": "chain 1 sigma bankfull depth from neobam",
+        "comment": "chain 1 sigma bankfull depth from neobam",
+        "units": "placeholder",
+        "valid_min": -1.0,
+        "valid_max": 7.0
+      },
+      "sd2": {
+        "long_name": "chain 2 sigma bankfull depth from neobam",
+        "comment": "chain 2 sigma bankfull depth from neobam",
+        "units": "placeholder",
+        "valid_min": -1.0,
+        "valid_max": 7.0
+      },
+      "sd3": {
+        "long_name": "chain 3 sigma bankfull depth from neobam",
+        "comment": "chain 3 sigma bankfull depth from neobam",
+        "units": "placeholder",
+        "valid_min": -1.0,
+        "valid_max": 7.0
+      }
+    },
+    "logn": {
+      "mean1": {
+        "long_name": "chain 1 mean n from neobam",
+        "comment": "chain 1 mean n from neobam",
+        "units": "placeholder",
+        "valid_min": -8.0,
+        "valid_max": 0.0
+      },
+      "mean2": {
+        "long_name": "chain 2 mean n from neobam",
+        "comment": "chain 2 mean n from neobam",
+        "units": "placeholder",
+        "valid_min": -8.0,
+        "valid_max": 0.0
+      },
+      "mean3": {
+        "long_name": "chain 3 mean n from neobam",
+        "comment": "chain 3 mean n from neobam",
+        "units": "placeholder",
+        "valid_min": -8.0,
+        "valid_max": 0.0
+      },
+      "sd1": {
+        "long_name": "chain 1 sigma n from neobam",
+        "comment": "chain 1 sigma n from neobam",
+        "units": "placeholder",
+        "valid_min": -8.0,
+        "valid_max": 0.0
+      },
+      "sd2": {
+        "long_name": "chain 2 sigma n from neobam",
+        "comment": "chain 2 sigma n from neobam",
+        "units": "placeholder",
+        "valid_min": -8.0,
+        "valid_max": 0.0
+      },
+      "sd3": {
+        "long_name": "chain 3 sigma n from neobam",
+        "comment": "chain 3 sigma n from neobam",
+        "units": "placeholder",
+        "valid_min": -8.0,
+        "valid_max": 0.0
+      }
+    },
+    "logWb": {
+      "mean1": {
+        "long_name": "chain 1 mean bankfull width",
+        "comment": "chain 1 mean bankfull width",
+        "units": "placeholder",
+        "valid_min": -1.0,
+        "valid_max": 7.0
+      },
+      "mean2": {
+        "long_name": "chain 2 mean bankfull width",
+        "comment": "chain 2 mean bankfull width",
+        "units": "placeholder",
+        "valid_min": -1.0,
+        "valid_max": 7.0
+      },
+      "mean3": {
+        "long_name": "chain 3 mean bankfull width",
+        "comment": "chain 3 mean bankfull width",
+        "units": "placeholder",
+        "valid_min": -1.0,
+        "valid_max": 7.0
+      },
+      "sd1": {
+        "long_name": "chain 1 sigma bankfull width",
+        "comment": "chain 1 sigma bankfull width",
+        "units": "placeholder",
+        "valid_min": -1.0,
+        "valid_max": 7.0
+      },
+      "sd2": {
+        "long_name": "chain 2 sigma bankfull width",
+        "comment": "chain 2 sigma bankfull width",
+        "units": "placeholder",
+        "valid_min": -1.0,
+        "valid_max": 7.0
+      },
+      "sd3": {
+        "long_name": "chain 3 sigma bankfull width",
+        "comment": "chain 3 sigma bankfull width",
+        "units": "placeholder",
+        "valid_min": -1.0,
+        "valid_max": 7.0
+      }
+    },
+    "r": {
+      "mean1": {
+        "long_name": "chain 1 mean r",
+        "comment": "r defined following Dingman 2007 JoH",
+        "units": "placeholder",
+        "valid_min": 0.0,
+        "valid_max": 100.0
+      },
+      "mean2": {
+        "long_name": "chain 2 mean r",
+        "comment": "r defined following Dingman 2007 JoH",
+        "units": "placeholder",
+        "valid_min": 0.0,
+        "valid_max": 100.0
+      },
+      "mean3": {
+        "long_name": "chain 3 mean r",
+        "comment": "r defined following Dingman 2007 JoH",
+        "units": "placeholder",
+        "valid_min": 0.0,
+        "valid_max": 100.0
+      },
+      "sd1": {
+        "long_name": "chain 1 sigma r",
+        "comment": "r defined following Dingman 2007 JoH",
+        "units": "placeholder",
+        "valid_min": 0.0,
+        "valid_max": 100.0
+      },
+      "sd2": {
+        "long_name": "chain 2 sigma r",
+        "comment": "r defined following Dingman 2007 JoH",
+        "units": "placeholder",
+        "valid_min": 0.0,
+        "valid_max": 100.0
+      },
+      "sd3": {
+        "long_name": "chain 3 sigma r",
+        "comment": "r defined following Dingman 2007 JoH",
+        "units": "placeholder",
+        "valid_min": 0.0,
+        "valid_max": 100.0
+      }
+    },
+    "q": {
+      "q1": {
+        "long_name": "chain 1 discharge",
+        "comment": "timeseries",
+        "units": "placeholder",
+        "valid_min": 0.0,
+        "valid_max": 1000000.0
+      },
+      "q2": {
+        "long_name": "chain 2 discharge",
+        "comment": "timeseries",
+        "units": "placeholder",
+        "valid_min": 0.0,
+        "valid_max": 1000000.0
+      },
+      "q3": {
+        "long_name": "chain 3 discharge",
+        "comment": "timeseries",
+        "units": "placeholder",
+        "valid_min": 0.0,
+        "valid_max": 1000000.0
+      }
+    },
+    "mean1": {},
+    "mean2": {},
+    "mean3": {},
+    "sd1": {},
+    "sd2": {},
+    "sd3": {},
+    "q1": {},
+    "q2": {},
+    "q3": {}
+  },
+  "nodes": {
+    "node_id": {
+      "long_name": "node_identifier",
+      "comment": "Taken from SWORD PDD: id of each node the high- none resolution centerline point is associated with. The format of\nthe id is as follows: CBBBBBRRRRNNNT where\nC = Continent (the first number of the Pfafstetter basin code), B = Remaining Pfafstetter basin codes up to level 6, R = Reach id (assigned sequentially within a level 6 basin starting at the downstream end working upstream), N = Node id (assigned sequentially within a reach starting at the downstream end working upstream), T = Type (1 \u2013 river, 3 \u2013 lake on river, 4 \u2013 dam or waterfall, 5 \u2013 unreliable topology, 6 \u2013 ghost node)",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "reach_id": {
+      "long_name": "reach_identifier",
+      "comment": "Taken from SWORD PDD: id of the reach each node is associated with. The format of the id is as follows: CBBBBBRRRRT where C = Continent (the first number of the Pfafstetter basin code), B = Remaining Pfafstetter basin codes up to level 6, R = Reach id (assigned sequentially within a level 6 basin starting at the downstream end working upstream), T = Type (1 \u2013 river, 3 \u2013 lake on river, 4 \u2013 dam or waterfall, 5 \u2013 unreliable topology, 6 \u2013 ghost reach)d",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "time": {
+      "long_name": "time (UTC)",
+      "comment": "Taken from SWORD PDD: Time of measurement in seconds in the UTC time scale since 1 Jan 2000 00:00:00 UTC. [tai_utc_difference] is the difference between TAI and UTC reference time (seconds) for the first measurement of the data set. If a leap second occurs within the data set, the metadata leap_second is set to the UTC time at which the leap second occurs.",
+      "units": "seconds since 2000-01-01 00:00:00.000",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    }
+  },
+  "offline": {
+    "d_x_area": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "d_x_area_u": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "metro_q_c": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "bam_q_c": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "hivdi_q_c": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "momma_q_c": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "sads_q_c": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "consensus_q_c": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "metro_q_uc": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "bam_q_uc": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "hivdi_q_uc": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "momma_q_uc": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "sads_q_uc": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "consensus_q_uc": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    }
+  },
+  "postdiagnostics": {
+    "basin": {
+      "basin_num_algos": {
+        "long_name": "number_of_basin_algorithms",
+        "comment": "number of basin algorithms",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 10
+      },
+      "basin_algo_names": {
+        "long_name": "basin_algorithm_names",
+        "comment": "basin algorithm names"
+      },
+      "realism_flags": {
+        "long_name": "realism_flags",
+        "comment": "flag to check if flows are realistiic",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "prepost_flags": {
+        "long_name": "prepostdiagnostic_flags",
+        "comment": "flag to check if the flows are wildly different between priors and posteriros",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "stability_flags": {
+        "long_name": "stability_flags",
+        "comment": "flag to check if the flows are wildly different from one Confluence run to hte next",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      }
+    },
+    "reach": {
+      "reach_num_algos": {
+        "long_name": "number_of_reach_algorithms",
+        "comment": "number of reach algorithms",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 10
+      },
+      "reach_algo_names": {
+        "long_name": "reach_algorithm_names",
+        "comment": "reach algorithm names"
+      },
+      "realism_flags": {
+        "long_name": "realism_flags",
+        "comment": "flag to check if flows are realistiic",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "stability_flags": {
+        "long_name": "stability_flags",
+        "comment": "flag to check if the flows are wildly different from one Confluence run to hte next",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      }
+    }
+  },
+  "prediagnostics": {
+    "reach": {
+      "ice_clim_f": {
+        "long_name": "climatological_ice_flag",
+        "comment": "Climatological ice cover flag indicating whether the node is ice-covered on the day of the observation based on external climatological information (not the SWOT measurement).",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "ice_dyn_f": {
+        "long_name": "dynamic_ice_flag",
+        "comment": "Dynamic ice cover flag indicating whether the surface is ice-covered on the day of the observation based on analysis of external satellite optical data. Values of 0, 1, and 2 indicate that the node is not ice covered, partially ice covered, and fully ice covered, respectively.",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "dark_frac": {
+        "long_name": "dark_water_fraction",
+        "comment": "Fraction of node area_total covered by dark water.",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "n_good_nod": {
+        "long_name": "num_good_node",
+        "comment": "Number of nodes in the reach that have a valid node WSE. Note that the total number of nodes from the prior river database is given by p_n_nodes.",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "obs_frac_n": {
+        "long_name": "raction_of_observed_nodes",
+        "comment": "Fraction of nodes (n_good_nod/p_n_nodes) in the reach that have a valid node WSE. The value is between 0 and 1.",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "width_outliers": {
+        "long_name": "width_observations_outliers",
+        "comment": "Outliers detected in width observations.",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "wse_outliers": {
+        "long_name": "wse_observations_outliers",
+        "comment": "Outliers detected in wse observations.",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "slope2_outliers": {
+        "long_name": "slope2_observations_outliers",
+        "comment": "Outliers detected in slope2 observations.",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      }
+    },
+    "node": {
+      "ice_clim_f": {
+        "long_name": "climatological_ice_flag",
+        "comment": "Climatological ice cover flag indicating whether the node is ice-covered on the day of the observation based on external climatological information (not the SWOT measurement).",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "ice_dyn_f": {
+        "long_name": "dynamic_ice_flag",
+        "comment": "Dynamic ice cover flag indicating whether the surface is ice-covered on the day of the observation based on analysis of external satellite optical data. Values of 0, 1, and 2 indicate that the node is not ice covered, partially ice covered, and fully ice covered, respectively.",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "dark_frac": {
+        "long_name": "dark_water_fraction",
+        "comment": "Fraction of node area_total covered by dark water.",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "width_outliers": {
+        "long_name": "width_observations_outliers",
+        "comment": "Outliers detected in width observations.",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "wse_outliers": {
+        "long_name": "wse_observations_outliers",
+        "comment": "Outliers detected in wse observations.",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      },
+      "slope2_outliers": {
+        "long_name": "slope2_observations_outliers",
+        "comment": "Outliers detected in slope2 observations.",
+        "units": "placeholder",
+        "valid_min": 0,
+        "valid_max": 1
+      }
+    }
+  },
+  "priors": {
+    "num_months": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "month",
+      "valid_min": 0,
+      "valid_max": 12
+    },
+    "probability": {
+      "long_name": "GRADES Flow_Duration_curve_probability",
+      "comment": "GRADES probability values from the flow duration curve for this cell",
+      "units": "percentage",
+      "valid_min": 0.0,
+      "valid_max": 1.0
+    },
+    "flow_duration_q": {
+      "long_name": "GRADES flow_Duration_curve_discharge",
+      "comment": "GRADES discharge values from the flow duration curve for this cell",
+      "units": "m^3/s",
+      "valid_min": 0.0,
+      "valid_max": 1.0
+    },
+    "max_q": {
+      "long_name": "GRADES maximum_discharge",
+      "comment": "GRADES highest discharge value in this cell",
+      "units": "m^3/s",
+      "valid_min": 0.0,
+      "valid_max": 1000000.0
+    },
+    "monthly_q": {
+      "long_name": "GRADES mean_monthly_discharge",
+      "comment": "GRADES monthly mean discharge time series in this cell",
+      "units": "m^3/s",
+      "valid_min": 0.0,
+      "valid_max": 1000000.0
+    },
+    "mean_q": {
+      "long_name": "GRADES mean_discharge",
+      "comment": "GRADES mean discharge value in this cell",
+      "units": "m^3/s",
+      "valid_min": 0.0,
+      "valid_max": 1000000.0
+    },
+    "min_q": {
+      "long_name": "GRADES minimum_discharge",
+      "comment": "GRADES lowest discharge value in this cell",
+      "units": "m^3/s",
+      "valid_min": 0.0,
+      "valid_max": 1000000.0
+    },
+    "two_year_return_q": {
+      "long_name": "GRADES two_Year_Return",
+      "comment": "GRADES two year return interval discharge value in this cell",
+      "units": "m^3/s",
+      "valid_min": 0.0,
+      "valid_max": 1000000.0
+    },
+    "area_estimate_flag": {
+      "long_name": "GRADES Area_Estimation_Flag",
+      "comment": "This cell was not a good match. Data has been scaled by difference in flow accumulation area.",
+      "units": "placeholder",
+      "valid_min": 0.0,
+      "valid_max": 1.0
+    },
+    "comid": {
+      "long_name": "COMID",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "overwritten_indexes": {
+      "long_name": "placeholder",
+      "comment": "Indexes of GRADES priors that were overwritten.",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "overwritten_source": {
+      "long_name": "placeholder",
+      "comment": "Source of gage data that overwrote GRADES priors.",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "bad_priors": {
+      "long_name": "placeholder",
+      "comment": "Indexes of invalid gage priors that were not overwritten.",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "bad_prior_source": {
+      "long_name": "placeholder",
+      "comment": "Source of invalid gage priors.",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    }
+  },
+  "reaches": {
+    "reach_id": {
+      "long_name": "reach_identifier",
+      "comment": "Taken from SWORD PDD: id of each reach. The format of none the id is as follows: CBBBBBRRRRT where C = Continent (the first number of the Pfafstetter basin code), B = Remaining Pfafstetter basin codes up to level 6, R = Reach id (assigned sequentially within a level 6 basin starting at the downstream end working upstream, T = Type (1 \u2013 river, 3 \u2013 lake on river, 4 \u2013 dam or waterfall, 5 \u2013 unreliable topology, 6 \u2013 ghost reach)",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "time": {
+      "long_name": "time (UTC)",
+      "comment": "Taken from SWORD PDD: Time of measurement in seconds in the UTC time scale since 1 Jan 2000 00:00:00 UTC. [tai_utc_difference] is the difference between TAI and UTC reference time (seconds) for the first measurement of the data set. If a leap second occurs within the data set, the metadata leap_second is set to the UTC time at which the leap second occurs.",
+      "units": "seconds since 2000-01-01 00:00:00.000",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    }
+  },
+  "sad": {
+    "A0": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "n": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Qa": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Q_u": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    }
+  },
+  "sic4dvar": {
+    "A0": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "n": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Qalgo31": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "Qalgo5": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "elevation": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "half_width": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    }
+  },
+  "validation": {
+    "algo_names": {
+      "long_name": "placeholder",
+      "comment": "placeholder"
+    },
+    "has_validation": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": 0,
+      "valid_max": 1
+    },
+    "nse": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "rsq": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "kge": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "rmse": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "m^3/s",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "testn": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "placeholder",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    }
+  }
 }

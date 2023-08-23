@@ -126,7 +126,8 @@ class Append:
         self.sos_nrids = sos_data["node_reaches"]
         self.sos_nids = sos_data["nodes"]
         self.logger = logger
-        self.metadata_json = metadata_json
+        with open(metadata_json) as jf:
+            self.metadata_json = json.load(jf)
         self.modules_list = modules
         self.modules = []
         self.version = "9999"
@@ -144,9 +145,7 @@ class Append:
         result_sos = Dataset(self.sos_file, 'w')
         
         # Global attributes
-        with open(self.metadata_json) as jf:
-            global_atts = json.load(jf)
-            
+        global_atts = self.metadata_json["global_attributes"]            
         for name, value in global_atts.items():
             setattr(result_sos, name, value)
             
@@ -165,8 +164,8 @@ class Append:
         self.vlen_s = result_sos.createVLType("S1", "vlen_str")
 
         # Node and reach group
-        write_reaches(prior_sos, result_sos)
-        write_nodes(prior_sos, result_sos)
+        write_reaches(prior_sos, result_sos, self.metadata_json)
+        write_nodes(prior_sos, result_sos, self.metadata_json)
 
         prior_sos.close()
         result_sos.close()
@@ -176,7 +175,7 @@ class Append:
         """Append data to the SoS by executing module storage operations."""
         
         for module in self.modules:
-            module.append_module()
+            module.append_module(self.metadata_json)
             self.logger.info(f"Appended {module.__class__.__name__} data to {self.sos_file.name}.")
         
     def create_modules(self, run_type, input_dir, diag_dir, flpe_dir, moi_dir, \
@@ -316,15 +315,16 @@ def get_continent_sos_data(sos_cur, continent, priors_suffix):
 
     return { "reaches": rids, "node_reaches": nrids, "nodes": nids }
 
-def write_reaches(prior_sos, result_sos):
+def write_reaches(prior_sos, result_sos, metadata_json):
     """Write reach_id variable and associated dimension to the SoS."""
     
     sos_reach = result_sos.createGroup("reaches")
     reach_var = sos_reach.createVariable("reach_id", "i8", ("num_reaches",))
     reach_var.setncatts(prior_sos["reaches"]["reach_id"].__dict__)
     reach_var[:] = prior_sos["reaches"]["reach_id"][:]
+    set_variable_atts(reach_var, metadata_json["reaches"]["reach_id"]) 
 
-def write_nodes(prior_sos, result_sos):
+def write_nodes(prior_sos, result_sos, metadata_json):
     """Write node_id and reach_id variables with associated dimension to the
     SoS."""
 
@@ -333,7 +333,15 @@ def write_nodes(prior_sos, result_sos):
     node_var = sos_node.createVariable("node_id", "i8", ("num_nodes",))
     node_var.setncatts(prior_sos["nodes"]["node_id"].__dict__)
     node_var[:] = prior_sos["nodes"]["node_id"][:]
+    set_variable_atts(node_var, metadata_json["nodes"]["reach_id"])
     
     reach_var = sos_node.createVariable("reach_id", "i8", ("num_nodes",))
     reach_var.setncatts(prior_sos["nodes"]["reach_id"].__dict__)
     reach_var[:] = prior_sos["nodes"]["reach_id"][:]
+    set_variable_atts(reach_var, metadata_json["nodes"]["reach_id"])
+
+def set_variable_atts(variable, variable_dict):
+    """Set the variable attribute metdata."""
+    
+    for name, value in variable_dict.items():
+        setattr(variable, name, value)

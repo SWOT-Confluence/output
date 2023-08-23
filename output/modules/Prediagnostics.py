@@ -208,7 +208,7 @@ class Prediagnostics(AbstractModule):
         data_dict["node"]["attrs"]["slope2_outliers"] = ds["node"]["slope2_outliers"].__dict__
         ds.close()
         
-    def append_module_data(self, data_dict):
+    def append_module_data(self, data_dict, metadata_json):
         """Append Prediagnostic data to the new version of the SoS.
         
         Parameters
@@ -222,20 +222,34 @@ class Prediagnostics(AbstractModule):
         
         # Reach
         r_grp = pre_grp.createGroup("reach")
-        self.write_var_nt(r_grp, "ice_clim_f", self.vlen_i, ("num_reaches"), data_dict["reach"])
-        self.write_var_nt(r_grp, "ice_dyn_f", self.vlen_i, ("num_reaches"), data_dict["reach"])
-        self.write_var_nt(r_grp, "dark_frac", self.vlen_i, ("num_reaches"), data_dict["reach"])
-        self.write_var_nt(r_grp, "n_good_nod", self.vlen_i, ("num_reaches"), data_dict["reach"])
-        self.write_var_nt(r_grp, "obs_frac_n", self.vlen_i, ("num_reaches"), data_dict["reach"])
-        self.write_var_nt(r_grp, "width_outliers", self.vlen_i, ("num_reaches"), data_dict["reach"])
-        self.write_var_nt(r_grp, "wse_outliers", self.vlen_i, ("num_reaches"), data_dict["reach"])
-        self.write_var_nt(r_grp, "slope2_outliers", self.vlen_i, ("num_reaches"), data_dict["reach"])
+        var = self.write_var_nt(r_grp, "ice_clim_f", self.vlen_i, ("num_reaches"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["ice_clim_f"])
+        var = self.write_var_nt(r_grp, "ice_dyn_f", self.vlen_i, ("num_reaches"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["ice_dyn_f"])
+        var = self.write_var_nt(r_grp, "dark_frac", self.vlen_i, ("num_reaches"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["dark_frac"])
+        var = self.write_var_nt(r_grp, "n_good_nod", self.vlen_i, ("num_reaches"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["n_good_nod"])
+        var = self.write_var_nt(r_grp, "obs_frac_n", self.vlen_i, ("num_reaches"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["obs_frac_n"])
+        var = self.write_var_nt(r_grp, "width_outliers", self.vlen_i, ("num_reaches"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["width_outliers"])
+        var = self.write_var_nt(r_grp, "wse_outliers", self.vlen_i, ("num_reaches"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["wse_outliers"])
+        var = self.write_var_nt(r_grp, "slope2_outliers", self.vlen_i, ("num_reaches"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["slope2_outliers"])
         # Node
         n_grp = pre_grp.createGroup("node")
-        self.write_var_nt(n_grp, "ice_clim_f", self.vlen_i, ("num_nodes"), data_dict["node"])
-        self.write_var_nt(n_grp, "ice_dyn_f", self.vlen_i, ("num_nodes"), data_dict["node"])
-        self.write_var_nt(n_grp, "dark_frac", self.vlen_i, ("num_nodes"), data_dict["node"])
-        self.write_var_nt(n_grp, "width_outliers", self.vlen_i, ("num_nodes"), data_dict["node"])
-        self.write_var_nt(n_grp, "wse_outliers", self.vlen_i, ("num_nodes"), data_dict["node"])
-        self.write_var_nt(n_grp, "slope2_outliers", self.vlen_i, ("num_nodes"), data_dict["node"])
+        var = self.write_var_nt(n_grp, "ice_clim_f", self.vlen_i, ("num_nodes"), data_dict["node"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["ice_clim_f"])
+        var = self.write_var_nt(n_grp, "ice_dyn_f", self.vlen_i, ("num_nodes"), data_dict["node"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["ice_dyn_f"])
+        var = self.write_var_nt(n_grp, "dark_frac", self.vlen_i, ("num_nodes"), data_dict["node"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["dark_frac"])
+        var = self.write_var_nt(n_grp, "width_outliers", self.vlen_i, ("num_nodes"), data_dict["node"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["width_outliers"])
+        var = self.write_var_nt(n_grp, "wse_outliers", self.vlen_i, ("num_nodes"), data_dict["node"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["wse_outliers"])
+        var = self.write_var_nt(n_grp, "slope2_outliers", self.vlen_i, ("num_nodes"), data_dict["node"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["slope2_outliers"])
         sos_ds.close()

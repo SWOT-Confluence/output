@@ -67,7 +67,7 @@ class Priors(AbstractModule):
             "variables": model.variables.items()                   
         }
     
-    def append_module_data(self, data_dict):
+    def append_module_data(self, data_dict, metadata_json):
         """Append Priors data to the new version of the SoS.
         
         Parameters
@@ -88,6 +88,7 @@ class Priors(AbstractModule):
             v = pri_grp.createVariable(name, variable.datatype, variable.dimensions)
             v.setncatts(self.sos["model"][name].__dict__)
             v[:] = self.sos["model"][name][:]
+            self.set_variable_atts(v, metadata_json["priors"][name])
         self.close_sos()
         
     def open_sos(self):

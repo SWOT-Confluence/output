@@ -201,7 +201,7 @@ class Offline(AbstractModule):
             data_dict["attrs"][key] = ds[convention_dict[key]].__dict__        
         ds.close()
 
-    def append_module_data(self, data_dict):
+    def append_module_data(self, data_dict, metadata_json):
         """Append Offline data to the new version of the SoS.
         
         Parameters
@@ -214,18 +214,32 @@ class Offline(AbstractModule):
         off_grp = sos_ds.createGroup("offline")
 
         # Offline data
-        self.write_var_nt(off_grp, "d_x_area", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(off_grp, "d_x_area_u", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(off_grp, "metro_q_c", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(off_grp, "bam_q_c", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(off_grp, "hivdi_q_c", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(off_grp, "momma_q_c", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(off_grp, "sads_q_c", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(off_grp, "consensus_q_c", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(off_grp, "metro_q_uc", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(off_grp, "bam_q_uc", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(off_grp, "hivdi_q_uc", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(off_grp, "momma_q_uc", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(off_grp, "sads_q_uc", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(off_grp, "consensus_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        var = self.write_var_nt(off_grp, "d_x_area", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["d_x_area"])
+        var = self.write_var_nt(off_grp, "d_x_area_u", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["d_x_area_u"])
+        var = self.write_var_nt(off_grp, "metro_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["metro_q_c"])
+        var = self.write_var_nt(off_grp, "bam_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["bam_q_c"])
+        var = self.write_var_nt(off_grp, "hivdi_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["hivdi_q_c"])
+        var = self.write_var_nt(off_grp, "momma_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["momma_q_c"])
+        var = self.write_var_nt(off_grp, "sads_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["sads_q_c"])
+        var = self.write_var_nt(off_grp, "consensus_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["consensus_q_c"])
+        var = self.write_var_nt(off_grp, "metro_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["metro_q_uc"])
+        var = self.write_var_nt(off_grp, "bam_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["bam_q_uc"])
+        var = self.write_var_nt(off_grp, "hivdi_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["hivdi_q_uc"])
+        var = self.write_var_nt(off_grp, "momma_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["momma_q_uc"])
+        var = self.write_var_nt(off_grp, "sads_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["sads_q_uc"])
+        var = self.write_var_nt(off_grp, "consensus_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["consensus_q_uc"])
         sos_ds.close()

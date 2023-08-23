@@ -95,11 +95,11 @@ class AbstractModule(metaclass=ABCMeta):
                 callable(subclass.append_module_data) or
                 NotImplemented)
         
-    def append_module(self):
+    def append_module(self, metadata_json):
         """Append module results to the SoS."""
         
         data_dict = self.get_module_data()
-        self.append_module_data(data_dict)
+        self.append_module_data(data_dict, metadata_json)
         
     @abstractmethod
     def get_module_data(self):
@@ -114,7 +114,7 @@ class AbstractModule(metaclass=ABCMeta):
         raise NotImplementedError
     
     @abstractmethod
-    def append_module_data(self, data_dict):
+    def append_module_data(self, data_dict, metadata_json):
         """Append module data to the new version of the SoS result file.
         
         Parameters
@@ -148,6 +148,7 @@ class AbstractModule(metaclass=ABCMeta):
                 var[:] = np.nan_to_num(data_dict[name], copy=True, nan=self.FILL[type])
             else:
                 var[:] = data_dict[name]
+            return var
     
     def write_var_nt(self, grp, name, vlen, dims, data_dict):
         """Create NetCDF variable length data variable and write module data.
@@ -171,3 +172,10 @@ class AbstractModule(metaclass=ABCMeta):
             data_dict["attrs"][name].pop("_FillValue", None)
             var.setncatts(data_dict["attrs"][name])
         var[:] = data_dict[name]
+        return var
+        
+    def set_variable_atts(self, variable, variable_dict):
+        """Set the variable attribute metdata."""
+        
+        for name, value in variable_dict.items():
+            setattr(variable, name, value)

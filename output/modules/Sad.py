@@ -127,7 +127,7 @@ class Sad(AbstractModule):
         data_dict["attrs"]["Q_u"] = ds["Q_u"].__dict__
         ds.close()
     
-    def append_module_data(self, data_dict):
+    def append_module_data(self, data_dict, metadata_json):
         """Append SAD data to the new version of the SoS.
         
         Parameters
@@ -140,8 +140,12 @@ class Sad(AbstractModule):
         sd_grp = sos_ds.createGroup("sad")
 
         # SAD data
-        self.write_var(sd_grp, "A0", "f8", ("num_reaches",), data_dict)
-        self.write_var(sd_grp, "n", "f8", ("num_reaches",), data_dict)
-        self.write_var_nt(sd_grp, "Qa", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(sd_grp, "Q_u", self.vlen_f, ("num_reaches"), data_dict)
+        var = self.write_var(sd_grp, "A0", "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["sad"]["A0"])
+        var = self.write_var(sd_grp, "n", "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["sad"]["n"])
+        var = self.write_var_nt(sd_grp, "Qa", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["sad"]["Qa"])
+        var = self.write_var_nt(sd_grp, "Q_u", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["sad"]["Q_u"])
         sos_ds.close()

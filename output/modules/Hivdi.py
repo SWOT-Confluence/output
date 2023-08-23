@@ -127,7 +127,7 @@ class Hivdi(AbstractModule):
         data_dict["reach"]["attrs"]["Q"] = ds["reach"]["Q"].__dict__
         ds.close()
         
-    def append_module_data(self, data_dict):
+    def append_module_data(self, data_dict, metadata_json):
         """Append HiVDI data to the new version of the SoS.
         
         Parameters
@@ -139,8 +139,12 @@ class Hivdi(AbstractModule):
         sos_ds = Dataset(self.sos_new, 'a')
         hv_grp = sos_ds.createGroup("hivdi")
         
-        self.write_var_nt(hv_grp, "Q", self.vlen_f, ("num_reaches"), data_dict["reach"])       
-        self.write_var(hv_grp, "A0", "f8", ("num_reaches",), data_dict["reach"])
-        self.write_var(hv_grp, "beta", "f8", ("num_reaches",), data_dict["reach"])
-        self.write_var(hv_grp, "alpha", "f8", ("num_reaches",), data_dict["reach"])
+        var = self.write_var_nt(hv_grp, "Q", self.vlen_f, ("num_reaches"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["hivdi"]["Q"])
+        var = self.write_var(hv_grp, "A0", "f8", ("num_reaches",), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["hivdi"]["A0"])
+        var = self.write_var(hv_grp, "beta", "f8", ("num_reaches",), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["hivdi"]["beta"])
+        var = self.write_var(hv_grp, "alpha", "f8", ("num_reaches",), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["hivdi"]["alpha"])
         sos_ds.close()

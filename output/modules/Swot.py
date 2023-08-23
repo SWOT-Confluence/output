@@ -154,7 +154,7 @@ class Swot(AbstractModule):
                 return
             j +=1
         
-    def append_module_data(self, data_dict):
+    def append_module_data(self, data_dict, metadata_json):
         """Append SWOT time data to the new version of the SoS.
         
         Parameters
@@ -164,7 +164,10 @@ class Swot(AbstractModule):
         """
 
         sos_ds = Dataset(self.sos_new, 'a')        
-        self.write_var_nt(sos_ds, "observations", self.vlen_i, ("num_reaches"), data_dict)
-        self.write_var_nt(sos_ds["reaches"], "time", self.vlen_f, ("num_reaches"), data_dict["reach"])       
-        self.write_var_nt(sos_ds["nodes"], "time", self.vlen_f, ("num_nodes"), data_dict["node"])       
+        var = self.write_var_nt(sos_ds, "observations", self.vlen_i, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["observations"]["observations"])
+        var = self.write_var_nt(sos_ds["reaches"], "time", self.vlen_f, ("num_reaches"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["reaches"]["time"]) 
+        var = self.write_var_nt(sos_ds["nodes"], "time", self.vlen_f, ("num_nodes"), data_dict["node"])
+        self.set_variable_atts(var, metadata_json["nodes"]["time"])  
         sos_ds.close()
