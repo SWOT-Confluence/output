@@ -811,16 +811,7 @@
         "valid_min": 0.0,
         "valid_max": 1000000.0
       }
-    },
-    "mean1": {},
-    "mean2": {},
-    "mean3": {},
-    "sd1": {},
-    "sd2": {},
-    "sd3": {},
-    "q1": {},
-    "q2": {},
-    "q3": {}
+    }
   },
   "nodes": {
     "node_id": {
@@ -843,6 +834,13 @@
       "units": "seconds since 2000-01-01 00:00:00.000",
       "valid_min": -998,
       "valid_max": 999999999999
+    },
+    "observations": {
+      "long_name": "indicates cycle pass observations",
+      "comment":  "Flag that indicates node was observed during specific pass.",
+      "units": "pass",
+      "valid_min": 0,
+      "valid_max": 1
     }
   },
   "offline": {
@@ -1187,29 +1185,23 @@
       "long_name": "placeholder",
       "comment": "Indexes of GRADES priors that were overwritten.",
       "units": "placeholder",
-      "valid_min": -998,
-      "valid_max": 999999999999
+      "valid_min": 0,
+      "valid_max": 100000
     },
     "overwritten_source": {
       "long_name": "placeholder",
-      "comment": "Source of gage data that overwrote GRADES priors.",
-      "units": "placeholder",
-      "valid_min": -998,
-      "valid_max": 999999999999
+      "comment": "Source of gage data that overwrote GRADES priors."
     },
     "bad_priors": {
       "long_name": "placeholder",
       "comment": "Indexes of invalid gage priors that were not overwritten.",
       "units": "placeholder",
-      "valid_min": -998,
-      "valid_max": 999999999999
+      "valid_min": 0,
+      "valid_max": 100000
     },
     "bad_prior_source": {
       "long_name": "placeholder",
-      "comment": "Source of invalid gage priors.",
-      "units": "placeholder",
-      "valid_min": -998,
-      "valid_max": 999999999999
+      "comment": "Source of invalid gage priors."
     }
   },
   "reaches": {
@@ -1226,6 +1218,13 @@
       "units": "seconds since 2000-01-01 00:00:00.000",
       "valid_min": -998,
       "valid_max": 999999999999
+    },
+    "observations": {
+      "long_name": "indicates cycle pass observations",
+      "comment":  "Flag that indicates reach was observed during specific pass.",
+      "units": "pass",
+      "valid_min": 0,
+      "valid_max": 1
     }
   },
   "sad": {

@@ -59,6 +59,7 @@ def create_args():
     arg_parser.add_argument("-m",
                             "--modules",
                             nargs="+",
+                            default=[],
                             help="List of modules executed in current workflow.")
     arg_parser.add_argument("-j",
                             "--metadatajson",

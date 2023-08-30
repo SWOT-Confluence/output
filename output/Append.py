@@ -96,6 +96,7 @@ class Append:
     PRIORS_SUFFIX = "sword_v15_SOS_priors"
     RESULTS_SUFFIX = "sword_v15_SOS_results"
     VERS_LENGTH = 4
+    INT_FILL_VALUE = -999
 
     def __init__(self, cont_json, index, input_dir, output_dir, modules, logger,
                  metadata_json):
@@ -130,6 +131,8 @@ class Append:
             self.metadata_json = json.load(jf)
         self.modules_list = modules
         self.modules = []
+        with open(input_dir.joinpath("passes.json")) as jf:
+            self.pass_no = np.array(list(json.load(jf).keys()),dtype=np.int64)
         self.version = "9999"
         self.vlen_f = None
         self.vlen_i = None
@@ -157,6 +160,12 @@ class Append:
         # Global dimensions
         result_sos.createDimension("num_reaches", prior_sos["reaches"]["reach_id"][:].shape[0])             
         result_sos.createDimension("num_nodes", prior_sos["nodes"]["node_id"][:].shape[0])
+        result_sos.createDimension("num_observations", self.pass_no.shape[0])
+        
+        # Global variable(s)
+        obs_var = result_sos.createVariable("observations", "i4", ("num_observations"), fill_value=self.INT_FILL_VALUE)
+        set_variable_atts(obs_var, self.metadata_json["observations"]["observations"])
+        obs_var[:] = self.pass_no
 
         # Variable length time steps
         self.vlen_f = result_sos.createVLType(np.float64, "vlen_float")
@@ -201,6 +210,12 @@ class Append:
             path to Validation directory
         """
         
+        # Must create output results for SWOT NetCDF data
+        self.modules.append(Swot(list(self.cont.values())[0], \
+            input_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+            self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
+        
+        # All other modules are optional
         for module in self.modules_list:
             if module == "hivdi":
                 self.modules.append(Hivdi(list(self.cont.values())[0], \
@@ -245,10 +260,6 @@ class Append:
             if module == "sic4dvar":
                 self.modules.append(Sic4dvar(list(self.cont.values())[0], \
                     flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \
-                    self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
-            if module == "swot":
-                self.modules.append(Swot(list(self.cont.values())[0], \
-                    input_dir, self.sos_file, self.vlen_f, self.vlen_i, \
                     self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "validation":
                 self.modules.append(Validation(list(self.cont.values())[0], \
