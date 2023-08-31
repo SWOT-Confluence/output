@@ -9,6 +9,7 @@ RUN /app/env/bin/pip install -r /app/requirements.txt
 
 # Stage 1 - Copy Output code
 FROM stage1 as stage2
+COPY ./metadata /app/metadata/
 COPY ./output /app/output/
 COPY ./run_output.py /app/run_output.py
 
