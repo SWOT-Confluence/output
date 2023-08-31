@@ -88,6 +88,9 @@ class Validation(AbstractModule):
                     val_dict["rsq"][index,:] = val_ds["Rsq"][:].filled(np.nan)
                     val_dict["kge"][index,:] = val_ds["KGE"][:].filled(np.nan)
                     val_dict["rmse"][index,:] = val_ds["RMSE"][:].filled(np.nan)
+                    val_dict["nrmse"][index,:] = val_ds["nRMSE"][:].filled(np.nan)
+                    val_dict["nbias"][index,:] = val_ds["nBIAS"][:].filled(np.nan)
+                    val_dict["rrmse"][index,:] = val_ds["rRMSE"][:].filled(np.nan)
                     val_dict["testn"][index,:] = val_ds["testn"][:].filled(np.nan)
                     val_ds.close()
                 index += 1
@@ -121,6 +124,9 @@ class Validation(AbstractModule):
             "rsq": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
             "kge": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
             "rmse": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
+            "nrmse": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
+            "nbias": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
+            "rrmse": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
             "testn": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
             "attrs": {
                 "algo_names": {},
@@ -128,6 +134,9 @@ class Validation(AbstractModule):
                 "rsq": {},
                 "kge": {},
                 "rmse": {},
+                "nbias":{},
+                "nrmse": {},
+                "rrmse": {},
                 "testn": {},
                 "has_validation": {},
             }
@@ -150,6 +159,9 @@ class Validation(AbstractModule):
         data_dict["attrs"]["rsq"] = ds["Rsq"].__dict__
         data_dict["attrs"]["kge"] = ds["KGE"].__dict__
         data_dict["attrs"]["rmse"] = ds["RMSE"].__dict__
+        data_dict["attrs"]["rrmse"] = ds["RMSE"].__dict__
+        data_dict["attrs"]["nrmse"] = ds["RMSE"].__dict__
+        data_dict["attrs"]["nbias"] = ds["RMSE"].__dict__
         data_dict["attrs"]["testn"] = ds["testn"].__dict__
         ds.close()
 
@@ -177,5 +189,8 @@ class Validation(AbstractModule):
         self.write_var(val_grp, "kge", "f8", ("num_reaches", "num_algos",), data_dict)
         self.write_var(val_grp, "rmse", "f8", ("num_reaches", "num_algos",), data_dict)
         self.write_var(val_grp, "testn", "f8", ("num_reaches", "num_algos",), data_dict)
+        self.write_var(val_grp, "nrmse", "f8", ("num_reaches", "num_algos",), data_dict)
+        self.write_var(val_grp, "nbias", "f8", ("num_reaches", "num_algos",), data_dict)
+        self.write_var(val_grp, "rrmse", "f8", ("num_reaches", "num_algos",), data_dict)
 
         sos_ds.close()
