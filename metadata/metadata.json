@@ -836,11 +836,11 @@
       "valid_max": 999999999999
     },
     "observations": {
-      "long_name": "indicates cycle pass observations",
-      "comment":  "Flag that indicates node was observed during specific pass.",
+      "long_name": "cycle pass observations",
+      "comment":  "Pass numbers associated with observations for each node.",
       "units": "pass",
-      "valid_min": 0,
-      "valid_max": 1
+      "valid_min": 1,
+      "valid_max": 584
     }
   },
   "offline": {
@@ -1220,11 +1220,11 @@
       "valid_max": 999999999999
     },
     "observations": {
-      "long_name": "indicates cycle pass observations",
-      "comment":  "Flag that indicates reach was observed during specific pass.",
+      "long_name": "cycle pass observations",
+      "comment":  "Pass numbers associated with observations for each reach.",
       "units": "pass",
-      "valid_min": 0,
-      "valid_max": 1
+      "valid_min": 1,
+      "valid_max": 584
     }
   },
   "sad": {
