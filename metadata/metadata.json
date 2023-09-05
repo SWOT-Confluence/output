@@ -1341,6 +1341,27 @@
       "valid_min": -998,
       "valid_max": 999999999999
     },
+    "nrmse": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "m^3/s",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "nbias": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "m^3/s",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
+    "rrmse": {
+      "long_name": "placeholder",
+      "comment": "placeholder",
+      "units": "m^3/s",
+      "valid_min": -998,
+      "valid_max": 999999999999
+    },
     "testn": {
       "long_name": "placeholder",
       "comment": "placeholder",
