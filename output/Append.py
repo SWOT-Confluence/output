@@ -21,6 +21,7 @@ write_nodes(prior_sos, result_sos)
 # Standard imports
 import datetime
 import json
+import uuid
 
 # Third-party imports
 from netCDF4 import Dataset
@@ -152,12 +153,20 @@ class Append:
         for name, value in global_atts.items():
             setattr(result_sos, name, value)
             
-        result_sos.Name = prior_sos.Name
-        result_sos.version = prior_sos.version
-        result_sos.production_date = datetime.datetime.now().strftime('%d-%b-%Y %H:%M:%S')
-        result_sos.date_created = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+        global_atts_extra = self.metadata_json["global_attributes_extra"]
+        today = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
         
+        # Name, Version and UUID    
+        result_sos.Name = prior_sos.Name
         result_sos.run_type = prior_sos.run_type
+        result_sos.product_version = prior_sos.version
+        result_sos.date_created = today
+        result_sos.uuid = str(uuid.uuid4())
+        
+        # History, source, comment, references
+        result_sos.history = f"{today}: SoS version {prior_sos.version} created by Confluence version {global_atts_extra['confluence_version']}"
+        result_sos.source = f"Module results: {', '.join(self.modules_list)}"
+        result_sos.comment = f"{prior_sos.run_type.capitalize()} SoS version includes results from modules: {', '.join(self.modules_list)} and cycle pass observations plus time data from SWOT shapefiles"
 
         # Global dimensions
         result_sos.createDimension("num_reaches", prior_sos["reaches"]["reach_id"][:].shape[0])             
