@@ -19,7 +19,7 @@ write_nodes(prior_sos, result_sos)
 """
 
 # Standard imports
-from datetime import datetime
+import datetime
 import json
 
 # Third-party imports
@@ -154,7 +154,9 @@ class Append:
             
         result_sos.Name = prior_sos.Name
         result_sos.version = prior_sos.version
-        result_sos.production_date = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
+        result_sos.production_date = datetime.datetime.now().strftime('%d-%b-%Y %H:%M:%S')
+        result_sos.date_created = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+        
         result_sos.run_type = prior_sos.run_type
 
         # Global dimensions
@@ -265,6 +267,26 @@ class Append:
                 self.modules.append(Validation(list(self.cont.values())[0], \
                     val_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
                     self.sos_nids))
+                
+    def update_time_coverage(self):
+        """Update time coverage for results."""
+        
+        sos = Dataset(self.sos_file, 'a')
+        
+        # Determine min and max SWOT time values from node-level data
+        swot_ts = datetime.datetime(2000,1,1,0,0,0)
+        time = sos["nodes"]["time"][:]
+        time = np.hstack(time)
+        time[np.isclose(time,-999999999999.0)] = np.nan   # Time fill value
+        time[np.isclose(time,-9999.0)] = np.nan    # Another fill value found
+        
+        # Min/max values for coverage
+        min_time = swot_ts + datetime.timedelta(seconds=np.nanmin(time))
+        max_time = swot_ts + datetime.timedelta(seconds=np.nanmax(time))
+        sos.time_coverage_start = min_time.strftime("%Y-%m-%dT%H:%M:%S")
+        sos.time_coverage_end = max_time.strftime("%Y-%m-%dT%H:%M:%S")
+        
+        sos.close()
             
 
 def get_cont_data(cont_json, index):

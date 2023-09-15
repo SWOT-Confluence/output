@@ -108,6 +108,7 @@ def main():
     append.create_modules(args.runtype, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
         VALIDATION / "stats")
     append.append_data()
+    append.update_time_coverage()
     
     # Upload SoS data
     upload = Upload(append.sos_file, logger)
