@@ -828,6 +828,24 @@
             "units": "pass",
             "valid_min": 0,
             "valid_max": 1
+        },
+        "x": {
+            "long_name": "longitude",
+            "comment": "longitude of each node ranging from 180°E to 180°W",
+            "units": "decimal degrees",
+            "valid_min": -180,
+            "valid_max": 180
+        },
+        "y": {
+            "long_name": "latitude",
+            "comment": "latitude of each node ranging from 90°S to 90°N",
+            "units": "decimal degrees",
+            "valid_min": -90,
+            "valid_max": 90
+        },
+        "river_name": {
+            "long_name": "river names",
+            "comment": "all river names associated with a node. If there are multiple names for a node they are listed in alphabetical order and separated by a semicolon."
         }
     },
     "offline": {
@@ -1212,6 +1230,24 @@
             "units": "pass",
             "valid_min": 0,
             "valid_max": 1
+        },
+        "x": {
+            "long_name": "longitude",
+            "comment": "longitude of the reach center decimal ranging from 180°E to 180°W",
+            "units": "decimal degrees",
+            "valid_min": -180,
+            "valid_max": 180
+        },
+        "y": {
+            "long_name": "latitude",
+            "comment": "latitude of the reach center decimal ranging from 90°S to 90°N",
+            "units": "decimal degrees",
+            "valid_min": -90,
+            "valid_max": 90
+        },
+        "river_name": {
+            "long_name": "river names",
+            "comment": "all river names associated with a reach. If there are multiple names for a reach they are listed in alphabetical order and separated by a semicolon."
         }
     },
     "sad": {

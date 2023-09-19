@@ -96,6 +96,8 @@ class Append:
 
     PRIORS_SUFFIX = "sword_v15_SOS_priors"
     RESULTS_SUFFIX = "sword_v15_SOS_results"
+    # PRIORS_SUFFIX = "sword_v11_SOS_priors"
+    # RESULTS_SUFFIX = "sword_v11_SOS_results"
     VERS_LENGTH = 4
     INT_FILL_VALUE = -999
 
@@ -167,6 +169,12 @@ class Append:
         result_sos.history = f"{today}: SoS version {prior_sos.version} created by Confluence version {global_atts_extra['confluence_version']}"
         result_sos.source = f"Module results: {', '.join(self.modules_list)}"
         result_sos.comment = f"{prior_sos.run_type.capitalize()} SoS version includes results from modules: {', '.join(self.modules_list)} and cycle pass observations plus time data from SWOT shapefiles"
+        
+        # Geospatial coverage
+        result_sos.geospatial_lat_min = prior_sos.geospatial_lat_min
+        result_sos.geospatial_lat_max = prior_sos.geospatial_lat_max
+        result_sos.geospatial_lon_min = prior_sos.geospatial_lon_min
+        result_sos.geospatial_lon_max = prior_sos.geospatial_lon_max
 
         # Global dimensions
         result_sos.createDimension("num_reaches", prior_sos["reaches"]["reach_id"][:].shape[0])             
@@ -290,10 +298,14 @@ class Append:
         time[np.isclose(time,-9999.0)] = np.nan    # Another fill value found
         
         # Min/max values for coverage
-        min_time = swot_ts + datetime.timedelta(seconds=np.nanmin(time))
-        max_time = swot_ts + datetime.timedelta(seconds=np.nanmax(time))
-        sos.time_coverage_start = min_time.strftime("%Y-%m-%dT%H:%M:%S")
-        sos.time_coverage_end = max_time.strftime("%Y-%m-%dT%H:%M:%S")
+        if np.isnan(time).all():
+            sos.time_coverage_start = "NO TIME DATA"
+            sos.time_coverage_end = "NO TIME DATA"
+        else:
+            min_time = swot_ts + datetime.timedelta(seconds=np.nanmin(time))
+            max_time = swot_ts + datetime.timedelta(seconds=np.nanmax(time))
+            sos.time_coverage_start = min_time.strftime("%Y-%m-%dT%H:%M:%S")
+            sos.time_coverage_end = max_time.strftime("%Y-%m-%dT%H:%M:%S")
         
         sos.close()
             
@@ -361,10 +373,30 @@ def write_reaches(prior_sos, result_sos, metadata_json):
     """Write reach_id variable and associated dimension to the SoS."""
     
     sos_reach = result_sos.createGroup("reaches")
+    
+    # Reach ID
     reach_var = sos_reach.createVariable("reach_id", "i8", ("num_reaches",))
     reach_var.setncatts(prior_sos["reaches"]["reach_id"].__dict__)
     reach_var[:] = prior_sos["reaches"]["reach_id"][:]
     set_variable_atts(reach_var, metadata_json["reaches"]["reach_id"]) 
+    
+    # Latitude
+    x = sos_reach.createVariable("x", "f8", ("num_reaches"),)
+    x.setncatts(prior_sos["reaches"]["x"].__dict__)
+    x[:] = prior_sos["reaches"]["x"][:]
+    set_variable_atts(x, metadata_json["reaches"]["x"])
+    
+    # Longitude
+    y = sos_reach.createVariable("y", "f8", ("num_reaches"),)
+    y.setncatts(prior_sos["reaches"]["y"].__dict__)
+    y[:] = prior_sos["reaches"]["y"][:]
+    set_variable_atts(y, metadata_json["reaches"]["y"])
+    
+    # River name
+    river_name = sos_reach.createVariable("river_name", str, ("num_reaches"),)
+    river_name.setncatts(prior_sos["reaches"]["river_name"].__dict__)
+    river_name[:] = prior_sos["reaches"]["river_name"][:]
+    set_variable_atts(river_name, metadata_json["reaches"]["river_name"])
 
 def write_nodes(prior_sos, result_sos, metadata_json):
     """Write node_id and reach_id variables with associated dimension to the
@@ -372,15 +404,35 @@ def write_nodes(prior_sos, result_sos, metadata_json):
 
     sos_node = result_sos.createGroup("nodes")
     
+    # Node ID
     node_var = sos_node.createVariable("node_id", "i8", ("num_nodes",))
     node_var.setncatts(prior_sos["nodes"]["node_id"].__dict__)
     node_var[:] = prior_sos["nodes"]["node_id"][:]
     set_variable_atts(node_var, metadata_json["nodes"]["reach_id"])
     
+    # Reach ID
     reach_var = sos_node.createVariable("reach_id", "i8", ("num_nodes",))
     reach_var.setncatts(prior_sos["nodes"]["reach_id"].__dict__)
     reach_var[:] = prior_sos["nodes"]["reach_id"][:]
     set_variable_atts(reach_var, metadata_json["nodes"]["reach_id"])
+    
+    # Latitude
+    x = sos_node.createVariable("x", "f8", ("num_nodes"),)
+    x.setncatts(prior_sos["nodes"]["x"].__dict__)
+    x[:] = prior_sos["nodes"]["x"][:]
+    set_variable_atts(x, metadata_json["nodes"]["x"])
+    
+    # Longitude
+    y = sos_node.createVariable("y", "f8", ("num_nodes"),)
+    y.setncatts(prior_sos["nodes"]["y"].__dict__)
+    y[:] = prior_sos["nodes"]["y"][:]
+    set_variable_atts(y, metadata_json["nodes"]["y"])
+    
+    # River name
+    river_name = sos_node.createVariable("river_name", str, ("num_nodes"),)
+    river_name.setncatts(prior_sos["nodes"]["river_name"].__dict__)
+    river_name[:] = prior_sos["nodes"]["river_name"][:]
+    set_variable_atts(river_name, metadata_json["nodes"]["river_name"])
 
 def set_variable_atts(variable, variable_dict):
     """Set the variable attribute metdata."""
