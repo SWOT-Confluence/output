@@ -159,9 +159,9 @@ class Validation(AbstractModule):
         data_dict["attrs"]["rsq"] = ds["Rsq"].__dict__
         data_dict["attrs"]["kge"] = ds["KGE"].__dict__
         data_dict["attrs"]["rmse"] = ds["RMSE"].__dict__
-        data_dict["attrs"]["rrmse"] = ds["RMSE"].__dict__
-        data_dict["attrs"]["nrmse"] = ds["RMSE"].__dict__
-        data_dict["attrs"]["nbias"] = ds["RMSE"].__dict__
+        data_dict["attrs"]["rrmse"] = ds["rRMSE"].__dict__
+        data_dict["attrs"]["nrmse"] = ds["nRMSE"].__dict__
+        data_dict["attrs"]["nbias"] = ds["nBIAS"].__dict__
         data_dict["attrs"]["testn"] = ds["testn"].__dict__
         ds.close()
 
@@ -202,5 +202,5 @@ class Validation(AbstractModule):
         self.set_variable_atts(var, metadata_json["validation"]["nbias"]) 
         var = self.write_var(val_grp, "rrmse", "f8", ("num_reaches", "num_algos",), data_dict)
         self.set_variable_atts(var, metadata_json["validation"]["rrmse"]) 
-
+        
         sos_ds.close()
