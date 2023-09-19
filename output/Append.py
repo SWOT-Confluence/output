@@ -20,6 +20,7 @@ write_nodes(prior_sos, result_sos)
 
 # Standard imports
 import datetime
+from dateutil import relativedelta
 import json
 import uuid
 
@@ -297,15 +298,19 @@ class Append:
         time[np.isclose(time,-999999999999.0)] = np.nan   # Time fill value
         time[np.isclose(time,-9999.0)] = np.nan    # Another fill value found
         
-        # Min/max values for coverage
+        # Min/max and duration values for coverage
         if np.isnan(time).all():
             sos.time_coverage_start = "NO TIME DATA"
             sos.time_coverage_end = "NO TIME DATA"
+            sos.time_coverage_duration = "NO TIME DATA"
         else:
             min_time = swot_ts + datetime.timedelta(seconds=np.nanmin(time))
             max_time = swot_ts + datetime.timedelta(seconds=np.nanmax(time))
             sos.time_coverage_start = min_time.strftime("%Y-%m-%dT%H:%M:%S")
             sos.time_coverage_end = max_time.strftime("%Y-%m-%dT%H:%M:%S")
+            
+            duration = relativedelta.relativedelta(max_time, min_time)
+            sos.time_coverage_duration = f"P{duration.years}Y{duration.months}M{duration.days}DT{duration.hours}H{duration.minutes}M{duration.seconds}S"
         
         sos.close()
             
