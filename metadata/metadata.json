@@ -1327,6 +1327,27 @@
             "units": "placeholder",
             "valid_min": -998,
             "valid_max": 999999999999
+        },
+        "nrmse": {
+            "long_name": "placeholder",
+            "comment": "placeholder",
+            "units": "placeholder",
+            "valid_min": -998,
+            "valid_max": 999999999999
+        },
+        "nbias": {
+            "long_name": "placeholder",
+            "comment": "placeholder",
+            "units": "placeholder",
+            "valid_min": -998,
+            "valid_max": 999999999999
+        },
+        "rrmse": {
+            "long_name": "placeholder",
+            "comment": "placeholder",
+            "units": "placeholder",
+            "valid_min": -998,
+            "valid_max": 999999999999
         }
     }
 }
