@@ -55,7 +55,7 @@ class Upload:
 
         # Get SoS version
         sos_ds = Dataset(output_dir / self.sos_file, 'r')
-        vers = sos_ds.version
+        vers = sos_ds.product_version
         sos_ds.close()
         padding = ['0'] * (self.VERS_LENGTH - len(vers))
         vers = f"{''.join(padding)}{vers}"
