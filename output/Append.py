@@ -162,7 +162,7 @@ class Append:
         # Name, Version and UUID    
         result_sos.Name = prior_sos.Name
         result_sos.run_type = prior_sos.run_type
-        result_sos.product_version = prior_sos.version
+        result_sos.product_version = prior_sos.product_version
         result_sos.date_created = today
         result_sos.uuid = str(uuid.uuid4())
         
