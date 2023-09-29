@@ -167,7 +167,7 @@ class Append:
         result_sos.uuid = str(uuid.uuid4())
         
         # History, source, comment, references
-        result_sos.history = f"{today}: SoS version {prior_sos.version} created by Confluence version {global_atts_extra['confluence_version']}"
+        result_sos.history = f"{today}: SoS version {prior_sos.product_version} created by Confluence version {global_atts_extra['confluence_version']}"
         result_sos.source = f"Module results: {', '.join(self.modules_list)}"
         result_sos.comment = f"{prior_sos.run_type.capitalize()} SoS version includes results from modules: {', '.join(self.modules_list)} and cycle pass observations plus time data from SWOT shapefiles"
         
