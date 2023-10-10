@@ -237,11 +237,11 @@ class Postdiagnostics(AbstractModule):
         b_grp = pd_grp.createGroup("basin")
         b_grp.createDimension("basin_num_algos", None)
         
-        bna_v = b_grp.createVariable("basin_num_algos", "i4", ("basin_num_algos",))
+        bna_v = b_grp.createVariable("basin_num_algos", "i4", ("basin_num_algos",), compression="zlib")
         bna_v[:] = range(1, data_dict["basin_num_algos"] + 1)
         self.set_variable_atts(bna_v, metadata_json["postdiagnostics"]["basin"]["basin_num_algos"])
         
-        ban_v = b_grp.createVariable("basin_algo_names", "S1", ("basin_num_algos", "nchar"))
+        ban_v = b_grp.createVariable("basin_algo_names", "S1", ("basin_num_algos", "nchar"), compression="zlib")
         ban_v[:] = stringtochar(np.array(data_dict["basin_algo_names"], dtype="S10"))
         self.set_variable_atts(ban_v, metadata_json["postdiagnostics"]["basin"]["basin_algo_names"])
         
@@ -256,11 +256,11 @@ class Postdiagnostics(AbstractModule):
         r_grp = pd_grp.createGroup("reach")
         r_grp.createDimension("reach_num_algos", None)
         
-        rna_v = r_grp.createVariable("reach_num_algos", "i4", ("reach_num_algos",))
+        rna_v = r_grp.createVariable("reach_num_algos", "i4", ("reach_num_algos",), compression="zlib")
         rna_v[:] = range(1, data_dict["reach_num_algos"] + 1)
         self.set_variable_atts(rna_v, metadata_json["postdiagnostics"]["reach"]["reach_num_algos"])
         
-        ran_v = r_grp.createVariable("reach_algo_names", "S1", ("reach_num_algos", "nchar"))
+        ran_v = r_grp.createVariable("reach_algo_names", "S1", ("reach_num_algos", "nchar"), compression="zlib")
         ran_v[:] = stringtochar(np.array(data_dict["reach_algo_names"], dtype="S10"))
         self.set_variable_atts(ran_v, metadata_json["postdiagnostics"]["reach"]["reach_algo_names"])
         

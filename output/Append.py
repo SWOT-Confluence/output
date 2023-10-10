@@ -183,7 +183,7 @@ class Append:
         result_sos.createDimension("num_observations", self.pass_no.shape[0])
         
         # Global variable(s)
-        obs_var = result_sos.createVariable("observations", "i4", ("num_observations"), fill_value=self.INT_FILL_VALUE)
+        obs_var = result_sos.createVariable("observations", "i4", ("num_observations"), fill_value=self.INT_FILL_VALUE, compression="zlib")
         set_variable_atts(obs_var, self.metadata_json["observations"]["observations"])
         obs_var[:] = self.pass_no
 
@@ -380,19 +380,19 @@ def write_reaches(prior_sos, result_sos, metadata_json):
     sos_reach = result_sos.createGroup("reaches")
     
     # Reach ID
-    reach_var = sos_reach.createVariable("reach_id", "i8", ("num_reaches",))
+    reach_var = sos_reach.createVariable("reach_id", "i8", ("num_reaches",), compression="zlib")
     reach_var.setncatts(prior_sos["reaches"]["reach_id"].__dict__)
     reach_var[:] = prior_sos["reaches"]["reach_id"][:]
     set_variable_atts(reach_var, metadata_json["reaches"]["reach_id"]) 
     
     # Latitude
-    x = sos_reach.createVariable("x", "f8", ("num_reaches"),)
+    x = sos_reach.createVariable("x", "f8", ("num_reaches"), compression="zlib")
     x.setncatts(prior_sos["reaches"]["x"].__dict__)
     x[:] = prior_sos["reaches"]["x"][:]
     set_variable_atts(x, metadata_json["reaches"]["x"])
     
     # Longitude
-    y = sos_reach.createVariable("y", "f8", ("num_reaches"),)
+    y = sos_reach.createVariable("y", "f8", ("num_reaches"), compression="zlib")
     y.setncatts(prior_sos["reaches"]["y"].__dict__)
     y[:] = prior_sos["reaches"]["y"][:]
     set_variable_atts(y, metadata_json["reaches"]["y"])
@@ -410,25 +410,25 @@ def write_nodes(prior_sos, result_sos, metadata_json):
     sos_node = result_sos.createGroup("nodes")
     
     # Node ID
-    node_var = sos_node.createVariable("node_id", "i8", ("num_nodes",))
+    node_var = sos_node.createVariable("node_id", "i8", ("num_nodes",), compression="zlib")
     node_var.setncatts(prior_sos["nodes"]["node_id"].__dict__)
     node_var[:] = prior_sos["nodes"]["node_id"][:]
     set_variable_atts(node_var, metadata_json["nodes"]["reach_id"])
     
     # Reach ID
-    reach_var = sos_node.createVariable("reach_id", "i8", ("num_nodes",))
+    reach_var = sos_node.createVariable("reach_id", "i8", ("num_nodes",), compression="zlib")
     reach_var.setncatts(prior_sos["nodes"]["reach_id"].__dict__)
     reach_var[:] = prior_sos["nodes"]["reach_id"][:]
     set_variable_atts(reach_var, metadata_json["nodes"]["reach_id"])
     
     # Latitude
-    x = sos_node.createVariable("x", "f8", ("num_nodes"),)
+    x = sos_node.createVariable("x", "f8", ("num_nodes"), compression="zlib")
     x.setncatts(prior_sos["nodes"]["x"].__dict__)
     x[:] = prior_sos["nodes"]["x"][:]
     set_variable_atts(x, metadata_json["nodes"]["x"])
     
     # Longitude
-    y = sos_node.createVariable("y", "f8", ("num_nodes"),)
+    y = sos_node.createVariable("y", "f8", ("num_nodes"), compression="zlib")
     y.setncatts(prior_sos["nodes"]["y"].__dict__)
     y[:] = prior_sos["nodes"]["y"][:]
     set_variable_atts(y, metadata_json["nodes"]["y"])

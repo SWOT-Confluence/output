@@ -85,7 +85,7 @@ class Priors(AbstractModule):
             pri_grp.createDimension(name, dimension.size if not dimension.isunlimited() else None)
         # Variables
         for name, variable in data_dict["variables"]:
-            v = pri_grp.createVariable(name, variable.datatype, variable.dimensions)
+            v = pri_grp.createVariable(name, variable.datatype, variable.dimensions, compression="zlib")
             v.setncatts(self.sos["model"][name].__dict__)
             v[:] = self.sos["model"][name][:]
             self.set_variable_atts(v, metadata_json["priors"][name])
