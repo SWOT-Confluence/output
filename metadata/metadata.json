@@ -3,6 +3,8 @@
         "title": "SWOT Confluence processing outputs.",
         "summary": "All of the outputs from all processes used to generate SWOT discahrge products.",
         "keywords": "Rivers/Streams, Discharge/Flow, SWOT",
+        "platform": "SWOT",
+        "instrument": "KaRIn",
         "processing_level": "L4",
         "references": "https://github.com/SWOT-Confluence",
         "creator_name": "JPL PO.DAAC",
@@ -51,7 +53,6 @@
         "beta": {
             "long_name": "exponent for the Strickler power law",
             "comment": "Exponent of the Strickler law : K=alpha*h**beta",
-            "units": "-",
             "valid_min": -100,
             "valid_max": 100
         },
@@ -88,7 +89,6 @@
         "x1hat": {
             "long_name": "Manning power law exponent",
             "comment": "exponent for the manning coefficient power law",
-            "units": "-",
             "valid_min": -100,
             "valid_max": 100
         },
@@ -119,7 +119,6 @@
             "n": {
                 "long_name": "temporally constant Manning's n for geoBAM",
                 "comment": "time-constant Manning's n",
-                "units": "-",
                 "valid_min": 0.01,
                 "valid_max": 1
             },
@@ -163,7 +162,6 @@
             "beta": {
                 "long_name": "exponent for the Strickler power law",
                 "comment": "Exponent of the Strickler law : K=alpha*h**beta",
-                "units": "-",
                 "valid_min": -100,
                 "valid_max": 100
             },
@@ -207,7 +205,6 @@
             "x1": {
                 "long_name": "Manning power law exponent",
                 "comment": "exponent for the manning coefficient power law",
-                "units": "-",
                 "valid_min": -100,
                 "valid_max": 100
             },
@@ -795,11 +792,11 @@
             "valid_max": 999999999999
         },
         "observations": {
-            "long_name": "indicates cycle pass observations",
-            "comment": "Flag that indicates node was observed during specific pass.",
+            "long_name": "cycle pass observations",
+            "comment": "Pass numbers associated with observations for each node..",
             "units": "pass",
-            "valid_min": 0,
-            "valid_max": 1
+            "valid_min": 1,
+            "valid_max": 584
         },
         "x": {
             "long_name": "longitude",
@@ -936,19 +933,25 @@
                 "long_name": "realism_flags",
                 "comment": "flag to check if flows are realistic",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "realistic not_realistic"
             },
             "prepost_flags": {
                 "long_name": "prepostdiagnostic_flags",
                 "comment": "flag to check if the flows are wildly different between priors and posteriors",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "minimal_change change_larger_than_tolerance"
             },
             "stability_flags": {
                 "long_name": "stability_flags",
                 "comment": "flag to check if the flows are wildly different from one Confluence run to the next",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "minimal_change change_larger_than_tolerance"
             }
         },
         "reach": {
@@ -966,13 +969,17 @@
                 "long_name": "realism_flags",
                 "comment": "flag to check if flows are realistiic",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "realistic not_realistic"
             },
             "stability_flags": {
                 "long_name": "stability_flags",
                 "comment": "flag to check if the flows are wildly different from one Confluence run to hte next",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "minimal_change change_larger_than_tolerance"
             }
         }
     },
@@ -982,13 +989,18 @@
                 "long_name": "climatological_ice_flag",
                 "comment": "Climatological ice cover flag indicating whether the node is ice-covered on the day of the observation based on external climatological information (not the SWOT measurement).",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1 2",
+                "flag_meanings": "no_ice_cover uncertain_ice_cover full_ice_cover"
+                
             },
             "ice_dyn_f": {
                 "long_name": "dynamic_ice_flag",
                 "comment": "Dynamic ice cover flag indicating whether the surface is ice-covered on the day of the observation based on analysis of external satellite optical data. Values of 0, 1, and 2 indicate that the node is not ice covered, partially ice covered, and fully ice covered, respectively.",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1 2",
+                "flag_meanings": "no_ice_cover partial_ice_cover full_ice_cover"
             },
             "dark_frac": {
                 "long_name": "dark_water_fraction",
@@ -1012,19 +1024,25 @@
                 "long_name": "width_observations_outliers",
                 "comment": "Outliers detected in width observations.",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten"
             },
             "wse_outliers": {
                 "long_name": "wse_observations_outliers",
                 "comment": "Outliers detected in wse observations.",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten"
             },
             "slope2_outliers": {
                 "long_name": "slope2_observations_outliers",
                 "comment": "Outliers detected in slope2 observations.",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten"
             }
         },
         "node": {
@@ -1032,13 +1050,17 @@
                 "long_name": "climatological_ice_flag",
                 "comment": "Climatological ice cover flag indicating whether the node is ice-covered on the day of the observation based on external climatological information (not the SWOT measurement).",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1 2",
+                "flag_meanings": "no_ice_cover uncertain_ice_cover full_ice_cover"
             },
             "ice_dyn_f": {
                 "long_name": "dynamic_ice_flag",
                 "comment": "Dynamic ice cover flag indicating whether the surface is ice-covered on the day of the observation based on analysis of external satellite optical data. Values of 0, 1, and 2 indicate that the node is not ice covered, partially ice covered, and fully ice covered, respectively.",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1 2",
+                "flag_meanings": "no_ice_cover partial_ice_cover full_ice_cover"
             },
             "dark_frac": {
                 "long_name": "dark_water_fraction",
@@ -1050,19 +1072,25 @@
                 "long_name": "width_observations_outliers",
                 "comment": "Outliers detected in width observations.",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten"
             },
             "wse_outliers": {
                 "long_name": "wse_observations_outliers",
                 "comment": "Outliers detected in wse observations.",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten"
             },
             "slope2_outliers": {
                 "long_name": "slope2_observations_outliers",
                 "comment": "Outliers detected in slope2 observations.",
                 "valid_min": 0,
-                "valid_max": 1
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten"
             }
         }
     },
@@ -1127,7 +1155,9 @@
             "long_name": "GRADES Area_Estimation_Flag",
             "comment": "This cell was not a good match. Data has been scaled by difference in flow accumulation area.",
             "valid_min": 0,
-            "valid_max": 1
+            "valid_max": 1,
+            "flag_values": "0 1",
+            "flag_meanings": "match no_match"
         },
         "comid": {
             "long_name": "COMID",
@@ -1176,11 +1206,11 @@
             "valid_max": 999999999999
         },
         "observations": {
-            "long_name": "indicates cycle pass observations",
-            "comment": "Flag that indicates reach was observed during specific pass.",
+            "long_name": "cycle pass observations",
+            "comment": "Pass numbers associated with observations for each reach.",
             "units": "pass",
-            "valid_min": 0,
-            "valid_max": 1
+            "valid_min": 1,
+            "valid_max": 584
         },
         "x": {
             "long_name": "longitude",
