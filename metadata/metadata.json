@@ -3,10 +3,20 @@
         "title": "SWOT Confluence processing outputs.",
         "summary": "All of the outputs from all processes used to generate SWOT discahrge products.",
         "keywords": "Rivers/Streams, Discharge/Flow, SWOT",
+        "keywords_vocabulary": "NASA Global Change Master Directory (GCMD) Science Keywords",
+        "doi": "DOI TO REGISTER TBD",
+        "id": "SWOT_L4_DAWG_SOS_DISCHARGE",
+        "naming_authority": "gov.nasa",
+        "standard_name_vocabulary": "CF Standard Name Table v72",
+        "featureType": "timeseries",
         "platform": "SWOT",
+        "platform_vocabulary": "GCMD platform keywords",
         "instrument": "KaRIn",
+        "instrument_vocabulary": "GCMD instrument keywords",
         "processing_level": "L4",
-        "references": "https://github.com/SWOT-Confluence",
+        "Conventions": "CF-1.8, ACDD-1.3",
+        "acknowledgement": "Acknowledgements go to AIST Project Number 80NSSC22K1487, NASA SWOT Science Team Grant Numbers: 80NSSC20K1143, 80NSSC20K1141, 80NSSC20K1340 and CNES SWOT TOSCA fund for the SWOT DAHM project. Additional support from PO.DAAC and SWOT project.",
+        "references": "Confluence codebase: https://github.com/SWOT-Confluence; A Framework for Estimating Global River Discharge From the Surface Water and Ocean Topography Satellite Mission: https://doi.org/10.1029/2021WR031614",
         "creator_name": "JPL PO.DAAC",
         "creator_email": "podaac@podaac.jpl.nasa",
         "creator_url": "http://podaac.jpl.nasa.gov/",
@@ -20,8 +30,10 @@
         "publisher_url": "http://podaac.jpl.nasa.gov/",
         "publisher_type": "Institution",
         "publisher_institution": "JPL PO.DAAC",
+        "metadata_link": "FULL DOI URL TBD",
         "geospatial_lat_units": "degree",
-        "geospatial_lon_units": "degree"
+        "geospatial_lon_units": "degree",
+        "license": "Issued under Creative Commons CC BY 4.0: https://creativecommons.org/licenses/by/4.0/"
     },
     "global_attributes_extra": {
         "confluence_version": "0.1.0"
@@ -43,7 +55,7 @@
             "units": "m^2",
             "valid_min": 0.1,
             "valid_max": 1000000000,
-            "coverage_content_type": "auxillaryInformation"
+            "coverage_content_type": "modelResult"
         },
         "Q": {
             "long_name": "discharge",
@@ -51,14 +63,14 @@
             "units": "m^3/s",
             "valid_min": 0,
             "valid_max": 100000000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "beta": {
             "long_name": "exponent for the Strickler power law",
             "comment": "Exponent of the Strickler law : K=alpha*h**beta",
             "valid_min": -100,
             "valid_max": 100,
-            "coverage_content_type": "auxillaryInformation"
+            "coverage_content_type": "modelResult"
         },
         "alpha": {
             "long_name": "coefficient for the Strickler power law",
@@ -66,7 +78,7 @@
             "units": "M^(1/3)/s",
             "valid_min": 1,
             "valid_max": 100,
-            "coverage_content_type": "auxillaryInformation"
+            "coverage_content_type": "modelResult"
         }
     },
     "metroman": {
@@ -76,7 +88,7 @@
             "units": "m^3/s",
             "valid_min": -10000000,
             "valid_max": 10000000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "A0hat": {
             "long_name": "unobserved cross-sectional area",
@@ -84,7 +96,7 @@
             "units": "m^2",
             "valid_min": 0.1,
             "valid_max": 1000000,
-            "coverage_content_type": "auxillaryInformation"
+            "coverage_content_type": "modelResult"
         },
         "nahat": {
             "long_name": "Manning power law coefficient",
@@ -92,14 +104,14 @@
             "units": "M^(-1/3)*s",
             "valid_min": 0.000001,
             "valid_max": 100,
-            "coverage_content_type": "auxillaryInformation"
+            "coverage_content_type": "modelResult"
         },
         "x1hat": {
             "long_name": "Manning power law exponent",
             "comment": "exponent for the manning coefficient power law",
             "valid_min": -100,
             "valid_max": 100,
-            "coverage_content_type": "auxillaryInformation"
+            "coverage_content_type": "modelResult"
         },
         "q_u": {
             "long_name": "discharge uncertainty",
@@ -107,7 +119,7 @@
             "units": "m^3/s",
             "valid_min": 0.000001,
             "valid_max": 10000000,
-            "coverage_content_type": "?"
+            "coverage_content_type": "modelResult"
         }
     },
     "moi": {
@@ -118,7 +130,7 @@
                 "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 1000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "a0": {
                 "long_name": "back-calculated A0 to match SWOT discharge philosohpy",
@@ -126,14 +138,14 @@
                 "units": "m^2",
                 "valid_min": 0,
                 "valid_max": 1000000,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "n": {
                 "long_name": "temporally constant Manning's n for geoBAM",
                 "comment": "time-constant Manning's n",
                 "valid_min": 0.01,
                 "valid_max": 1,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "qbar_reachScale": {
                 "long_name": "average discharge computed in stage 1 (reach scale)",
@@ -141,7 +153,7 @@
                 "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 1000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "qbar_basinScale": {
                 "long_name": "average discharge computed in stage 2 (basin scale)",
@@ -149,7 +161,7 @@
                 "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 1000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             }
         },
         "hivdi": {
@@ -159,7 +171,7 @@
                 "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "Abar": {
                 "long_name": "unobserved cross-sectional area",
@@ -167,7 +179,7 @@
                 "units": "m^2",
                 "valid_min": 0.1,
                 "valid_max": 1000000000,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "alpha": {
                 "long_name": "coefficient for the Strickler power law",
@@ -175,14 +187,14 @@
                 "units": "M^(1/3)/s",
                 "valid_min": 1,
                 "valid_max": 100,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "beta": {
                 "long_name": "exponent for the Strickler power law",
                 "comment": "Exponent of the Strickler law : K=alpha*h**beta",
                 "valid_min": -100,
                 "valid_max": 100,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "qbar_reachScale": {
                 "long_name": "time average of the reach scale (stage 1) discharge estimates ",
@@ -190,7 +202,7 @@
                 "units": "m3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "qbar_basinScale": {
                 "long_name": "time average of the basin scale (stage 2) discharge estimates ",
@@ -198,7 +210,7 @@
                 "units": "m3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             }
         },
         "metroman": {
@@ -208,7 +220,7 @@
                 "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "Abar": {
                 "long_name": "unobserved cross-sectional area",
@@ -216,7 +228,7 @@
                 "units": "m^2",
                 "valid_min": 0.1,
                 "valid_max": 1000000000,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "na": {
                 "long_name": "Manning power law coefficient",
@@ -224,14 +236,14 @@
                 "units": "M^(-1/3)*s",
                 "valid_min": 0.000001,
                 "valid_max": 100,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "x1": {
                 "long_name": "Manning power law exponent",
                 "comment": "exponent for the manning coefficient power law",
                 "valid_min": -100,
                 "valid_max": 100,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "qbar_reachScale": {
                 "long_name": "stage 1 reach scale average discharge",
@@ -239,7 +251,7 @@
                 "units": "m^3/s",
                 "valid_min": -10000000,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "qbar_basinScale": {
                 "long_name": "stage 2 reach scale average discharge",
@@ -247,7 +259,7 @@
                 "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             }
         },
         "momma": {
@@ -257,7 +269,7 @@
                 "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "B": {
                 "long_name": "river bottom elevation",
@@ -265,7 +277,7 @@
                 "units": "m",
                 "valid_min": 0,
                 "valid_max": 999999,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "H": {
                 "long_name": "bank height elevation",
@@ -273,7 +285,7 @@
                 "units": "m",
                 "valid_min": 0,
                 "valid_max": 999999,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "Save": {
                 "long_name": "average slope",
@@ -281,7 +293,7 @@
                 "units": "m/m",
                 "valid_min": -0.001,
                 "valid_max": 0.1,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "qbar_reachScale": {
                 "long_name": "time average of the reach scale (stage 1) discharge estimates ",
@@ -289,7 +301,7 @@
                 "units": "m3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "qbar_basinScale": {
                 "long_name": "time average of the basin scale (stage 2) discharge estimates ",
@@ -297,7 +309,7 @@
                 "units": "m3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             }
         },
         "sad": {
@@ -307,7 +319,7 @@
                 "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "a0": {
                 "long_name": "unobserved cross sectional area",
@@ -315,14 +327,14 @@
                 "units": "m^2",
                 "valid_min": 0.1,
                 "valid_max": 1000000000,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "n": {
                 "long_name": "Manning's roughness coefficient",
                 "comment": "Manning's roughness coefficient",
                 "valid_min": 0.0001,
                 "valid_max": 1,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "qbar_reachScale": {
                 "long_name": "time average of the reach scale (stage 1) discharge estimates ",
@@ -330,7 +342,7 @@
                 "units": "m3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "qbar_basinScale": {
                 "long_name": "time average of the basin scale (stage 2) discharge estimates ",
@@ -338,7 +350,7 @@
                 "units": "m3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             }
         },
         "sic4dvar": {
@@ -348,7 +360,7 @@
                 "units": "placeholder",
                 "valid_min": -998,
                 "valid_max": 999999999999,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "a0": {
                 "long_name": "unobserved cross-sectional area",
@@ -356,7 +368,7 @@
                 "units": "m^2",
                 "valid_min": 0.1,
                 "valid_max": 1000000,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "n": {
                 "long_name": "Manning's roughness coefficient",
@@ -364,7 +376,7 @@
                 "units": "s/m^(1/3)",
                 "valid_min": 0.005,
                 "valid_max": 500,
-                "coverage_content_type": "auxillaryInformation"
+                "coverage_content_type": "modelResult"
             },
             "qbar_reachScale": {
                 "long_name": "time average of the reach scale (stage 1) discharge estimates ",
@@ -372,7 +384,7 @@
                 "units": "m3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "qbar_basinScale": {
                 "long_name": "time average of the basin scale (stage 2) discharge estimates ",
@@ -380,7 +392,7 @@
                 "units": "m3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             }
         }
     },
@@ -390,252 +402,288 @@
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "width": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "slope": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "Qgage": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "seg": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "n": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "Y": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "v": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "Q": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "Q_constrained": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "gage_constrained": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "input_Qm_prior": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "input_Qb_prior": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "input_Yb_prior": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "input_known_ezf": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "input_known_bkfl_stage": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "input_known_nb_seg1": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "input_known_x_seg1": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "Qgage_constrained_nb_seg1": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "Qgage_constrained_x_seg1": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "input_known_nb_seg2": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "input_known_x_seg2": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "Qgage_constrained_nb_seg2": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "Qgage_constrained_x_seg2": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "n_bkfl_Qb_prior": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "n_bkfl_slope": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "vel_bkfl_Qb_prior": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "Froude_bkfl_diag_Smean": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "width_bkfl_solved_obs": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "depth_bkfl_solved_obs": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "depth_bkfl_diag_Wb_Smean": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "zero_flow_stage": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "bankfull_stage": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "Qmean_prior": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "Qmean_momma": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         },
         "Qmean_momma.constrained": {
             "long_name": "placeholder",
             "comment": "placeholder",
             "units": "placeholder",
             "valid_min": -998,
-            "valid_max": 999999999999
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
         }
     },
     "neobam": {
@@ -645,42 +693,48 @@
                 "comment": "chain 1 mean bankfull depth from neobam",
                 "valid_min": -1,
                 "valid_max": 7,
-                "coverage_content_type": "physicalMeasurement"
+                "units": "m",
+                "coverage_content_type": "modelResult"
             },
             "mean2": {
                 "long_name": "chain 2 mean bankfull depth from neobam",
                 "comment": "chain 2 mean bankfull depth from neobam",
                 "valid_min": -1,
                 "valid_max": 7,
-                "coverage_content_type": "physicalMeasurement"
+                "units": "m",
+                "coverage_content_type": "modelResult"
             },
             "mean3": {
                 "long_name": "chain 3 mean bankfull depth from neobam",
                 "comment": "chain 3 mean bankfull depth from neobam",
                 "valid_min": -1,
                 "valid_max": 7,
-                "coverage_content_type": "physicalMeasurement"
+                "units": "m",
+                "coverage_content_type": "modelResult"
             },
             "sd1": {
                 "long_name": "chain 1 sigma bankfull depth from neobam",
                 "comment": "chain 1 sigma bankfull depth from neobam",
                 "valid_min": -1,
                 "valid_max": 7,
-                "coverage_content_type": "qualityInformation"
+                "units": "m",
+                "coverage_content_type": "modelResult"
             },
             "sd2": {
                 "long_name": "chain 2 sigma bankfull depth from neobam",
                 "comment": "chain 2 sigma bankfull depth from neobam",
                 "valid_min": -1,
                 "valid_max": 7,
-                "coverage_content_type": "qualityInformation"
+                "units": "m",
+                "coverage_content_type": "modelResult"
             },
             "sd3": {
                 "long_name": "chain 3 sigma bankfull depth from neobam",
                 "comment": "chain 3 sigma bankfull depth from neobam",
                 "valid_min": -1,
                 "valid_max": 7,
-                "coverage_content_type": "qualityInformation"
+                "units": "m",
+                "coverage_content_type": "modelResult"
             }
         },
         "logn": {
@@ -689,42 +743,42 @@
                 "comment": "chain 1 mean n from neobam",
                 "valid_min": -8,
                 "valid_max": 0,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "mean2": {
                 "long_name": "chain 2 mean n from neobam",
                 "comment": "chain 2 mean n from neobam",
                 "valid_min": -8,
                 "valid_max": 0,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "mean3": {
                 "long_name": "chain 3 mean n from neobam",
                 "comment": "chain 3 mean n from neobam",
                 "valid_min": -8,
                 "valid_max": 0,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "sd1": {
                 "long_name": "chain 1 sigma n from neobam",
                 "comment": "chain 1 sigma n from neobam",
                 "valid_min": -8,
                 "valid_max": 0,
-                "coverage_content_type": "qualityInformation"
+                "coverage_content_type": "modelResult"
             },
             "sd2": {
                 "long_name": "chain 2 sigma n from neobam",
                 "comment": "chain 2 sigma n from neobam",
                 "valid_min": -8,
                 "valid_max": 0,
-                "coverage_content_type": "qualityInformation"
+                "coverage_content_type": "modelResult"
             },
             "sd3": {
                 "long_name": "chain 3 sigma n from neobam",
                 "comment": "chain 3 sigma n from neobam",
                 "valid_min": -8,
                 "valid_max": 0,
-                "coverage_content_type": "qualityInformation"
+                "coverage_content_type": "modelResult"
             }
         },
         "logWb": {
@@ -733,42 +787,48 @@
                 "comment": "chain 1 mean bankfull width",
                 "valid_min": -1,
                 "valid_max": 7,
-                "coverage_content_type": "physicalMeasurement"
+                "units": "m",
+                "coverage_content_type": "modelResult"
             },
             "mean2": {
                 "long_name": "chain 2 mean bankfull width",
                 "comment": "chain 2 mean bankfull width",
                 "valid_min": -1,
                 "valid_max": 7,
-                "coverage_content_type": "physicalMeasurement"
+                "units": "m",
+                "coverage_content_type": "modelResult"
             },
             "mean3": {
                 "long_name": "chain 3 mean bankfull width",
                 "comment": "chain 3 mean bankfull width",
                 "valid_min": -1,
                 "valid_max": 7,
-                "coverage_content_type": "physicalMeasurement"
+                "units": "m",
+                "coverage_content_type": "modelResult"
             },
             "sd1": {
                 "long_name": "chain 1 sigma bankfull width",
                 "comment": "chain 1 sigma bankfull width",
                 "valid_min": -1,
                 "valid_max": 7,
-                "coverage_content_type": "qualityInformation"
+                "units": "m",
+                "coverage_content_type": "modelResult"
             },
             "sd2": {
                 "long_name": "chain 2 sigma bankfull width",
                 "comment": "chain 2 sigma bankfull width",
                 "valid_min": -1,
                 "valid_max": 7,
-                "coverage_content_type": "qualityInformation"
+                "units": "m",
+                "coverage_content_type": "modelResult"
             },
             "sd3": {
                 "long_name": "chain 3 sigma bankfull width",
                 "comment": "chain 3 sigma bankfull width",
                 "valid_min": -1,
                 "valid_max": 7,
-                "coverage_content_type": "qualityInformation"
+                "units": "m",
+                "coverage_content_type": "modelResult"
             }
         },
         "r": {
@@ -777,42 +837,42 @@
                 "comment": "r defined following Dingman 2007 JoH",
                 "valid_min": 0,
                 "valid_max": 100,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "mean2": {
                 "long_name": "chain 2 mean r",
                 "comment": "r defined following Dingman 2007 JoH",
                 "valid_min": 0,
                 "valid_max": 100,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "mean3": {
                 "long_name": "chain 3 mean r",
                 "comment": "r defined following Dingman 2007 JoH",
                 "valid_min": 0,
                 "valid_max": 100,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "modelResult"
             },
             "sd1": {
                 "long_name": "chain 1 sigma r",
                 "comment": "r defined following Dingman 2007 JoH",
                 "valid_min": 0,
                 "valid_max": 100,
-                "coverage_content_type": "qualityInformation"
+                "coverage_content_type": "modelResult"
             },
             "sd2": {
                 "long_name": "chain 2 sigma r",
                 "comment": "r defined following Dingman 2007 JoH",
                 "valid_min": 0,
                 "valid_max": 100,
-                "coverage_content_type": "qualityInformation"
+                "coverage_content_type": "modelResult"
             },
             "sd3": {
                 "long_name": "chain 3 sigma r",
                 "comment": "r defined following Dingman 2007 JoH",
                 "valid_min": 0,
                 "valid_max": 100,
-                "coverage_content_type": "qualityInformation"
+                "coverage_content_type": "modelResult"
             }
         },
         "q": {
@@ -821,21 +881,24 @@
                 "comment": "timeseries",
                 "valid_min": 0,
                 "valid_max": 1000000,
-                "coverage_content_type": "physicalMeasurement"
+                "units": "m^3s^-1",
+                "coverage_content_type": "modelResult"
             },
             "q2": {
                 "long_name": "chain 2 discharge",
                 "comment": "timeseries",
                 "valid_min": 0,
                 "valid_max": 1000000,
-                "coverage_content_type": "physicalMeasurement"
+                "units": "m^3s^-1",
+                "coverage_content_type": "modelResult"
             },
             "q3": {
                 "long_name": "chain 3 discharge",
                 "comment": "timeseries",
                 "valid_min": 0,
                 "valid_max": 1000000,
-                "coverage_content_type": "physicalMeasurement"
+                "units": "m^3s^-1",
+                "coverage_content_type": "modelResult"
             }
         }
     },
@@ -901,7 +964,7 @@
             "units": "m^2",
             "valid_min": -10000000,
             "valid_max": 10000000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "d_x_area_u": {
             "long_name": "total uncertainty of the change in the cross-sectional area",
@@ -909,7 +972,7 @@
             "units": "m^2",
             "valid_min": -10000000,
             "valid_max": 10000000,
-            "coverage_content_type": "?"
+            "coverage_content_type": "modelResult"
         },
         "metro_q_c": {
             "long_name": "gauge-constrained MetroMan discharge",
@@ -917,7 +980,7 @@
             "units": "m^3/s",
             "valid_min": -10000000,
             "valid_max": 10000000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "bam_q_c": {
             "long_name": "gauge-constrained BAM discharge",
@@ -925,7 +988,7 @@
             "units": "m^3/s",
             "valid_min": -10000000,
             "valid_max": 10000000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "hivdi_q_c": {
             "long_name": "gauge-constrained HiVDI discharge",
@@ -933,7 +996,7 @@
             "units": "m^3/s",
             "valid_min": -10000000,
             "valid_max": 10000000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "momma_q_c": {
             "long_name": "gauge-constrained MOMMA discharge",
@@ -941,7 +1004,7 @@
             "units": "m^3/s",
             "valid_min": -10000000,
             "valid_max": 10000000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "sads_q_c": {
             "long_name": "gauge-constrained SADS discharge",
@@ -949,7 +1012,7 @@
             "units": "m^3/s",
             "valid_min": -10000000,
             "valid_max": 10000000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "consensus_q_c": {
             "long_name": "gauge-constrained consensus discharge",
@@ -957,7 +1020,7 @@
             "units": "m^3/s",
             "valid_min": -10000000,
             "valid_max": 10000000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "metro_q_uc": {
             "long_name": "MetroMan discharge",
@@ -965,7 +1028,7 @@
             "units": "m^3/s",
             "valid_min": -998,
             "valid_max": 999999999999,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "bam_q_uc": {
             "long_name": "BAM discharge",
@@ -973,7 +1036,7 @@
             "units": "m^3/s",
             "valid_min": -998,
             "valid_max": 999999999999,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "hivdi_q_uc": {
             "long_name": "HiVDI discharge",
@@ -981,7 +1044,7 @@
             "units": "m^3/s",
             "valid_min": -998,
             "valid_max": 999999999999,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "momma_q_uc": {
             "long_name": "MOMMA discharge",
@@ -989,7 +1052,7 @@
             "units": "m^3/s",
             "valid_min": -998,
             "valid_max": 999999999999,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "sads_q_uc": {
             "long_name": "SADS discharge",
@@ -997,7 +1060,7 @@
             "units": "m^3/s",
             "valid_min": -998,
             "valid_max": 999999999999,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "consensus_q_uc": {
             "long_name": "consensus discharge",
@@ -1005,7 +1068,7 @@
             "units": "m^3/s",
             "valid_min": -998,
             "valid_max": 999999999999,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         }
     },
     "postdiagnostics": {
@@ -1176,7 +1239,7 @@
                 "comment": "Fraction of node area_total covered by dark water.",
                 "valid_min": 0,
                 "valid_max": 1,
-                "coverage_content_type": "qualityInformation"
+                "coverage_content_type": "physicalMeasurement"
             },
             "width_outliers": {
                 "long_name": "width_observations_outliers",
@@ -1214,7 +1277,7 @@
             "units": "month",
             "valid_min": 1,
             "valid_max": 12,
-            "coverage_content_type": "?"
+            "coverage_content_type": "referenceInformation"
         },
         "probability": {
             "long_name": "GRADES Flow_Duration_curve_probability",
@@ -1286,7 +1349,7 @@
             "comment": "ID in the MERIT Hydro system",
             "valid_min": -998,
             "valid_max": 999999999999,
-            "coverage_content_type": "?"
+            "coverage_content_type": "referenceInformation"
         },
         "overwritten_indexes": {
             "long_name": "overwritten priors indexes",
@@ -1371,14 +1434,14 @@
             "units": "m^2",
             "valid_min": 0.1,
             "valid_max": 1000000000,
-            "coverage_content_type": "auxillaryInformation"
+            "coverage_content_type": "modelResult"
         },
         "n": {
             "long_name": "Manning's roughness coefficient",
             "comment": "Manning's roughness coefficient",
             "valid_min": 0.0001,
             "valid_max": 1,
-            "coverage_content_type": "auxillaryInformation "
+            "coverage_content_type": "modelResult"
         },
         "Qa": {
             "long_name": "Mean discharge",
@@ -1386,7 +1449,7 @@
             "units": "m^3/s",
             "valid_min": 0,
             "valid_max": 1000000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "Q_u": {
             "long_name": "Discharge standard deviation",
@@ -1394,7 +1457,7 @@
             "units": "m^3/s",
             "valid_min": 0,
             "valid_max": 1000000,
-            "coverage_content_type": "?"
+            "coverage_content_type": "modelResult"
         }
     },
     "sic4dvar": {
@@ -1404,7 +1467,7 @@
             "units": "m^2",
             "valid_min": 0.1,
             "valid_max": 1000000,
-            "coverage_content_type": "auxillaryInformation"
+            "coverage_content_type": "modelResult"
         },
         "n": {
             "long_name": "Manning's roughness coefficient",
@@ -1412,7 +1475,7 @@
             "units": "s/m^(1/3)",
             "valid_min": 0.000001,
             "valid_max": 500,
-            "coverage_content_type": "auxillaryInformation"
+            "coverage_content_type": "modelResult"
         },
         "Q_da": {
             "long_name": "Computed discharge using data assimilation",
@@ -1420,7 +1483,7 @@
             "units": "m^3/s",
             "valid_min": 0,
             "valid_max": 10000000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "Q_mm": {
             "long_name": "Computed discharge using optimization of modified Manning's equation",
@@ -1428,7 +1491,7 @@
             "units": "m^3/s",
             "valid_min": 0,
             "valid_max": 10000000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "elevation": {
             "long_name": "elevation",
@@ -1436,7 +1499,7 @@
             "units": "m",
             "valid_min": -1000,
             "valid_max": 10000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "width": {
             "long_name": "width",
@@ -1444,7 +1507,7 @@
             "units": "m",
             "valid_min": 0.1,
             "valid_max": 1000000,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "modelResult"
         },
         "Q_u": {
             "long_name": "Discharge standard deviation",
@@ -1452,7 +1515,7 @@
             "units": "m^3/s",
             "valid_min": 0,
             "valid_max": 1000000,
-            "coverage_content_type": "?"
+            "coverage_content_type": "modelResult"
         }
     },
     "validation": {
