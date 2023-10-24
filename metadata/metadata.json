@@ -15,7 +15,7 @@
         "instrument_vocabulary": "GCMD instrument keywords",
         "processing_level": "L4",
         "Conventions": "CF-1.8, ACDD-1.3",
-        "acknowledgement": "Acknowledgements go to AIST Project Number 80NSSC22K1487, NASA SWOT Science Team Grant Numbers: 80NSSC20K1143, 80NSSC20K1141, 80NSSC20K1340 and CNES SWOT TOSCA fund for the SWOT DAHM project. Additional support from PO.DAAC and SWOT project.",
+        "acknowledgement": "NASA AIST Program Grant Number 80NSSC22K1487, NASA SWOT Science Team Grant Numbers: 80NSSC20K1143, 80NSSC20K1141, 80NSSC20K1340 and CNES SWOT TOSCA fund for the SWOT DAHM project. Additional support from PO.DAAC and the SWOT mission.",
         "references": "Confluence codebase: https://github.com/SWOT-Confluence; A Framework for Estimating Global River Discharge From the Surface Water and Ocean Topography Satellite Mission: https://doi.org/10.1029/2021WR031614",
         "creator_name": "JPL PO.DAAC",
         "creator_email": "podaac@podaac.jpl.nasa",
@@ -42,7 +42,6 @@
         "observations": {
             "long_name": "pass number that indicates cycle/pass observations",
             "comment": "A list of pass numbers that identify each reach and node observation.",
-            "units": "pass",
             "valid_min": 1,
             "valid_max": 584,
             "coverage_content_type": "coordinate"
@@ -75,7 +74,7 @@
         "alpha": {
             "long_name": "coefficient for the Strickler power law",
             "comment": "Coefficient of the Strickler law : K=alpha*h**beta",
-            "units": "M^(1/3)/s",
+            "units": "m^(1/3)/s",
             "valid_min": 1,
             "valid_max": 100,
             "coverage_content_type": "modelResult"
@@ -101,8 +100,8 @@
         "nahat": {
             "long_name": "Manning power law coefficient",
             "comment": "coefficient of the manning's equation power law",
-            "units": "M^(-1/3)*s",
-            "valid_min": 0.000001,
+            "units": "m^(1/3)/s",
+            "valid_min": 1e-06,
             "valid_max": 100,
             "coverage_content_type": "modelResult"
         },
@@ -117,7 +116,7 @@
             "long_name": "discharge uncertainty",
             "comment": "uncertainty calculated as the standard deviation of the Markov Chain",
             "units": "m^3/s",
-            "valid_min": 0.000001,
+            "valid_min": 1e-06,
             "valid_max": 10000000,
             "coverage_content_type": "modelResult"
         }
@@ -157,7 +156,7 @@
             },
             "qbar_basinScale": {
                 "long_name": "average discharge computed in stage 2 (basin scale)",
-                "comment": "Stage 2 algorithm requires average flows to be poisitive",
+                "comment": "Stage 2 algorithm requires average flows to be positive",
                 "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 1000000,
@@ -184,7 +183,7 @@
             "alpha": {
                 "long_name": "coefficient for the Strickler power law",
                 "comment": "Coefficient of the Strickler law : K=alpha*h**beta",
-                "units": "M^(1/3)/s",
+                "units": "m^(1/3)/s",
                 "valid_min": 1,
                 "valid_max": 100,
                 "coverage_content_type": "modelResult"
@@ -233,8 +232,8 @@
             "na": {
                 "long_name": "Manning power law coefficient",
                 "comment": "coefficient of the manning's equation power law",
-                "units": "M^(-1/3)*s",
-                "valid_min": 0.000001,
+                "units": "m^(1/3)/s",
+                "valid_min": 1e-06,
                 "valid_max": 100,
                 "coverage_content_type": "modelResult"
             },
@@ -255,7 +254,7 @@
             },
             "qbar_basinScale": {
                 "long_name": "stage 2 reach scale average discharge",
-                "comment": "Stage 2 algorithm requires average flows to be poisitive",
+                "comment": "Stage 2 algorithm requires average flows to be positive",
                 "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
@@ -298,7 +297,7 @@
             "qbar_reachScale": {
                 "long_name": "time average of the reach scale (stage 1) discharge estimates ",
                 "comment": "average of the timeseries of the  reach scale (stage 1) discharge estimates ",
-                "units": "m3/s",
+                "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
                 "coverage_content_type": "modelResult"
@@ -306,7 +305,7 @@
             "qbar_basinScale": {
                 "long_name": "time average of the basin scale (stage 2) discharge estimates ",
                 "comment": "average of the timeseries of the  basin scale (stage 2) discharge estimates ",
-                "units": "m3/s",
+                "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
                 "coverage_content_type": "modelResult"
@@ -339,7 +338,7 @@
             "qbar_reachScale": {
                 "long_name": "time average of the reach scale (stage 1) discharge estimates ",
                 "comment": "average of the timeseries of the  reach scale (stage 1) discharge estimates ",
-                "units": "m3/s",
+                "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
                 "coverage_content_type": "modelResult"
@@ -347,7 +346,7 @@
             "qbar_basinScale": {
                 "long_name": "time average of the basin scale (stage 2) discharge estimates ",
                 "comment": "average of the timeseries of the  basin scale (stage 2) discharge estimates ",
-                "units": "m3/s",
+                "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
                 "coverage_content_type": "modelResult"
@@ -357,7 +356,6 @@
             "q": {
                 "long_name": "discharge timeseries",
                 "comment": "timeseries of discharge from stage 2 ",
-                "units": "placeholder",
                 "valid_min": -998,
                 "valid_max": 999999999999,
                 "coverage_content_type": "modelResult"
@@ -381,7 +379,7 @@
             "qbar_reachScale": {
                 "long_name": "time average of the reach scale (stage 1) discharge estimates ",
                 "comment": "average of the timeseries of the  reach scale (stage 1) discharge estimates ",
-                "units": "m3/s",
+                "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
                 "coverage_content_type": "modelResult"
@@ -389,301 +387,11 @@
             "qbar_basinScale": {
                 "long_name": "time average of the basin scale (stage 2) discharge estimates ",
                 "comment": "average of the timeseries of the  basin scale (stage 2) discharge estimates ",
-                "units": "m3/s",
+                "units": "m^3/s",
                 "valid_min": 0,
                 "valid_max": 10000000,
                 "coverage_content_type": "modelResult"
             }
-        }
-    },
-    "momma": {
-        "stage": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "width": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "slope": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "Qgage": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "seg": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "n": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "Y": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "v": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "Q": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "Q_constrained": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "gage_constrained": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "input_Qm_prior": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "input_Qb_prior": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "input_Yb_prior": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "input_known_ezf": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "input_known_bkfl_stage": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "input_known_nb_seg1": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "input_known_x_seg1": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "Qgage_constrained_nb_seg1": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "Qgage_constrained_x_seg1": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "input_known_nb_seg2": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "input_known_x_seg2": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "Qgage_constrained_nb_seg2": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "Qgage_constrained_x_seg2": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "n_bkfl_Qb_prior": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "n_bkfl_slope": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "vel_bkfl_Qb_prior": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "Froude_bkfl_diag_Smean": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "width_bkfl_solved_obs": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "depth_bkfl_solved_obs": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "depth_bkfl_diag_Wb_Smean": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "zero_flow_stage": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "bankfull_stage": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "Qmean_prior": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "Qmean_momma": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
-        },
-        "Qmean_momma.constrained": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
-            "coverage_content_type": "modelResult"
         }
     },
     "neobam": {
@@ -881,7 +589,7 @@
                 "comment": "timeseries",
                 "valid_min": 0,
                 "valid_max": 1000000,
-                "units": "m^3s^-1",
+                "units": "m^3/s",
                 "coverage_content_type": "modelResult"
             },
             "q2": {
@@ -889,7 +597,7 @@
                 "comment": "timeseries",
                 "valid_min": 0,
                 "valid_max": 1000000,
-                "units": "m^3s^-1",
+                "units": "m^3/s",
                 "coverage_content_type": "modelResult"
             },
             "q3": {
@@ -897,7 +605,7 @@
                 "comment": "timeseries",
                 "valid_min": 0,
                 "valid_max": 1000000,
-                "units": "m^3s^-1",
+                "units": "m^3/s",
                 "coverage_content_type": "modelResult"
             }
         }
@@ -905,16 +613,14 @@
     "nodes": {
         "node_id": {
             "long_name": "node_identifier",
-            "comment": "Taken from SWORD PDD: id of each node the high- none resolution centerline point is associated with. The format of\nthe id is as follows: CBBBBBRRRRNNNT where\nC = Continent (the first number of the Pfafstetter basin code), B = Remaining Pfafstetter basin codes up to level 6, R = Reach id (assigned sequentially within a level 6 basin starting at the downstream end working upstream), N = Node id (assigned sequentially within a reach starting at the downstream end working upstream), T = Type (1 – river, 3 – lake on river, 4 – dam or waterfall, 5 – unreliable topology, 6 – ghost node)",
-            "units": "placeholder",
+            "comment": "Taken from SWORD PDD: id of each node the high- none resolution centerline point is associated with. The format of\nthe id is as follows: CBBBBBRRRRNNNT where\nC = Continent (the first number of the Pfafstetter basin code), B = Remaining Pfafstetter basin codes up to level 6, R = Reach id (assigned sequentially within a level 6 basin starting at the downstream end working upstream), N = Node id (assigned sequentially within a reach starting at the downstream end working upstream), T = Type (1 \u2013 river, 3 \u2013 lake on river, 4 \u2013 dam or waterfall, 5 \u2013 unreliable topology, 6 \u2013 ghost node)",
             "valid_min": -998,
             "valid_max": 999999999999,
             "coverage_content_type": "referenceInformation"
         },
         "reach_id": {
             "long_name": "reach_identifier",
-            "comment": "Taken from SWORD PDD: id of the reach each node is associated with. The format of the id is as follows: CBBBBBRRRRT where C = Continent (the first number of the Pfafstetter basin code), B = Remaining Pfafstetter basin codes up to level 6, R = Reach id (assigned sequentially within a level 6 basin starting at the downstream end working upstream), T = Type (1 – river, 3 – lake on river, 4 – dam or waterfall, 5 – unreliable topology, 6 – ghost reach)d",
-            "units": "placeholder",
+            "comment": "Taken from SWORD PDD: id of the reach each node is associated with. The format of the id is as follows: CBBBBBRRRRT where C = Continent (the first number of the Pfafstetter basin code), B = Remaining Pfafstetter basin codes up to level 6, R = Reach id (assigned sequentially within a level 6 basin starting at the downstream end working upstream), T = Type (1 \u2013 river, 3 \u2013 lake on river, 4 \u2013 dam or waterfall, 5 \u2013 unreliable topology, 6 \u2013 ghost reach)d",
             "valid_min": -998,
             "valid_max": 999999999999,
             "coverage_content_type": "referenceInformation"
@@ -925,28 +631,27 @@
             "units": "seconds since 2000-01-01 00:00:00.000",
             "valid_min": -998,
             "valid_max": 999999999999,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "coordinate"
         },
         "observations": {
             "long_name": "cycle pass observations",
-            "comment": "Pass numbers associated with observations for each node..",
-            "units": "pass",
+            "comment": "Pass numbers associated with observations for each node.",
             "valid_min": 1,
             "valid_max": 584,
             "coverage_content_type": "coordinate"
         },
         "x": {
             "long_name": "longitude",
-            "comment": "longitude of each node ranging from 180°E to 180°W",
-            "units": "decimal degrees",
+            "comment": "longitude of each node ranging from 180\u00b0E to 180\u00b0W",
+            "units": "degrees_east",
             "valid_min": -180,
             "valid_max": 180,
             "coverage_content_type": "coordinate"
         },
         "y": {
             "long_name": "latitude",
-            "comment": "latitude of each node ranging from 90°S to 90°N",
-            "units": "decimal degrees",
+            "comment": "latitude of each node ranging from 90\u00b0S to 90\u00b0N",
+            "units": "degrees_north",
             "valid_min": -90,
             "valid_max": 90,
             "coverage_content_type": "coordinate"
@@ -1078,12 +783,12 @@
                 "comment": "number of basin algorithms",
                 "valid_min": 0,
                 "valid_max": 10,
-                "coverage_content_type": "referenceInformation"
+                "coverage_content_type": "qualityInformation"
             },
             "basin_algo_names": {
                 "long_name": "basin_algorithm_names",
                 "comment": "basin algorithm names",
-                "coverage_content_type": "referenceInformation"
+                "coverage_content_type": "qualityInformation"
             },
             "realism_flags": {
                 "long_name": "realism_flags",
@@ -1119,16 +824,16 @@
                 "comment": "number of reach algorithms",
                 "valid_min": 0,
                 "valid_max": 10,
-                "coverage_content_type": "referenceInformation"
+                "coverage_content_type": "qualityInformation"
             },
             "reach_algo_names": {
                 "long_name": "reach_algorithm_names",
                 "comment": "reach algorithm names",
-                "coverage_content_type": "referenceInformation"
+                "coverage_content_type": "qualityInformation"
             },
             "realism_flags": {
                 "long_name": "realism_flags",
-                "comment": "flag to check if flows are realistiic",
+                "comment": "flag to check if flows are realistic",
                 "valid_min": 0,
                 "valid_max": 1,
                 "flag_values": "0 1",
@@ -1137,7 +842,7 @@
             },
             "stability_flags": {
                 "long_name": "stability_flags",
-                "comment": "flag to check if the flows are wildly different from one Confluence run to hte next",
+                "comment": "flag to check if the flows are wildly different from one Confluence run to the next",
                 "valid_min": 0,
                 "valid_max": 1,
                 "flag_values": "0 1",
@@ -1150,7 +855,7 @@
         "reach": {
             "ice_clim_f": {
                 "long_name": "climatological_ice_flag",
-                "comment": "Climatological ice cover flag indicating whether the node is ice-covered on the day of the observation based on external climatological information (not the SWOT measurement).",
+                "comment": "Climatological ice cover flag indicating whether the reach is ice-covered on the day of the observation based on external climatological information (not the SWOT measurement). Values of 0, 1, and 2 indicate that the reach is likely not ice covered, may or may not be partially or fully ice covered, and likely fully ice covered, respectively.",
                 "valid_min": 0,
                 "valid_max": 1,
                 "flag_values": "0 1 2",
@@ -1159,7 +864,7 @@
             },
             "ice_dyn_f": {
                 "long_name": "dynamic_ice_flag",
-                "comment": "Dynamic ice cover flag indicating whether the surface is ice-covered on the day of the observation based on analysis of external satellite optical data. Values of 0, 1, and 2 indicate that the node is not ice covered, partially ice covered, and fully ice covered, respectively.",
+                "comment": "Dynamic ice cover flag indicating whether the surface is ice-covered on the day of the observation based on analysis of external satellite optical data. Values of 0, 1, and 2 indicate that the reach is not ice covered, partially ice covered, and fully ice covered, respectively.",
                 "valid_min": 0,
                 "valid_max": 1,
                 "flag_values": "0 1 2",
@@ -1168,24 +873,24 @@
             },
             "dark_frac": {
                 "long_name": "dark_water_fraction",
-                "comment": "Fraction of node area_total covered by dark water.",
+                "comment": "Fraction of reach area_total covered by dark water",
                 "valid_min": 0,
                 "valid_max": 1,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "qualityInformation"
             },
             "n_good_nod": {
                 "long_name": "num_good_node",
                 "comment": "Number of nodes in the reach that have a valid node WSE. Note that the total number of nodes from the prior river database is given by p_n_nodes.",
                 "valid_min": 0,
                 "valid_max": 1,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "qualityInformation"
             },
             "obs_frac_n": {
                 "long_name": "raction_of_observed_nodes",
                 "comment": "Fraction of nodes (n_good_nod/p_n_nodes) in the reach that have a valid node WSE. The value is between 0 and 1.",
                 "valid_min": 0,
                 "valid_max": 1,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "qualityInformation"
             },
             "width_outliers": {
                 "long_name": "width_observations_outliers",
@@ -1239,7 +944,7 @@
                 "comment": "Fraction of node area_total covered by dark water.",
                 "valid_min": 0,
                 "valid_max": 1,
-                "coverage_content_type": "physicalMeasurement"
+                "coverage_content_type": "qualityInformation"
             },
             "width_outliers": {
                 "long_name": "width_observations_outliers",
@@ -1273,8 +978,6 @@
     "priors": {
         "num_months": {
             "long_name": "Number of months",
-            "comment": "Number of months that monthly values are indexed on",
-            "units": "month",
             "valid_min": 1,
             "valid_max": 12,
             "coverage_content_type": "referenceInformation"
@@ -1282,10 +985,10 @@
         "probability": {
             "long_name": "GRADES Flow_Duration_curve_probability",
             "comment": "GRADES probability values from the flow duration curve for this cell",
-            "units": "percentage",
+            "units": "percent",
             "valid_min": 0,
             "valid_max": 1,
-            "coverage_content_type": "qualityInformation"
+            "coverage_content_type": "modelResult"
         },
         "flow_duration_q": {
             "long_name": "GRADES flow_Duration_curve_discharge",
@@ -1360,31 +1063,30 @@
         },
         "overwritten_source": {
             "long_name": "overwritten priors sources",
-            "comment": "Source of gage data that overwrote GRADES priors.",
+            "comment": "Source of gauge data that overwrote GRADES priors.",
             "valid_min": -998,
             "valid_max": 999999999999,
-            "coverage_content_type": "referenceInformation"
+            "coverage_content_type": "qualityInformation"
         },
         "bad_priors": {
-            "long_name": "invalid gage prior indexes",
-            "comment": "Indexes of invalid gage priors that were not overwritten.",
+            "long_name": "invalid gauge prior indexes",
+            "comment": "Indexes of invalid gauge priors that were not overwritten.",
             "valid_min": 0,
             "valid_max": 1,
             "coverage_content_type": "qualityInformation"
         },
         "bad_prior_source": {
-            "long_name": "invalid gage prior sources",
-            "comment": "Source of invalid gage priors.",
+            "long_name": "invalid gauge prior sources",
+            "comment": "Source of invalid gauge priors.",
             "valid_min": -998,
             "valid_max": 999999999999,
-            "coverage_content_type": "referenceInformation"
+            "coverage_content_type": "qualityInformation"
         }
     },
     "reaches": {
         "reach_id": {
             "long_name": "reach_identifier",
-            "comment": "Taken from SWORD PDD: id of each reach. The format of none the id is as follows: CBBBBBRRRRT where C = Continent (the first number of the Pfafstetter basin code), B = Remaining Pfafstetter basin codes up to level 6, R = Reach id (assigned sequentially within a level 6 basin starting at the downstream end working upstream, T = Type (1 – river, 3 – lake on river, 4 – dam or waterfall, 5 – unreliable topology, 6 – ghost reach)",
-            "units": "placeholder",
+            "comment": "Taken from SWORD PDD: id of each reach. The format of none the id is as follows: CBBBBBRRRRT where C = Continent (the first number of the Pfafstetter basin code), B = Remaining Pfafstetter basin codes up to level 6, R = Reach id (assigned sequentially within a level 6 basin starting at the downstream end working upstream, T = Type (1 \u2013 river, 3 \u2013 lake on river, 4 \u2013 dam or waterfall, 5 \u2013 unreliable topology, 6 \u2013 ghost reach)",
             "valid_min": -998,
             "valid_max": 999999999999,
             "coverage_content_type": "referenceInformation"
@@ -1395,28 +1097,27 @@
             "units": "seconds since 2000-01-01 00:00:00.000",
             "valid_min": -998,
             "valid_max": 999999999999,
-            "coverage_content_type": "physicalMeasurement"
+            "coverage_content_type": "coordinate"
         },
         "observations": {
             "long_name": "cycle pass observations",
             "comment": "Pass numbers associated with observations for each reach.",
-            "units": "pass",
             "valid_min": 1,
             "valid_max": 584,
             "coverage_content_type": "coordinate"
         },
         "x": {
             "long_name": "longitude",
-            "comment": "longitude of the reach center decimal ranging from 180°E to 180°W",
-            "units": "decimal degrees",
+            "comment": "longitude of the reach center decimal ranging from 180\u00b0E to 180\u00b0W",
+            "units": "degrees_east",
             "valid_min": -180,
             "valid_max": 180,
             "coverage_content_type": "coordinate"
         },
         "y": {
             "long_name": "latitude",
-            "comment": "latitude of the reach center decimal ranging from 90°S to 90°N",
-            "units": "decimal degrees",
+            "comment": "latitude of the reach center decimal ranging from 90\u00b0S to 90\u00b0N",
+            "units": "degrees_north",
             "valid_min": -90,
             "valid_max": 90,
             "coverage_content_type": "coordinate"
@@ -1473,7 +1174,7 @@
             "long_name": "Manning's roughness coefficient",
             "comment": "Manning's roughness coefficient constant in time",
             "units": "s/m^(1/3)",
-            "valid_min": 0.000001,
+            "valid_min": 1e-06,
             "valid_max": 500,
             "coverage_content_type": "modelResult"
         },
@@ -1522,11 +1223,11 @@
         "algo_names": {
             "long_name": "algorithm names",
             "comment": "The names of algorithms that have been validated",
-            "coverage_content_type": "referenceInformation"
+            "coverage_content_type": "qualityInformation"
         },
         "has_validation": {
             "long_name": "has validation",
-            "comment": "Whether the reach has validation data",
+            "comment": "Whether the reach has validation data.",
             "valid_min": 0,
             "valid_max": 1,
             "coverage_content_type": "qualityInformation",
@@ -1538,21 +1239,21 @@
             "comment": "Nash Sutcliffe efficiency",
             "valid_min": -10000000,
             "valid_max": 1,
-            "coverage_content_type": "qualityInformation"
+            "coverage_content_type": "modelResult"
         },
         "rsq": {
             "long_name": "R squared",
             "comment": "Coefficient of determination",
             "valid_min": 0,
             "valid_max": 1,
-            "coverage_content_type": "qualityInformation"
+            "coverage_content_type": "modelResult"
         },
         "kge": {
             "long_name": "Kling-Gupta efficiency",
             "comment": "Kling-Gupta efficiency",
             "valid_min": -10000000,
             "valid_max": 1,
-            "coverage_content_type": "qualityInformation"
+            "coverage_content_type": "modelResult"
         },
         "rmse": {
             "long_name": "root mean squared error",
@@ -1560,35 +1261,321 @@
             "units": "m^3/s",
             "valid_min": 0,
             "valid_max": 10000000,
-            "coverage_content_type": "qualityInformation"
+            "coverage_content_type": "modelResult"
         },
         "testn": {
             "long_name": "test n",
             "comment": "number of datapoints used for statistical test",
             "valid_min": 1,
             "valid_max": 10000000,
-            "coverage_content_type": "qualityInformation"
+            "coverage_content_type": "modelResult"
         },
         "nrmse": {
             "long_name": "normalized root mean squared error",
-            "comment": "root mean squared error normalized by mean gage discharge",
+            "comment": "root mean squared error normalized by mean gauge discharge",
             "valid_min": 0,
             "valid_max": 1000,
-            "coverage_content_type": "qualityInformation"
+            "coverage_content_type": "modelResult"
         },
         "nbias": {
             "long_name": "normalized bias",
-            "comment": "bias normalized by mean gage discharge",
+            "comment": "bias normalized by mean gauge discharge",
             "valid_min": -1000,
             "valid_max": 1000,
-            "coverage_content_type": "qualityInformation"
+            "coverage_content_type": "modelResult"
         },
         "rrmse": {
             "long_name": "random relative error",
             "comment": "random relative error as rmse ",
             "valid_min": 0,
             "valid_max": 1000,
-            "coverage_content_type": "qualityInformation"
+            "coverage_content_type": "modelResult"
+        }
+    },
+    "momma": {
+        "stage": {
+            "long_name": "SWOT-observed reach-averaged water-surface elevation",
+            "comment": "Datum defined by SWOT",
+            "units": "m",
+            "valid_min": -100,
+            "valid_max": 10000,
+            "coverage_content_type": "modelResult"
+        },
+        "width": {
+            "long_name": "SWOT-observed reach-averaged river width",
+            "comment": "Reach surface water area divided by the reach length",
+            "units": "m",
+            "valid_min": 0,
+            "valid_max": 100000,
+            "coverage_content_type": "modelResult"
+        },
+        "slope": {
+            "long_name": "SWOT-observed reach water-surface slope",
+            "comment": "Upstream and downstream water-surface elevations divided by the reach length",
+            "valid_min": 0,
+            "valid_max": 0.1,
+            "coverage_content_type": "modelResult"
+        },
+        "Qgage": {
+            "long_name": "Ground-gaged streamflow obs contemporaneous with SWOT obs",
+            "comment": "The ground gage is an independent discharge measuring point within the reach obtained from an existing streamgage network",
+            "units": "m^3/s",
+            "valid_min": 0,
+            "valid_max": 1000000,
+            "coverage_content_type": "modelResult"
+        },
+        "seg": {
+            "long_name": "A portion of the stage-width curve (relation)",
+            "comment": "seg = 1, below bankfull stage; seg = 2, equal to or above bankfull stage",
+            "flag_values": "1 2",
+            "flag_meanings": "below_bankfull_stage at_or_above_bankfull_stage",
+            "valid_min": 1,
+            "valid_max": 2,
+            "coverage_content_type": "modelResult"
+        },
+        "n": {
+            "long_name": "Manning flow resistance estimated for the reach",
+            "comment": "Represents the resistance to flow within the reach when using the Manning equation to describe the mean flow",
+            "valid_min": 0.001,
+            "valid_max": 0.3,
+            "coverage_content_type": "modelResult"
+        },
+        "Y": {
+            "long_name": "Average water depth within the reach",
+            "comment": "Mean depth of flow in the reach excluding zones of zero flow and is not directly measured",
+            "units": "m",
+            "valid_min": 0,
+            "valid_max": 100,
+            "coverage_content_type": "modelResult"
+        },
+        "v": {
+            "long_name": "Average velocity of flow within the reach",
+            "comment": "Computed from the mean depth, slope, and flow resistance; not measured",
+            "units": "m/s",
+            "valid_min": 0,
+            "valid_max": 10,
+            "coverage_content_type": "modelResult"
+        },
+        "Q": {
+            "long_name": "placeholder",
+            "comment": "placeholder",
+            "units": "placeholder",
+            "valid_min": -998,
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
+        },
+        "Q_constrained": {
+            "long_name": "MOMMA-estimated discharges using Qgage values for calibration",
+            "comment": "For cases when Qgage values are available and gage_constrained == TRUE",
+            "units": "m^3/s",
+            "valid_min": 0,
+            "valid_max": 1000000,
+            "coverage_content_type": "modelResult"
+        },
+        "gage_constrained": {
+            "long_name": "Boolean indicating presence of Qgage obs available for calibration",
+            "comment": "Set to TRUE if Qgage values are available for calibration",
+            "flag_values": "0 1",
+            "flag_meanings": "no_calibration calibration",
+            "valid_min": 0,
+            "valid_max": 1,
+            "coverage_content_type": "modelResult"
+        },
+        "input_Qm_prior": {
+            "long_name": "Prior estimated mean daily discharge for the reach ",
+            "comment": "Prior calibration target contained and hosted in the SWORD database",
+            "units": "m^3/s",
+            "valid_min": 0,
+            "valid_max": 1000000,
+            "coverage_content_type": "modelResult"
+        },
+        "input_Qb_prior": {
+            "long_name": "Prior estimated bankfull discharge for the reach ",
+            "comment": "Prior calibration target contained and hosted in the SWORD database",
+            "units": "m^3/s",
+            "valid_min": 0,
+            "valid_max": 1000000,
+            "coverage_content_type": "modelResult"
+        },
+        "input_Yb_prior": {
+            "long_name": "Prior estimated bankfull depth for the reach",
+            "comment": "Prior calibration target contained and hosted in the SWORD database",
+            "units": "m",
+            "valid_min": 0,
+            "valid_max": 100,
+            "coverage_content_type": "modelResult"
+        },
+        "input_known_ezf": {
+            "long_name": "Prior elevation of zero flow (channel thalweg stage)",
+            "comment": "If known, a provided (prior) value of the bottom elevation of the reach channel relative to stage datum",
+            "units": "m",
+            "valid_min": -100,
+            "valid_max": 10000,
+            "coverage_content_type": "modelResult"
+        },
+        "input_known_bkfl_stage": {
+            "long_name": "Prior elevation of bankfull stage",
+            "comment": "If known, a provided (prior) value of the bankfull stage of the reach channel relative to stage datum",
+            "units": "m",
+            "valid_min": -100,
+            "valid_max": 10000,
+            "coverage_content_type": "modelResult"
+        },
+        "input_known_nb_seg1": {
+            "long_name": "Prior reach-average flow resistance for stages below bankfull",
+            "comment": "If known, a provided (prior) value of the base n-value below bankfull",
+            "valid_min": 0.001,
+            "valid_max": 0.3,
+            "coverage_content_type": "modelResult"
+        },
+        "input_known_x_seg1": {
+            "long_name": "Prior reach-average flow resistance exponent for stages below bankfull",
+            "comment": "If known, a provided (prior) value of the resistance exponent below bankfull",
+            "valid_min": -1,
+            "valid_max": 2,
+            "coverage_content_type": "modelResult"
+        },
+        "Qgage_constrained_nb_seg1": {
+            "long_name": "Reach-average flow resistance for stages below bankfull derived from calibration with Qgage data",
+            "comment": "Computed when gage_contrained == TRUE",
+            "valid_min": 0.001,
+            "valid_max": 0.3,
+            "coverage_content_type": "modelResult"
+        },
+        "Qgage_constrained_x_seg1": {
+            "long_name": "Reach-average flow resistance exponent for stages below bankfull derived from calibration with Qgage data",
+            "comment": "Computed when gage_contrained == TRUE",
+            "valid_min": -1,
+            "valid_max": 2,
+            "coverage_content_type": "modelResult"
+        },
+        "input_known_nb_seg2": {
+            "long_name": "Prior reach-average flow resistance for stages above bankfull",
+            "comment": "If known, a provided (prior) value of the base n-value above bankfull",
+            "valid_min": 0.001,
+            "valid_max": 0.3,
+            "coverage_content_type": "modelResult"
+        },
+        "input_known_x_seg2": {
+            "long_name": "Prior reach-average flow resistance exponent for stages above bankfull",
+            "comment": "If known, a provided (prior) value of the resistance exponent above bankfull",
+            "valid_min": -1,
+            "valid_max": 2,
+            "coverage_content_type": "modelResult"
+        },
+        "Qgage_constrained_nb_seg2": {
+            "long_name": "Reach-average flow resistance for stages above bankfull derived from calibration with Qgage data",
+            "comment": "Computed when gage_contrained == TRUE",
+            "valid_min": 0.001,
+            "valid_max": 0.3,
+            "coverage_content_type": "modelResult"
+        },
+        "Qgage_constrained_x_seg2": {
+            "long_name": "Reach-average flow resistance exponent for stages above bankfull derived from calibration with Qgage data",
+            "comment": "Computed when gage_contrained == TRUE",
+            "valid_min": -1,
+            "valid_max": 2,
+            "coverage_content_type": "modelResult"
+        },
+        "n_bkfl_Qb_prior": {
+            "long_name": "Reach-average flow resistance at bankfull stage",
+            "comment": "Computed if input_Qb_prior is available (not NA)",
+            "valid_min": 0.001,
+            "valid_max": 0.3,
+            "coverage_content_type": "modelResult"
+        },
+        "n_bkfl_slope": {
+            "long_name": "Empirically estimated reach-average flow resistance at bankfull stage",
+            "comment": "Estimated using the mean of all slope values from SWOT observations in the Bray and Davar equation https://il.water.usgs.gov/proj/nvalues/equations.shtml?equation=09-bray1",
+            "valid_min": 0,
+            "valid_max": 0.1,
+            "coverage_content_type": "modelResult"
+        },
+        "vel_bkfl_Qb_prior": {
+            "long_name": "Reach-average discharge velocity at bankfull stage",
+            "comment": "Computed if input_Qb_prior is available (not NA)",
+            "units": "m/s",
+            "valid_min": 0,
+            "valid_max": 10,
+            "coverage_content_type": "modelResult"
+        },
+        "Froude_bkfl_diag_Smean": {
+            "long_name": "Bankfull Froude number derived from mean slope",
+            "comment": "The value for the diagnostic Froude number is computed from equation (9) found in Bjerklie et al., 2018 (https://doi.org/10.1016/j.jhydrol.2018.04.005)",
+            "valid_min": 0,
+            "valid_max": 1,
+            "coverage_content_type": "modelResult"
+        },
+        "width_bkfl_solved_obs": {
+            "long_name": "Estimated bankfull width found from SWOT observations associated with the observed  bankfull stage",
+            "comment": "the computed bankfull width may not be the highest value in the record if an overbank segment is identified or if it is not associated with the identified bankfull stage",
+            "units": "m",
+            "valid_min": 0,
+            "valid_max": 100000,
+            "coverage_content_type": "modelResult"
+        },
+        "depth_bkfl_solved_obs": {
+            "long_name": "The estimated mean bankfull depth calculated assuming a parabolic channel shape",
+            "comment": "the relation between the stage and width squared is used to define a parabolic channel cross-section shape defining the bottom stage for the channel. Alternative cross-section geometry assumptions are possible.",
+            "units": "m",
+            "valid_min": 0,
+            "valid_max": 100,
+            "coverage_content_type": "modelResult"
+        },
+        "depth_bkfl_diag_Wb_Smean": {
+            "long_name": "Estimated bankfull depth based on the bankfull width and mean SWOT-observed slope",
+            "comment": "the value for the diagnostic bankfull depth is computed from equation (20) found in Bjerklie 2007 (https://doi:10.1016/j.jhydrol.2007.04.011);  is used as a diagnostic comparison with MOMMA estimated bankfull depth",
+            "units": "m",
+            "valid_min": 0,
+            "valid_max": 100,
+            "coverage_content_type": "modelResult"
+        },
+        "zero_flow_stage": {
+            "long_name": "MOMMA-estimated elevation of zero flow (channel thalweg stage)",
+            "comment": "The zero flow stage (elevation of zero flow) is the stage below which the algorithm would return zero discharge, and serves as the stage defining the reach averaged bottom elevation from which mean depth of flow is referenced",
+            "units": "m",
+            "valid_min": -100,
+            "valid_max": 10000,
+            "coverage_content_type": "modelResult"
+        },
+        "bankfull_stage": {
+            "long_name": "MOMMA-estimated bankfull stage ",
+            "comment": "The bankfull stage is used to reference an in-bank and overbank segment (if this exists in the observational record) and is used to derive relative depths for calculation of the flow resistance in the algorithm.",
+            "units": "m",
+            "valid_min": -100,
+            "valid_max": 10000,
+            "coverage_content_type": "modelResult"
+        },
+        "Qmean_prior": {
+            "long_name": "Prior estimated mean daily discharge for the reach ",
+            "comment": "Prior calibration target contained and hosted in the SWORD database; same as input_Qm_prior",
+            "units": "m^3/s",
+            "valid_min": 0,
+            "valid_max": 1000000,
+            "coverage_content_type": "modelResult"
+        },
+        "Qmean_momma": {
+            "long_name": "MOMMA-estimated mean discharge ",
+            "comment": "Mean of all discharge estimates for each SWOT observation",
+            "units": "m^3/s",
+            "valid_min": 0,
+            "valid_max": 1000000,
+            "coverage_content_type": "modelResult"
+        },
+        "Qmean_momma.constrained": {
+            "long_name": "MOMMA-estimated mean discharge derived from calibration with Qgage data",
+            "comment": "Computed when gage_contrained == TRUE",
+            "units": "m^3/s",
+            "valid_min": 0,
+            "valid_max": 1000000,
+            "coverage_content_type": "modelResult"
+        },
+        "width_stage_corr": {
+            "long_name": "width v. stage correlation coefficient ",
+            "comment": "Pearson correlation coefficient",
+            "valid_min": 0,
+            "valid_max": 1,
+            "coverage_content_type": "modelResult"
         }
     }
 }
