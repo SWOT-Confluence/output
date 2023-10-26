@@ -171,13 +171,13 @@ class Swot(AbstractModule):
         sos_ds = Dataset(self.sos_new, 'a')        
         
         # Reach
-        var = self.write_var_nt(sos_ds["reaches"], "observations", self.vlen_i, ("num_reaches"), data_dict["reach"])
+        var = self.write_var_nt(sos_ds["reaches"], "observations", self.vlen_i, ("num_reaches"), data_dict["reach"], fill=-1)
         self.set_variable_atts(var, metadata_json["reaches"]["observations"])
         var = self.write_var_nt(sos_ds["reaches"], "time", self.vlen_f, ("num_reaches"), data_dict["reach"])
         self.set_variable_atts(var, metadata_json["reaches"]["time"])
         
         # Node
-        var = self.write_var_nt(sos_ds["nodes"], "observations", self.vlen_i, ("num_nodes"), data_dict["node"])
+        var = self.write_var_nt(sos_ds["nodes"], "observations", self.vlen_i, ("num_nodes"), data_dict["node"], fill=-1)
         self.set_variable_atts(var, metadata_json["nodes"]["observations"])
         var = self.write_var_nt(sos_ds["nodes"], "time", self.vlen_f, ("num_nodes"), data_dict["node"])
         self.set_variable_atts(var, metadata_json["nodes"]["time"])

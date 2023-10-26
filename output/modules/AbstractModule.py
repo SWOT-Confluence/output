@@ -150,7 +150,7 @@ class AbstractModule(metaclass=ABCMeta):
                 var[:] = data_dict[name]
             return var
     
-    def write_var_nt(self, grp, name, vlen, dims, data_dict):
+    def write_var_nt(self, grp, name, vlen, dims, data_dict, fill=0):
         """Create NetCDF variable length data variable and write module data.
         
         Parameters
@@ -168,7 +168,11 @@ class AbstractModule(metaclass=ABCMeta):
         """
         
         var = grp.createVariable(name, vlen, dims)
-        if data_dict["attrs"][name]: 
+        if data_dict["attrs"][name]:
+            if fill:
+                if fill != -1: var.missing_value = fill
+            else:
+                var.missing_value = data_dict["attrs"][name]["_FillValue"]
             data_dict["attrs"][name].pop("_FillValue", None)
             var.setncatts(data_dict["attrs"][name])
         var[:] = data_dict[name]

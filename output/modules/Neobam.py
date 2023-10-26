@@ -307,19 +307,22 @@ class Neobam(AbstractModule):
         """
 
         c1 = grp.createVariable(f"{chain}1", vlen, dims)
+        c1.missing_value = data_dict[name]["attrs"][f"{chain}1"]["_FillValue"]
         data_dict[name]["attrs"][f"{chain}1"].pop("_FillValue", None)
         c1.setncatts(data_dict[name]["attrs"][f"{chain}1"])
-        c1[:] = np.nan_to_num(data_dict[name][f"{chain}1"], copy=True, nan=self.FILL["f8"])
         self.set_variable_atts(c1, metadata_json["neobam"][name][f"{chain}1"])
+        c1[:] = np.nan_to_num(data_dict[name][f"{chain}1"], copy=True, nan=self.FILL["f8"])
         
         c2 = grp.createVariable(f"{chain}2", vlen, dims)
+        c2.missing_value = data_dict[name]["attrs"][f"{chain}2"]["_FillValue"]
         data_dict[name]["attrs"][f"{chain}2"].pop("_FillValue", None)
         c2.setncatts(data_dict[name]["attrs"][f"{chain}2"])
-        c2[:] = np.nan_to_num(data_dict[name][f"{chain}2"], copy=True, nan=self.FILL["f8"])
         self.set_variable_atts(c2, metadata_json["neobam"][name][f"{chain}2"])
+        c2[:] = np.nan_to_num(data_dict[name][f"{chain}2"], copy=True, nan=self.FILL["f8"])
         
         c3 = grp.createVariable(f"{chain}3", vlen, dims)
+        c3.missing_value = data_dict[name]["attrs"][f"{chain}3"]["_FillValue"]
         data_dict[name]["attrs"][f"{chain}3"].pop("_FillValue", None)
         c3.setncatts(data_dict[name]["attrs"][f"{chain}3"])
-        c3[:] = np.nan_to_num(data_dict[name][f"{chain}3"], copy=True, nan=self.FILL["f8"])
         self.set_variable_atts(c3, metadata_json["neobam"][name][f"{chain}3"])
+        c3[:] = np.nan_to_num(data_dict[name][f"{chain}3"], copy=True, nan=self.FILL["f8"])
