@@ -1064,8 +1064,6 @@
         "overwritten_source": {
             "long_name": "overwritten priors sources",
             "comment": "Source of gauge data that overwrote GRADES priors.",
-            "valid_min": -998,
-            "valid_max": 999999999999,
             "coverage_content_type": "qualityInformation"
         },
         "bad_priors": {
@@ -1078,8 +1076,6 @@
         "bad_prior_source": {
             "long_name": "invalid gauge prior sources",
             "comment": "Source of invalid gauge priors.",
-            "valid_min": -998,
-            "valid_max": 999999999999,
             "coverage_content_type": "qualityInformation"
         }
     },
