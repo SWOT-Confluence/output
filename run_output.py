@@ -66,6 +66,14 @@ def create_args():
                             type=Path,
                             default=Path(__file__).parent / "metadata" / "metadata.json",
                             help="Path to JSON file that contains global attribute values")
+    arg_parser.add_argument("-u",
+                            "--podaacupload",
+                            action="store_true",
+                            help="Indicate requirement to upload to PO.DAAC S3 Bucket")
+    arg_parser.add_argument("-b",
+                            "--podaacbucket",
+                            type=str,
+                            help="Name of PO.DAAC S3 bucket to upload to")
     return arg_parser
 
 def get_logger():
@@ -103,7 +111,8 @@ def main():
     logger.info(f"Job index: {index}.")
 
     # Append SoS data
-    append = Append(INPUT / args.contjson, index, INPUT, OUTPUT, args.modules, logger, args.metadatajson)
+    append = Append(INPUT / args.contjson, index, INPUT, OUTPUT, args.modules, \
+        logger, args.metadatajson)
     append.create_new_version()
     append.create_modules(args.runtype, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
         VALIDATION / "stats")
@@ -111,7 +120,8 @@ def main():
     append.update_time_coverage()
     
     # Upload SoS data
-    upload = Upload(append.sos_file, logger)
+    upload = Upload(append.sos_file, args.podaacupload, args.podaacbucket, \
+        list(append.cont.keys())[0], append.run_date, args.runtype, logger)
     try:
         upload.upload_data(OUTPUT, VALIDATION / "figs", args.runtype)
     except botocore.exceptions.ClientError as error:

@@ -141,6 +141,7 @@ class Append:
         self.vlen_f = None
         self.vlen_i = None
         self.vlen_s = None
+        self.run_date = datetime.datetime.now()
 
     def create_new_version(self):
         """Create new version of the SoS."""
@@ -157,17 +158,16 @@ class Append:
             setattr(result_sos, name, value)
             
         global_atts_extra = self.metadata_json["global_attributes_extra"]
-        today = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
         
         # Name, Version and UUID    
         result_sos.Name = prior_sos.Name
         result_sos.run_type = prior_sos.run_type
         result_sos.product_version = prior_sos.product_version
-        result_sos.date_created = today
+        result_sos.date_created = self.run_date.strftime('%Y-%m-%dT%H:%M:%S')
         result_sos.uuid = str(uuid.uuid4())
         
         # History, source, comment, references
-        result_sos.history = f"{today}: SoS version {prior_sos.product_version} created by Confluence version {global_atts_extra['confluence_version']}"
+        result_sos.history = f"{self.run_date.strftime('%Y-%m-%dT%H:%M:%S')}: SoS version {prior_sos.product_version} created by Confluence version {global_atts_extra['confluence_version']}"
         result_sos.source = f"Module results: {', '.join(self.modules_list)}"
         result_sos.comment = f"{prior_sos.run_type.capitalize()} SoS version includes results from modules: {', '.join(self.modules_list)} and cycle pass observations plus time data from SWOT shapefiles"
         

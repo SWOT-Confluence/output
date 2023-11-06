@@ -25,9 +25,11 @@ class Upload:
         Transfers SOS data to S3 from EFS
     """
     
+    SWORD_VERSION = "v15"
     VERS_LENGTH = 4
 
-    def __init__(self, sos_file, logger):
+    def __init__(self, sos_file, podaac_upload, podaac_bucket, continent, \
+        run_date, run_type, logger):
         """
         Parameters
         ----------
@@ -38,6 +40,11 @@ class Upload:
         """
 
         self.sos_file = sos_file
+        self.podaac_upload = podaac_upload
+        self.podaac_bucket = podaac_bucket
+        self.continent = continent
+        self.run_date = run_date
+        self.run_type = run_type
         self.logger = logger
 
     def upload_data(self, output_dir, val_dir, run_type):
@@ -77,3 +84,18 @@ class Upload:
         except botocore.exceptions.ClientError as error:
             raise error
         
+        # Upload to PO.DAAC bucket
+        if self.podaac_upload:
+            self.upload_podaac(vers)
+            
+    def upload_podaac(self, vers):
+        """Upload SoS to PO.DAAC bucket."""
+        
+        sos_filename = f"{self.continent}_sword_{self.SWORD_VERSION}_SOS_results_{self.run_type}_{vers}_{self.run_date.strftime('%Y%m%dT%H%M%S')}.nc"
+        try:
+            s3 = boto3.client("s3")
+            response = s3.upload_file(str(self.sos_file), self.podaac_bucket, sos_filename)
+            print(f"Uploaded: {self.podaac_bucket}/{sos_filename}")
+        
+        except botocore.exceptions.ClientError as error:
+            raise error
