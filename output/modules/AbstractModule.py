@@ -167,7 +167,10 @@ class AbstractModule(metaclass=ABCMeta):
         """
         
         var = grp.createVariable(name, vlen, dims)
-        if data_dict["attrs"][name]: 
-            data_dict["attrs"][name].pop("_FillValue", None)
-            var.setncatts(data_dict["attrs"][name])
+        try:
+            if data_dict["attrs"][name]: 
+                data_dict["attrs"][name].pop("_FillValue", None)
+                var.setncatts(data_dict["attrs"][name])
+        except:
+            print('no data found for ', name)
         var[:] = data_dict[name]
