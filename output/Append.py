@@ -160,7 +160,7 @@ class Append:
         global_atts_extra = self.metadata_json["global_attributes_extra"]
         
         # Name, Version and UUID    
-        result_sos.Name = prior_sos.Name
+        result_sos.continent = prior_sos.continent
         result_sos.run_type = prior_sos.run_type
         result_sos.product_version = prior_sos.product_version
         result_sos.date_created = self.run_date.strftime('%Y-%m-%dT%H:%M:%S')
