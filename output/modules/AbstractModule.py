@@ -183,3 +183,4 @@ class AbstractModule(metaclass=ABCMeta):
         
         for name, value in variable_dict.items():
             setattr(variable, name, value)
+
