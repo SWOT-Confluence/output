@@ -87,6 +87,7 @@ class Sic4dvar(AbstractModule):
                     # sv_dict["Qalgo5"][index] = sv_ds["Qalgo5"][:].filled(self.FILL["f8"])
                     # sv_dict["Qalgo31"][index] = sv_ds["Qalgo31"][:].filled(self.FILL["f8"])
                     sv_dict["Q_mm"][index] = sv_ds["Q_mm"][:].filled(self.FILL["f8"])
+                    sv_dict["Q_da"][index] = sv_ds["Q_da"][:].filled(self.FILL["f8"])
                     indexes = np.where(s_rid == self.sos_nrids)
                     sv_dict["node_id"][indexes] = self.sos_nids[indexes]
                     # self.__insert_nx(sv_dict, sv_ds, indexes)
@@ -101,6 +102,7 @@ class Sic4dvar(AbstractModule):
             "A0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "n" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "Q_mm" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "Q_da" : np.empty((self.sos_rids.shape[0]), dtype=object),
             # "Qalgo31" : np.empty((self.sos_rids.shape[0]), dtype=object),
             # "half_width": np.empty((self.sos_nids.shape[0]), dtype=object),
             # "elevation": np.empty((self.sos_nids.shape[0]), dtype=object),
@@ -109,6 +111,7 @@ class Sic4dvar(AbstractModule):
                 "A0" : {},
                 "n" : {},
                 "Q_mm" : {},
+                "Q_da":{},
                 # "Qalgo31" : {},
                 # "half_width": {},
                 # "elevation": {}
@@ -117,6 +120,7 @@ class Sic4dvar(AbstractModule):
         
         # Vlen variables
         data_dict["Q_mm"].fill(np.array([self.FILL["f8"]]))
+        data_dict["Q_da"].fill(np.array([self.FILL["f8"]]))
         # data_dict["Qalgo31"].fill(np.array([self.FILL["f8"]]))
         # data_dict["half_width"].fill(np.array([self.FILL["f8"]]))
         # data_dict["elevation"].fill(np.array([self.FILL["f8"]]))
@@ -173,6 +177,7 @@ class Sic4dvar(AbstractModule):
         self.write_var(sv_grp, "A0", "f8", ("num_reaches",), data_dict)
         self.write_var(sv_grp, "n", "f8", ("num_reaches",), data_dict)
         self.write_var_nt(sv_grp, "Q_mm", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(sv_grp, "Q_da", self.vlen_f, ("num_reaches"), data_dict)
         # self.write_var_nt(sv_grp, "Qalgo5", self.vlen_f, ("num_reaches"), data_dict)
 
         # no longer using elevation or half width

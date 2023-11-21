@@ -120,6 +120,7 @@ class Momma(AbstractModule):
                     mm_dict["Qmean_prior"][index] = mm_ds["Qmean_prior"][:].filled(np.nan)
                     mm_dict["Qmean_momma"][index] = mm_ds["Qmean_momma"][:].filled(np.nan)
                     mm_dict["Qmean_momma.constrained"][index] = mm_ds["Qmean_momma.constrained"][:].filled(np.nan)
+                    mm_dict["width_stage_corr"][index] = mm_ds["width_stage_corr"][:].filled(np.nan)
 
                     mm_ds.close()
                 index += 1
@@ -169,6 +170,7 @@ class Momma(AbstractModule):
             "Qmean_prior" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "Qmean_momma" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "Qmean_momma.constrained" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+            "width_stage_corr": np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "attrs": {
                 "stage" : {},
                 "width" : {},
@@ -210,6 +212,8 @@ class Momma(AbstractModule):
                 "Qmean_prior" : {},
                 "Qmean_momma" : {},
                 "Qmean_momma.constrained" : {},
+                "width_stage_corr":{},
+                
             }
         }
         
@@ -295,5 +299,6 @@ class Momma(AbstractModule):
         self.write_var(mm_grp, "Qmean_prior", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "Qmean_momma", "f8", ("num_reaches",), data_dict)
         self.write_var(mm_grp, "Qmean_momma.constrained", "f8", ("num_reaches",), data_dict)
+        self.write_var(mm_grp, "width_stage_corr", "f8", ("num_reaches",), data_dict)
 
         sos_ds.close()
