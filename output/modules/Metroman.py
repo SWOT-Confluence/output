@@ -177,7 +177,7 @@ class Metroman(AbstractModule):
         mn_index = np.where(mn_ds["reach_id"][:] == s_rid)[0][0]
         mn_dict[name][index] = mn_ds[name][mn_index,:].filled(self.FILL["f8"])
 
-    def append_module_data(self, data_dict):
+    def append_module_data(self, data_dict, metadata_json):
         """Append MetroMan data to the new version of the SoS.
         
         Parameters
@@ -190,10 +190,15 @@ class Metroman(AbstractModule):
         mn_grp = sos_ds.createGroup("metroman")
 
         # MetroMan data
-        self.write_var_nt(mn_grp, "allq", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var(mn_grp, "A0hat", "f8", ("num_reaches",), data_dict)
-        self.write_var(mn_grp, "nahat", "f8", ("num_reaches",), data_dict)
-        self.write_var(mn_grp, "x1hat", "f8", ("num_reaches",), data_dict)
-        self.write_var_nt(mn_grp, "q_u", self.vlen_f, ("num_reaches"), data_dict)
+        var = self.write_var_nt(mn_grp, "allq", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["metroman"]["allq"])
+        var = self.write_var(mn_grp, "A0hat", "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["metroman"]["A0hat"])
+        var = self.write_var(mn_grp, "nahat", "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["metroman"]["nahat"])
+        var = self.write_var(mn_grp, "x1hat", "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["metroman"]["x1hat"])
+        var = self.write_var_nt(mn_grp, "q_u", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["metroman"]["q_u"])
 
         sos_ds.close()

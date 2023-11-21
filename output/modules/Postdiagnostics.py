@@ -218,7 +218,7 @@ class Postdiagnostics(AbstractModule):
                 data_dict["reach"]["attrs"][key] = ds[key].__dict__
         ds.close()
     
-    def append_module_data(self, data_dict):
+    def append_module_data(self, data_dict, metadata_json):
         """Append Postdiagnostic data to the new version of the SoS.
         
         Parameters
@@ -236,22 +236,37 @@ class Postdiagnostics(AbstractModule):
         # Basin
         b_grp = pd_grp.createGroup("basin")
         b_grp.createDimension("basin_num_algos", None)
-        bna_v = b_grp.createVariable("basin_num_algos", "i4", ("basin_num_algos",))
+        
+        bna_v = b_grp.createVariable("basin_num_algos", "i4", ("basin_num_algos",), compression="zlib")
         bna_v[:] = range(1, data_dict["basin_num_algos"] + 1)
-        ban_v = b_grp.createVariable("basin_algo_names", "S1", ("basin_num_algos", "nchar"))
+        self.set_variable_atts(bna_v, metadata_json["postdiagnostics"]["basin"]["basin_num_algos"])
+        
+        ban_v = b_grp.createVariable("basin_algo_names", "S1", ("basin_num_algos", "nchar"), compression="zlib")
         ban_v[:] = stringtochar(np.array(data_dict["basin_algo_names"], dtype="S10"))
-        self.write_var(b_grp, "realism_flags", "i4", ("num_reaches", "basin_num_algos"), data_dict["basin"])
-        self.write_var(b_grp, "stability_flags", "i4", ("num_reaches", "basin_num_algos"), data_dict["basin"])
-        self.write_var(b_grp, "prepost_flags", "i4", ("num_reaches", "basin_num_algos"), data_dict["basin"])
+        self.set_variable_atts(ban_v, metadata_json["postdiagnostics"]["basin"]["basin_algo_names"])
+        
+        var = self.write_var(b_grp, "realism_flags", "i4", ("num_reaches", "basin_num_algos"), data_dict["basin"])
+        self.set_variable_atts(var, metadata_json["postdiagnostics"]["basin"]["realism_flags"])
+        var = self.write_var(b_grp, "stability_flags", "i4", ("num_reaches", "basin_num_algos"), data_dict["basin"])
+        self.set_variable_atts(var, metadata_json["postdiagnostics"]["basin"]["stability_flags"])
+        var = self.write_var(b_grp, "prepost_flags", "i4", ("num_reaches", "basin_num_algos"), data_dict["basin"])
+        self.set_variable_atts(var, metadata_json["postdiagnostics"]["basin"]["prepost_flags"])
 
         # Reach
         r_grp = pd_grp.createGroup("reach")
         r_grp.createDimension("reach_num_algos", None)
-        rna_v = r_grp.createVariable("reach_num_algos", "i4", ("reach_num_algos",))
+        
+        rna_v = r_grp.createVariable("reach_num_algos", "i4", ("reach_num_algos",), compression="zlib")
         rna_v[:] = range(1, data_dict["reach_num_algos"] + 1)
-        ran_v = r_grp.createVariable("reach_algo_names", "S1", ("reach_num_algos", "nchar"))
+        self.set_variable_atts(rna_v, metadata_json["postdiagnostics"]["reach"]["reach_num_algos"])
+        
+        ran_v = r_grp.createVariable("reach_algo_names", "S1", ("reach_num_algos", "nchar"), compression="zlib")
         ran_v[:] = stringtochar(np.array(data_dict["reach_algo_names"], dtype="S10"))
-        self.write_var(r_grp, "realism_flags", "i4", ("num_reaches", "reach_num_algos"), data_dict["reach"])
-        self.write_var(r_grp, "stability_flags", "i4", ("num_reaches", "reach_num_algos"), data_dict["reach"])
+        self.set_variable_atts(ran_v, metadata_json["postdiagnostics"]["reach"]["reach_algo_names"])
+        
+        var = self.write_var(r_grp, "realism_flags", "i4", ("num_reaches", "reach_num_algos"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["postdiagnostics"]["reach"]["realism_flags"])
+        var = self.write_var(r_grp, "stability_flags", "i4", ("num_reaches", "reach_num_algos"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["postdiagnostics"]["reach"]["stability_flags"])
 
         sos_ds.close()

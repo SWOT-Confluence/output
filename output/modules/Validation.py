@@ -159,13 +159,13 @@ class Validation(AbstractModule):
         data_dict["attrs"]["rsq"] = ds["Rsq"].__dict__
         data_dict["attrs"]["kge"] = ds["KGE"].__dict__
         data_dict["attrs"]["rmse"] = ds["RMSE"].__dict__
-        data_dict["attrs"]["rrmse"] = ds["RMSE"].__dict__
-        data_dict["attrs"]["nrmse"] = ds["RMSE"].__dict__
-        data_dict["attrs"]["nbias"] = ds["RMSE"].__dict__
+        data_dict["attrs"]["rrmse"] = ds["rRMSE"].__dict__
+        data_dict["attrs"]["nrmse"] = ds["nRMSE"].__dict__
+        data_dict["attrs"]["nbias"] = ds["nBIAS"].__dict__
         data_dict["attrs"]["testn"] = ds["testn"].__dict__
         ds.close()
 
-    def append_module_data(self, data_dict):
+    def append_module_data(self, data_dict, metadata_json):
         """Append Validation data to the new version of the SoS.
         
         Parameters
@@ -182,15 +182,25 @@ class Validation(AbstractModule):
         val_grp.createDimension("nchar", data_dict["nchar"])
 
         # Validation data
-        self.write_var(val_grp, "algo_names", "S1", ("num_reaches", "num_algos", "nchar",), data_dict)
-        self.write_var(val_grp, "has_validation", "i4", ("num_reaches",), data_dict)
-        self.write_var(val_grp, "nse", "f8", ("num_reaches", "num_algos",), data_dict)
-        self.write_var(val_grp, "rsq", "f8", ("num_reaches", "num_algos",), data_dict)
-        self.write_var(val_grp, "kge", "f8", ("num_reaches", "num_algos",), data_dict)
-        self.write_var(val_grp, "rmse", "f8", ("num_reaches", "num_algos",), data_dict)
-        self.write_var(val_grp, "testn", "f8", ("num_reaches", "num_algos",), data_dict)
-        self.write_var(val_grp, "nrmse", "f8", ("num_reaches", "num_algos",), data_dict)
-        self.write_var(val_grp, "nbias", "f8", ("num_reaches", "num_algos",), data_dict)
-        self.write_var(val_grp, "rrmse", "f8", ("num_reaches", "num_algos",), data_dict)
-
+        var = self.write_var(val_grp, "algo_names", "S1", ("num_reaches", "num_algos", "nchar",), data_dict)
+        self.set_variable_atts(var, metadata_json["validation"]["algo_names"]) 
+        var = self.write_var(val_grp, "has_validation", "i4", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["validation"]["has_validation"])
+        var = self.write_var(val_grp, "nse", "f8", ("num_reaches", "num_algos",), data_dict)
+        self.set_variable_atts(var, metadata_json["validation"]["nse"]) 
+        var = self.write_var(val_grp, "rsq", "f8", ("num_reaches", "num_algos",), data_dict)
+        self.set_variable_atts(var, metadata_json["validation"]["rsq"]) 
+        var = self.write_var(val_grp, "kge", "f8", ("num_reaches", "num_algos",), data_dict)
+        self.set_variable_atts(var, metadata_json["validation"]["kge"]) 
+        var = self.write_var(val_grp, "rmse", "f8", ("num_reaches", "num_algos",), data_dict)
+        self.set_variable_atts(var, metadata_json["validation"]["rmse"]) 
+        var = self.write_var(val_grp, "testn", "f8", ("num_reaches", "num_algos",), data_dict)
+        self.set_variable_atts(var, metadata_json["validation"]["testn"]) 
+        var = self.write_var(val_grp, "nrmse", "f8", ("num_reaches", "num_algos",), data_dict)
+        self.set_variable_atts(var, metadata_json["validation"]["nrmse"]) 
+        var = self.write_var(val_grp, "nbias", "f8", ("num_reaches", "num_algos",), data_dict)
+        self.set_variable_atts(var, metadata_json["validation"]["nbias"]) 
+        var = self.write_var(val_grp, "rrmse", "f8", ("num_reaches", "num_algos",), data_dict)
+        self.set_variable_atts(var, metadata_json["validation"]["rrmse"]) 
+        
         sos_ds.close()

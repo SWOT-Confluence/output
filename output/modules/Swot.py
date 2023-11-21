@@ -3,7 +3,7 @@ import glob
 from pathlib import Path
 
 # Third-party imports
-from netCDF4 import Dataset, chartostring, stringtochar
+from netCDF4 import Dataset
 import numpy as np
 
 # Local imports
@@ -76,15 +76,19 @@ class Swot(AbstractModule):
         
             # Data extraction
             index = 0
-            print(swot_rids)
             for s_rid in self.sos_rids:
-                # print('if', s_rid, 'in', self.sos_nrids)
                 if s_rid in swot_rids:
                     swot_ds = Dataset(swot_dir / f"{int(s_rid)}_SWOT.nc", 'r')
-                    swot_dict["observations"][index] = swot_ds["observations"][:].filled(self.FILL["i4"])
+                    obs = swot_ds["observations"][:].filled(self.FILL["i4"])
+                    
+                    # Reach
+                    swot_dict["reach"]["observations"][index] = obs
                     swot_dict["reach"]["time"][index] = swot_ds["reach"]["time"][:].filled(self.FILL["f8"])
+                    
+                    # Node
                     indexes = np.where(self.sos_nrids == s_rid)
-                    self._insert_nx(swot_dict, swot_ds, indexes)
+                    self._insert_nx(swot_dict, swot_ds, obs, indexes)
+                    
                     swot_ds.close()
                 index += 1
         else:
@@ -95,20 +99,21 @@ class Swot(AbstractModule):
         """Creates and returns SWOT time data dictionary."""
 
         data_dict = {
-            "observations": np.empty((self.sos_rids.shape[0]), dtype=object),
-            "attrs" : {"observations": {}},
             "reach": {
                 "time": np.empty((self.sos_rids.shape[0]), dtype=object),
-                "attrs": {"time": {}}
+                "observations": np.empty((self.sos_rids.shape[0]), dtype=object),
+                "attrs": {"time": {}, "observations": {}}
                 },
             "node": {
                 "time": np.empty((self.sos_nids.shape[0]), dtype=object),
-                "attrs": {"time": {}}
+                "observations": np.empty((self.sos_nids.shape[0]), dtype=object),
+                "attrs": {"time": {}, "observations": {}}
                 }            
         }
         # Vlen variables
-        data_dict["observations"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
+        data_dict["reach"]["observations"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["reach"]["time"].fill(np.array([self.FILL["f8"]]))
+        data_dict["node"]["observations"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["node"]["time"].fill(np.array([self.FILL["f8"]]))
         return data_dict
         
@@ -124,12 +129,13 @@ class Swot(AbstractModule):
         """
         
         ds = Dataset(nc_file, 'r')
-        data_dict["attrs"]["observations"] = ds["observations"].__dict__
+        data_dict["reach"]["attrs"]["observations"] = ds["observations"].__dict__
         data_dict["reach"]["attrs"]["time"] = ds["reach"]["time"].__dict__
+        data_dict["node"]["attrs"]["observations"] = ds["observations"].__dict__
         data_dict["node"]["attrs"]["time"] = ds["node"]["time"].__dict__
         ds.close()
         
-    def _insert_nx(self, swot_dict, swot_ds, indexes):
+    def _insert_nx(self, swot_dict, swot_ds, obs, indexes):
         """Insert node flags into prediagnostics dictionary.
         
         Parameters
@@ -145,16 +151,15 @@ class Swot(AbstractModule):
         j = 0
 
         for i in indexes[0]:
-            # print(i, j)
             try:
-                test = swot_ds["node"]["time"][j,:].filled(self.FILL["f8"])
-                swot_dict["node"]["time"][i] = test
+                swot_dict["node"]["observations"][i] = obs
+                swot_dict["node"]["time"][i] = swot_ds["node"]["time"][j,:].filled(self.FILL["f8"])
             except:
                 print('time variable filled, reach was partially observed')
                 return
             j +=1
         
-    def append_module_data(self, data_dict):
+    def append_module_data(self, data_dict, metadata_json):
         """Append SWOT time data to the new version of the SoS.
         
         Parameters
@@ -164,7 +169,17 @@ class Swot(AbstractModule):
         """
 
         sos_ds = Dataset(self.sos_new, 'a')        
-        self.write_var_nt(sos_ds, "observations", self.vlen_i, ("num_reaches"), data_dict)
-        self.write_var_nt(sos_ds["reaches"], "time", self.vlen_f, ("num_reaches"), data_dict["reach"])       
-        self.write_var_nt(sos_ds["nodes"], "time", self.vlen_f, ("num_nodes"), data_dict["node"])       
+        
+        # Reach
+        var = self.write_var_nt(sos_ds["reaches"], "observations", self.vlen_i, ("num_reaches"), data_dict["reach"], fill=-1)
+        self.set_variable_atts(var, metadata_json["reaches"]["observations"])
+        var = self.write_var_nt(sos_ds["reaches"], "time", self.vlen_f, ("num_reaches"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["reaches"]["time"])
+        
+        # Node
+        var = self.write_var_nt(sos_ds["nodes"], "observations", self.vlen_i, ("num_nodes"), data_dict["node"], fill=-1)
+        self.set_variable_atts(var, metadata_json["nodes"]["observations"])
+        var = self.write_var_nt(sos_ds["nodes"], "time", self.vlen_f, ("num_nodes"), data_dict["node"])
+        self.set_variable_atts(var, metadata_json["nodes"]["time"])
+        
         sos_ds.close()

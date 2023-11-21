@@ -219,7 +219,7 @@ class Neobam(AbstractModule):
                 data_dict[key1]["attrs"][key2] = ds[key1][key2].__dict__
         ds.close()
         
-    def append_module_data(self, data_dict):
+    def append_module_data(self, data_dict, metadata_json):
         """Append HiVDI data to the new version of the SoS.
         
         Parameters
@@ -232,27 +232,27 @@ class Neobam(AbstractModule):
         nb_grp = sos_ds.createGroup("neobam")
         
         r_grp = nb_grp.createGroup("r")        
-        self.write_var(r_grp, "r", "mean", ("num_reaches"), data_dict)
-        self.write_var(r_grp, "r", "sd", ("num_reaches"), data_dict)
+        self.write_var(r_grp, "r", "mean", ("num_reaches"), data_dict, metadata_json)
+        self.write_var(r_grp, "r", "sd", ("num_reaches"), data_dict, metadata_json)
         
         logn_grp = nb_grp.createGroup("logn") 
-        self.write_var(logn_grp, "logn", "mean", ("num_reaches"), data_dict)
-        self.write_var(logn_grp, "logn", "sd", ("num_reaches"), data_dict)
+        self.write_var(logn_grp, "logn", "mean", ("num_reaches"), data_dict, metadata_json)
+        self.write_var(logn_grp, "logn", "sd", ("num_reaches"), data_dict, metadata_json)
         
         logDb_grp = nb_grp.createGroup("logDb") 
-        self.write_var(logDb_grp, "logDb", "mean", ("num_reaches"), data_dict)
-        self.write_var(logDb_grp, "logDb", "sd", ("num_reaches"), data_dict)
+        self.write_var(logDb_grp, "logDb", "mean", ("num_reaches"), data_dict, metadata_json)
+        self.write_var(logDb_grp, "logDb", "sd", ("num_reaches"), data_dict, metadata_json)
         
         logWb_grp = nb_grp.createGroup("logWb") 
-        self.write_var(logWb_grp, "logWb", "mean", ("num_reaches"), data_dict)
-        self.write_var(logWb_grp, "logWb", "sd", ("num_reaches"), data_dict)
+        self.write_var(logWb_grp, "logWb", "mean", ("num_reaches"), data_dict, metadata_json)
+        self.write_var(logWb_grp, "logWb", "sd", ("num_reaches"), data_dict, metadata_json)
         
         q_grp = nb_grp.createGroup("q")
-        self.write_var_nt(q_grp, "q", "q", self.vlen_f, ("num_reaches"), data_dict)
+        self.write_var_nt(q_grp, "q", "q", self.vlen_f, ("num_reaches"), data_dict, metadata_json)
         
         sos_ds.close()
         
-    def write_var(self, grp, name, chain, dims, data_dict):
+    def write_var(self, grp, name, chain, dims, data_dict, metadata_json):
         """Create NetCDF variable and write neoBAM data to it.
         
         Parameters
@@ -269,22 +269,25 @@ class Neobam(AbstractModule):
             dictionary of neoBAM result data
         """
 
-        c1 = grp.createVariable(f"{chain}1", "f8", dims, fill_value=self.FILL["f8"])
+        c1 = grp.createVariable(f"{chain}1", "f8", dims, fill_value=self.FILL["f8"], compression="zlib")
         data_dict[name]["attrs"][f"{chain}1"].pop("_FillValue", None)
         c1.setncatts(data_dict[name]["attrs"][f"{chain}1"])
         c1[:] = np.nan_to_num(data_dict[name][f"{chain}1"], copy=True, nan=self.FILL["f8"])
+        self.set_variable_atts(c1, metadata_json["neobam"][name][f"{chain}1"])
         
-        c2 = grp.createVariable(f"{chain}2", "f8", dims, fill_value=self.FILL["f8"])
+        c2 = grp.createVariable(f"{chain}2", "f8", dims, fill_value=self.FILL["f8"], compression="zlib")
         data_dict[name]["attrs"][f"{chain}2"].pop("_FillValue", None)
         c2.setncatts(data_dict[name]["attrs"][f"{chain}2"])
         c2[:] = np.nan_to_num(data_dict[name][f"{chain}2"], copy=True, nan=self.FILL["f8"])
+        self.set_variable_atts(c2, metadata_json["neobam"][name][f"{chain}2"])
         
-        c3 = grp.createVariable(f"{chain}3", "f8", dims, fill_value=self.FILL["f8"])
+        c3 = grp.createVariable(f"{chain}3", "f8", dims, fill_value=self.FILL["f8"], compression="zlib")
         data_dict[name]["attrs"][f"{chain}3"].pop("_FillValue", None)
         c3.setncatts(data_dict[name]["attrs"][f"{chain}3"])
         c3[:] = np.nan_to_num(data_dict[name][f"{chain}3"], copy=True, nan=self.FILL["f8"])
+        self.set_variable_atts(c3, metadata_json["neobam"][name][f"{chain}3"])
         
-    def write_var_nt(self, grp, name, chain, vlen, dims, data_dict):
+    def write_var_nt(self, grp, name, chain, vlen, dims, data_dict, metadata_json):
         """Create NetCDF variable and write neoBAM data to it.
         
         Parameters
@@ -304,16 +307,22 @@ class Neobam(AbstractModule):
         """
 
         c1 = grp.createVariable(f"{chain}1", vlen, dims)
+        c1.missing_value = data_dict[name]["attrs"][f"{chain}1"]["_FillValue"]
         data_dict[name]["attrs"][f"{chain}1"].pop("_FillValue", None)
         c1.setncatts(data_dict[name]["attrs"][f"{chain}1"])
+        self.set_variable_atts(c1, metadata_json["neobam"][name][f"{chain}1"])
         c1[:] = np.nan_to_num(data_dict[name][f"{chain}1"], copy=True, nan=self.FILL["f8"])
         
         c2 = grp.createVariable(f"{chain}2", vlen, dims)
+        c2.missing_value = data_dict[name]["attrs"][f"{chain}2"]["_FillValue"]
         data_dict[name]["attrs"][f"{chain}2"].pop("_FillValue", None)
         c2.setncatts(data_dict[name]["attrs"][f"{chain}2"])
+        self.set_variable_atts(c2, metadata_json["neobam"][name][f"{chain}2"])
         c2[:] = np.nan_to_num(data_dict[name][f"{chain}2"], copy=True, nan=self.FILL["f8"])
         
         c3 = grp.createVariable(f"{chain}3", vlen, dims)
+        c3.missing_value = data_dict[name]["attrs"][f"{chain}3"]["_FillValue"]
         data_dict[name]["attrs"][f"{chain}3"].pop("_FillValue", None)
         c3.setncatts(data_dict[name]["attrs"][f"{chain}3"])
+        self.set_variable_atts(c3, metadata_json["neobam"][name][f"{chain}3"])
         c3[:] = np.nan_to_num(data_dict[name][f"{chain}3"], copy=True, nan=self.FILL["f8"])
