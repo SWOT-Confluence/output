@@ -179,9 +179,9 @@ class Sic4dvar(AbstractModule):
         self.set_variable_atts(var, metadata_json["sic4dvar"]["A0"])
         var = self.write_var(sv_grp, "n", "f8", ("num_reaches",), data_dict)
         self.set_variable_atts(var, metadata_json["sic4dvar"]["n"])
-        var = self.write_var_nt(sv_grp, "Qalgo31", self.vlen_f, ("num_reaches"), data_dict)
+        # var = self.write_var_nt(sv_grp, "Qalgo31", self.vlen_f, ("num_reaches"), data_dict)
         # self.set_variable_atts(var, metadata_json["sic4dvar"]["Qalgo31"])
-        var = self.write_var_nt(sv_grp, "Qalgo5", self.vlen_f, ("num_reaches"), data_dict)
+        # var = self.write_var_nt(sv_grp, "Qalgo5", self.vlen_f, ("num_reaches"), data_dict)
         # self.set_variable_atts(var, metadata_json["sic4dvar"]["Qalgo5"])
 
         self.write_var_nt(sv_grp, "Q_mm", self.vlen_f, ("num_reaches"), data_dict)

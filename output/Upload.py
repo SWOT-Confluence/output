@@ -47,7 +47,7 @@ class Upload:
         self.run_type = run_type
         self.logger = logger
 
-    def upload_data(self, output_dir, val_dir, run_type):
+    def upload_data(self, output_dir, val_dir, run_type, modules):
         """Uploads SoS result file to confluence-sos S3 bucket.
 
         Parameters
@@ -75,12 +75,13 @@ class Upload:
                            Key=f"{run_type}/{vers}/{self.sos_file.name}")
             self.logger.info(f"Uploaded: {run_type}/{vers}/{self.sos_file.name}.")
             # Upload validation figures to S3 bucket
-            with scandir(val_dir) as entries:
-                for entry in entries:
-                    s3.upload_file(Filename=str(Path(entry)),
-                           Bucket="confluence-sos",
-                           Key=f"figs/{run_type}/{vers}/{entry.name}")
-                    self.logger.info(f"Uploaded: figs/{run_type}/{vers}/{entry.name}.")
+            if 'validation' in modules:
+                with scandir(val_dir) as entries:
+                    for entry in entries:
+                        s3.upload_file(Filename=str(Path(entry)),
+                            Bucket="confluence-sos",
+                            Key=f"figs/{run_type}/{vers}/{entry.name}")
+                        self.logger.info(f"Uploaded: figs/{run_type}/{vers}/{entry.name}.")
         except botocore.exceptions.ClientError as error:
             raise error
         
