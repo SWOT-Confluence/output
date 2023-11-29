@@ -88,7 +88,9 @@ class Prediagnostics(AbstractModule):
                     pre_dict["reach"]["obs_frac_n"][index] = pre_ds["reach"]["obs_frac_n"][:].filled(self.FILL["i4"])
                     pre_dict["reach"]["width_outliers"][index] = pre_ds["reach"]["width_outliers"][:].filled(self.FILL["i4"])
                     pre_dict["reach"]["wse_outliers"][index] = pre_ds["reach"]["wse_outliers"][:].filled(self.FILL["i4"])
+                    pre_dict["reach"]["slope_outliers"][index] = pre_ds["reach"]["slope_outliers"][:].filled(self.FILL["i4"])
                     pre_dict["reach"]["slope2_outliers"][index] = pre_ds["reach"]["slope2_outliers"][:].filled(self.FILL["i4"])
+                    pre_dict["reach"]["low_slope_flag"][index] = pre_ds["reach"]["low_slope_flag"][:].filled(self.FILL["i4"])
                     # Node
                     indexes = np.where(self.sos_nrids == s_rid)
                     self._insert_nx(pre_dict, pre_ds, indexes)
@@ -116,7 +118,9 @@ class Prediagnostics(AbstractModule):
             pre_dict["node"]["dark_frac"][i] = pre_ds["node"]["dark_frac"][:,j].filled(self.FILL["i4"])
             pre_dict["node"]["width_outliers"][i] = pre_ds["node"]["width_outliers"][:,j].filled(self.FILL["i4"])
             pre_dict["node"]["wse_outliers"][i] = pre_ds["node"]["wse_outliers"][:,j].filled(self.FILL["i4"])
+            pre_dict["node"]["slope_outliers"][i] = pre_ds["node"]["slope_outliers"][:,j].filled(self.FILL["i4"])
             pre_dict["node"]["slope2_outliers"][i] = pre_ds["node"]["slope2_outliers"][:,j].filled(self.FILL["i4"])
+            pre_dict["node"]["low_slope_flag"][i] = pre_ds["node"]["low_slope_flag"][:,j].filled(self.FILL["i4"])
             j +=1
     
     def create_data_dict(self):
@@ -131,7 +135,9 @@ class Prediagnostics(AbstractModule):
                 "obs_frac_n": np.empty((self.sos_rids.shape[0]), dtype=object),
                 "width_outliers": np.empty((self.sos_rids.shape[0]), dtype=object),
                 "wse_outliers": np.empty((self.sos_rids.shape[0]), dtype=object),
+                "slope_outliers": np.empty((self.sos_rids.shape[0]), dtype=object),
                 "slope2_outliers": np.empty((self.sos_rids.shape[0]), dtype=object),
+                "low_slope_flag": np.empty((self.sos_rids.shape[0]), dtype=object),
                 "attrs": {
                     "ice_clim_f": {},
                     "ice_dyn_f": {},
@@ -140,7 +146,9 @@ class Prediagnostics(AbstractModule):
                     "obs_frac_n": {},
                     "width_outliers": {},
                     "wse_outliers": {},
-                    "slope2_outliers": {}
+                    "slope_outliers": {},
+                    "slope2_outliers": {},
+                    "low_slope_flag": {}
                 }
             },
             "node": {
@@ -149,14 +157,18 @@ class Prediagnostics(AbstractModule):
                 "dark_frac": np.empty((self.sos_nids.shape[0]), dtype=object),
                 "width_outliers": np.empty((self.sos_nids.shape[0]), dtype=object),
                 "wse_outliers": np.empty((self.sos_nids.shape[0]), dtype=object),
+                "slope_outliers": np.empty((self.sos_nids.shape[0]), dtype=object),
                 "slope2_outliers": np.empty((self.sos_nids.shape[0]), dtype=object),
+                "low_slope_flag": np.empty((self.sos_nids.shape[0]), dtype=object),
                 "attrs": {
                     "ice_clim_f": {},
                     "ice_dyn_f": {},
                     "dark_frac": {},
                     "width_outliers": {},
                     "wse_outliers": {},
-                    "slope2_outliers": {}
+                    "slope_outliers": {},
+                    "slope2_outliers": {},
+                    "low_slope_flag": {}
                 }
             }
         }
@@ -169,13 +181,17 @@ class Prediagnostics(AbstractModule):
         data_dict["reach"]["obs_frac_n"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["reach"]["width_outliers"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["reach"]["wse_outliers"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
+        data_dict["reach"]["slope_outliers"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["reach"]["slope2_outliers"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
+        data_dict["reach"]["low_slope_flag"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["node"]["ice_clim_f"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["node"]["ice_dyn_f"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["node"]["dark_frac"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["node"]["width_outliers"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["node"]["wse_outliers"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
+        data_dict["node"]["slope_outliers"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["node"]["slope2_outliers"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
+        data_dict["node"]["low_slope_flag"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         return data_dict
         
     def get_nc_attrs(self, nc_file, data_dict):
@@ -198,14 +214,18 @@ class Prediagnostics(AbstractModule):
         data_dict["reach"]["attrs"]["obs_frac_n"] = ds["reach"]["obs_frac_n"].__dict__
         data_dict["reach"]["attrs"]["width_outliers"] = ds["reach"]["width_outliers"].__dict__
         data_dict["reach"]["attrs"]["wse_outliers"] = ds["reach"]["wse_outliers"].__dict__
+        data_dict["reach"]["attrs"]["slope_outliers"] = ds["reach"]["slope2_outliers"].__dict__
         data_dict["reach"]["attrs"]["slope2_outliers"] = ds["reach"]["slope2_outliers"].__dict__
+        data_dict["reach"]["attrs"]["low_slope_flag"] = ds["reach"]["slope2_outliers"].__dict__
         # Node
         data_dict["node"]["attrs"]["ice_clim_f"] = ds["node"]["ice_clim_f"].__dict__
         data_dict["node"]["attrs"]["ice_dyn_f"] = ds["node"]["ice_dyn_f"].__dict__
         data_dict["node"]["attrs"]["dark_frac"] = ds["node"]["dark_frac"].__dict__
         data_dict["node"]["attrs"]["width_outliers"] = ds["node"]["width_outliers"].__dict__
         data_dict["node"]["attrs"]["wse_outliers"] = ds["node"]["wse_outliers"].__dict__
+        data_dict["node"]["attrs"]["slope_outliers"] = ds["node"]["slope2_outliers"].__dict__
         data_dict["node"]["attrs"]["slope2_outliers"] = ds["node"]["slope2_outliers"].__dict__
+        data_dict["node"]["attrs"]["low_slope_flag"] = ds["node"]["slope2_outliers"].__dict__
         ds.close()
         
     def append_module_data(self, data_dict, metadata_json):
@@ -236,8 +256,12 @@ class Prediagnostics(AbstractModule):
         self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["width_outliers"])
         var = self.write_var_nt(r_grp, "wse_outliers", self.vlen_i, ("num_reaches"), data_dict["reach"])
         self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["wse_outliers"])
+        var = self.write_var_nt(r_grp, "slope_outliers", self.vlen_i, ("num_reaches"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["slope_outliers"])
         var = self.write_var_nt(r_grp, "slope2_outliers", self.vlen_i, ("num_reaches"), data_dict["reach"])
         self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["slope2_outliers"])
+        var = self.write_var_nt(r_grp, "low_slope_flag", self.vlen_i, ("num_reaches"), data_dict["reach"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["low_slope_flag"])
         # Node
         n_grp = pre_grp.createGroup("node")
         var = self.write_var_nt(n_grp, "ice_clim_f", self.vlen_i, ("num_nodes"), data_dict["node"])
@@ -250,6 +274,10 @@ class Prediagnostics(AbstractModule):
         self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["width_outliers"])
         var = self.write_var_nt(n_grp, "wse_outliers", self.vlen_i, ("num_nodes"), data_dict["node"])
         self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["wse_outliers"])
+        var = self.write_var_nt(n_grp, "slope_outliers", self.vlen_i, ("num_nodes"), data_dict["node"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["slope_outliers"])
         var = self.write_var_nt(n_grp, "slope2_outliers", self.vlen_i, ("num_nodes"), data_dict["node"])
         self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["slope2_outliers"])
+        var = self.write_var_nt(n_grp, "low_slope_flag", self.vlen_i, ("num_nodes"), data_dict["node"])
+        self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["low_slope_flag"])
         sos_ds.close()

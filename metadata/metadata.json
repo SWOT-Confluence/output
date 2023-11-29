@@ -910,9 +910,27 @@
                 "flag_meanings": "not_overwritten overwritten",
                 "coverage_content_type": "qualityInformation"
             },
+            "slope_outliers": {
+                "long_name": "slope_observations_outliers",
+                "comment": "Outliers detected in slope observations.",
+                "valid_min": 0,
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
+                "coverage_content_type": "qualityInformation"
+            },
             "slope2_outliers": {
                 "long_name": "slope2_observations_outliers",
                 "comment": "Outliers detected in slope2 observations.",
+                "valid_min": 0,
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
+                "coverage_content_type": "qualityInformation"
+            },
+            "low_slope_flag": {
+                "long_name": "low slope indicator",
+                "comment": "Low slope flag indicator for slope and slope2 observations.",
                 "valid_min": 0,
                 "valid_max": 1,
                 "flag_values": "0 1",
@@ -964,9 +982,27 @@
                 "flag_meanings": "not_overwritten overwritten",
                 "coverage_content_type": "qualityInformation"
             },
+            "slope_outliers": {
+                "long_name": "slope_observations_outliers",
+                "comment": "Outliers detected in slope observations.",
+                "valid_min": 0,
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
+                "coverage_content_type": "qualityInformation"
+            },
             "slope2_outliers": {
                 "long_name": "slope2_observations_outliers",
                 "comment": "Outliers detected in slope2 observations.",
+                "valid_min": 0,
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
+                "coverage_content_type": "qualityInformation"
+            },
+            "low_slope_flag": {
+                "long_name": "low slope indicator",
+                "comment": "Low slope flag indicator for slope and slope2 observations.",
                 "valid_min": 0,
                 "valid_max": 1,
                 "flag_values": "0 1",
