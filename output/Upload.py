@@ -28,8 +28,8 @@ class Upload:
     SWORD_VERSION = "v15"
     VERS_LENGTH = 4
 
-    def __init__(self, sos_file, podaac_upload, podaac_bucket, continent, \
-        run_date, run_type, logger):
+    def __init__(self, sos_file, sos_bucket, podaac_upload, podaac_bucket, \
+                 continent, run_date, run_type, logger):
         """
         Parameters
         ----------
@@ -40,6 +40,7 @@ class Upload:
         """
 
         self.sos_file = sos_file
+        self.sos_bucket = sos_bucket
         self.podaac_upload = podaac_upload
         self.podaac_bucket = podaac_bucket
         self.continent = continent
@@ -70,9 +71,15 @@ class Upload:
         try:
             s3 = boto3.client("s3")
             # Upload SoS result file to the S3 bucket
-            s3.upload_file(Filename=str(output_dir / self.sos_file),
-                           Bucket="confluence-sos",
-                           Key=f"{run_type}/{vers}/{self.sos_file.name}")
+            if self.sos_bucket == "confluence-sos":
+                s3.upload_file(Filename=str(output_dir / self.sos_file),
+                            Bucket=self.sos_bucket,
+                            Key=f"{run_type}/{vers}/{self.sos_file.name}")
+            else:
+                s3.upload_file(Filename=str(output_dir / self.sos_file),
+                            Bucket=self.sos_bucket,
+                            Key=f"{run_type}/{vers}/{self.sos_file.name}",
+                            ExtraArgs={"ServerSideEncryption": "aws:kms"})
             self.logger.info(f"Uploaded: {run_type}/{vers}/{self.sos_file.name}.")
             # Upload validation figures to S3 bucket
             if 'validation' in modules:
@@ -95,8 +102,11 @@ class Upload:
         sos_filename = f"{self.continent}_sword_{self.SWORD_VERSION}_SOS_results_{self.run_type}_{vers}_{self.run_date.strftime('%Y%m%dT%H%M%S')}.nc"
         try:
             s3 = boto3.client("s3")
-            response = s3.upload_file(str(self.sos_file), self.podaac_bucket, sos_filename)
-            print(f"Uploaded: {self.podaac_bucket}/{sos_filename}")
+            response = s3.upload_file(str(self.sos_file), 
+                                      self.podaac_bucket, 
+                                      sos_filename,
+                                      ExtraArgs={"ServerSideEncryption": "AES256" })
+            self.logger.info(f"Uploaded: {self.podaac_bucket}/{sos_filename}")
         
         except botocore.exceptions.ClientError as error:
             raise error

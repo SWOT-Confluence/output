@@ -74,6 +74,11 @@ def create_args():
                             "--podaacbucket",
                             type=str,
                             help="Name of PO.DAAC S3 bucket to upload to")
+    arg_parser.add_argument("-s",
+                            "--sosbucket",
+                            type=str,
+                            default="confluence-sos",
+                            help="Name of SoS S3 bucket to upload to")
     return arg_parser
 
 def get_logger():
@@ -120,7 +125,7 @@ def main():
     append.update_time_coverage()
     
     # Upload SoS data
-    upload = Upload(append.sos_file, args.podaacupload, args.podaacbucket, \
+    upload = Upload(append.sos_file, args.sosbucket, args.podaacupload, args.podaacbucket, \
         list(append.cont.keys())[0], append.run_date, args.runtype, logger)
     try:
         upload.upload_data(OUTPUT, VALIDATION / "figs", args.runtype, args.modules)
