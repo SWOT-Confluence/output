@@ -936,6 +936,15 @@
                 "flag_values": "0 1",
                 "flag_meanings": "not_overwritten overwritten",
                 "coverage_content_type": "qualityInformation"
+            },
+            "d_x_area_flag": {
+                "long_name": "d_x_area overwritten value indicator",
+                "comment": "Indicates if d_x_area flag was overwritten with missing value because width or wse was not observed.",
+                "valid_min": 0,
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
+                "coverage_content_type": "qualityInformation"
             }
         },
         "node": {
@@ -1003,6 +1012,15 @@
             "low_slope_flag": {
                 "long_name": "low slope indicator",
                 "comment": "Low slope flag indicator for slope and slope2 observations.",
+                "valid_min": 0,
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
+                "coverage_content_type": "qualityInformation"
+            },
+            "d_x_area_flag": {
+                "long_name": "d_x_area overwritten value indicator",
+                "comment": "Indicates if d_x_area flag was overwritten with missing value because width or wse was not observed.",
                 "valid_min": 0,
                 "valid_max": 1,
                 "flag_values": "0 1",
