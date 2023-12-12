@@ -82,7 +82,7 @@ class Prediagnostics(AbstractModule):
                     pre_ds = Dataset(pre_dir / f"{int(s_rid)}_prediagnostics.nc", 'r')
                     # Reach
                     pre_dict["reach"]["ice_clim_f"][index] = pre_ds["reach"]["ice_clim_f"][:].filled(self.FILL["i4"])
-                    pre_dict["reach"]["ice_dyn_f"][index] = pre_ds["reach"]["ice_dyn_f"][:].filled(self.FILL["i4"])
+                    # pre_dict["reach"]["ice_dyn_f"][index] = pre_ds["reach"]["ice_dyn_f"][:].filled(self.FILL["i4"])
                     pre_dict["reach"]["dark_frac"][index] = pre_ds["reach"]["dark_frac"][:].filled(self.FILL["i4"])
                     pre_dict["reach"]["obs_frac_n"][index] = pre_ds["reach"]["obs_frac_n"][:].filled(self.FILL["i4"])
                     pre_dict["reach"]["reach_q"][index] = pre_ds["reach"]["reach_q"][:].filled(self.FILL["i4"])
@@ -116,7 +116,7 @@ class Prediagnostics(AbstractModule):
         j = 0
         for i in indexes[0]:
             pre_dict["node"]["ice_clim_f"][i] = pre_ds["node"]["ice_clim_f"][:,j].filled(self.FILL["i4"])
-            pre_dict["node"]["ice_dyn_f"][i] = pre_ds["node"]["ice_dyn_f"][:,j].filled(self.FILL["i4"])
+            # pre_dict["node"]["ice_dyn_f"][i] = pre_ds["node"]["ice_dyn_f"][:,j].filled(self.FILL["i4"])
             pre_dict["node"]["dark_frac"][i] = pre_ds["node"]["dark_frac"][:,j].filled(self.FILL["i4"])
             pre_dict["node"]["node_q"][i] = pre_ds["node"]["node_q"][:,j].filled(self.FILL["i4"])
             pre_dict["node"]["xovr_cal_q"][i] = pre_ds["node"]["xovr_cal_q"][:,j].filled(self.FILL["i4"])
@@ -134,7 +134,7 @@ class Prediagnostics(AbstractModule):
         data_dict = {
             "reach" : {
                 "ice_clim_f": np.empty((self.sos_rids.shape[0]), dtype=object), 
-                "ice_dyn_f": np.empty((self.sos_rids.shape[0]), dtype=object),
+                # "ice_dyn_f": np.empty((self.sos_rids.shape[0]), dtype=object),
                 "dark_frac": np.empty((self.sos_rids.shape[0]), dtype=object),
                 "obs_frac_n": np.empty((self.sos_rids.shape[0]), dtype=object),
                 "reach_q": np.empty((self.sos_rids.shape[0]), dtype=object),
@@ -147,7 +147,7 @@ class Prediagnostics(AbstractModule):
                 "d_x_area_flag": np.empty((self.sos_rids.shape[0]), dtype=object),
                 "attrs": {
                     "ice_clim_f": {},
-                    "ice_dyn_f": {},
+                    # "ice_dyn_f": {},
                     "dark_frac": {},
                     "obs_frac_n": {},
                     "reach_q": {},
@@ -162,7 +162,7 @@ class Prediagnostics(AbstractModule):
             },
             "node": {
                 "ice_clim_f": np.empty((self.sos_nids.shape[0]), dtype=object),
-                "ice_dyn_f": np.empty((self.sos_nids.shape[0]), dtype=object),
+                # "ice_dyn_f": np.empty((self.sos_nids.shape[0]), dtype=object),
                 "dark_frac": np.empty((self.sos_nids.shape[0]), dtype=object),
                 "node_q": np.empty((self.sos_nids.shape[0]), dtype=object),
                 "xovr_cal_q": np.empty((self.sos_nids.shape[0]), dtype=object),
@@ -174,7 +174,7 @@ class Prediagnostics(AbstractModule):
                 "d_x_area_flag": np.empty((self.sos_nids.shape[0]), dtype=object),
                 "attrs": {
                     "ice_clim_f": {},
-                    "ice_dyn_f": {},
+                    # "ice_dyn_f": {},
                     "dark_frac": {},
                     "node_q": {},
                     "xovr_cal_q": {},
@@ -190,7 +190,7 @@ class Prediagnostics(AbstractModule):
         
         # Vlen variables
         data_dict["reach"]["ice_clim_f"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
-        data_dict["reach"]["ice_dyn_f"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
+        # data_dict["reach"]["ice_dyn_f"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["reach"]["dark_frac"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["reach"]["obs_frac_n"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["reach"]["reach_q"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
@@ -202,7 +202,7 @@ class Prediagnostics(AbstractModule):
         data_dict["reach"]["low_slope_flag"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["reach"]["d_x_area_flag"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["node"]["ice_clim_f"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
-        data_dict["node"]["ice_dyn_f"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
+        # data_dict["node"]["ice_dyn_f"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["node"]["dark_frac"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["node"]["node_q"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
         data_dict["node"]["xovr_cal_q"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
@@ -228,7 +228,7 @@ class Prediagnostics(AbstractModule):
         ds = Dataset(nc_file, 'r')
         # Reach
         data_dict["reach"]["attrs"]["ice_clim_f"] = ds["reach"]["ice_clim_f"].__dict__
-        data_dict["reach"]["attrs"]["ice_dyn_f"] = ds["reach"]["ice_dyn_f"].__dict__
+        # data_dict["reach"]["attrs"]["ice_dyn_f"] = ds["reach"]["ice_dyn_f"].__dict__
         data_dict["reach"]["attrs"]["dark_frac"] = ds["reach"]["dark_frac"].__dict__
         data_dict["reach"]["attrs"]["obs_frac_n"] = ds["reach"]["obs_frac_n"].__dict__
         data_dict["reach"]["attrs"]["reach_q"] = ds["reach"]["reach_q"].__dict__
@@ -241,7 +241,7 @@ class Prediagnostics(AbstractModule):
         data_dict["reach"]["attrs"]["d_x_area_flag"] = ds["reach"]["slope2_outliers"].__dict__
         # Node
         data_dict["node"]["attrs"]["ice_clim_f"] = ds["node"]["ice_clim_f"].__dict__
-        data_dict["node"]["attrs"]["ice_dyn_f"] = ds["node"]["ice_dyn_f"].__dict__
+        # data_dict["node"]["attrs"]["ice_dyn_f"] = ds["node"]["ice_dyn_f"].__dict__
         data_dict["node"]["attrs"]["dark_frac"] = ds["node"]["dark_frac"].__dict__
         data_dict["node"]["attrs"]["node_q"] = ds["node"]["node_q"].__dict__
         data_dict["node"]["attrs"]["xovr_cal_q"] = ds["node"]["xovr_cal_q"].__dict__
@@ -269,8 +269,8 @@ class Prediagnostics(AbstractModule):
         r_grp = pre_grp.createGroup("reach")
         var = self.write_var_nt(r_grp, "ice_clim_f", self.vlen_i, ("num_reaches"), data_dict["reach"])
         self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["ice_clim_f"])
-        var = self.write_var_nt(r_grp, "ice_dyn_f", self.vlen_i, ("num_reaches"), data_dict["reach"])
-        self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["ice_dyn_f"])
+        # var = self.write_var_nt(r_grp, "ice_dyn_f", self.vlen_i, ("num_reaches"), data_dict["reach"])
+        # self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["ice_dyn_f"])
         var = self.write_var_nt(r_grp, "dark_frac", self.vlen_i, ("num_reaches"), data_dict["reach"])
         self.set_variable_atts(var, metadata_json["prediagnostics"]["reach"]["dark_frac"])
         var = self.write_var_nt(r_grp, "obs_frac_n", self.vlen_i, ("num_reaches"), data_dict["reach"])
@@ -295,8 +295,8 @@ class Prediagnostics(AbstractModule):
         n_grp = pre_grp.createGroup("node")
         var = self.write_var_nt(n_grp, "ice_clim_f", self.vlen_i, ("num_nodes"), data_dict["node"])
         self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["ice_clim_f"])
-        var = self.write_var_nt(n_grp, "ice_dyn_f", self.vlen_i, ("num_nodes"), data_dict["node"])
-        self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["ice_dyn_f"])
+        # var = self.write_var_nt(n_grp, "ice_dyn_f", self.vlen_i, ("num_nodes"), data_dict["node"])
+        # self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["ice_dyn_f"])
         var = self.write_var_nt(n_grp, "dark_frac", self.vlen_i, ("num_nodes"), data_dict["node"])
         self.set_variable_atts(var, metadata_json["prediagnostics"]["node"]["dark_frac"])
         var = self.write_var_nt(n_grp, "node_q", self.vlen_i, ("num_nodes"), data_dict["node"])
