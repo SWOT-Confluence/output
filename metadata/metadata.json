@@ -1,7 +1,7 @@
 {
     "global_attributes": {
         "title": "SWOT discharge prior information and processing outputs",
-        "summary": "All of the outputs from all processes used to generate SWOT discahrge products.",
+        "summary": "All of the outputs from all processes used to generate SWOT discharge products.",
         "keywords": "GCMD:Rivers/Streams, GCMD:Discharge/Flow, GCMD:SWOT",
         "keywords_vocabulary": "NASA Global Change Master Directory (GCMD) Science Keywords",
         "doi": "10.5067/SWOT-SOS-V1",
@@ -132,7 +132,7 @@
                 "coverage_content_type": "modelResult"
             },
             "a0": {
-                "long_name": "back-calculated A0 to match SWOT discharge philosohpy",
+                "long_name": "back-calculated A0 to match SWOT discharge philosophy",
                 "comment": "represented as the cross-sectional area at the time of the median WSE in the timeseries",
                 "units": "m^2",
                 "valid_min": 0,
@@ -855,41 +855,56 @@
         "reach": {
             "ice_clim_f": {
                 "long_name": "climatological_ice_flag",
-                "comment": "Climatological ice cover flag indicating whether the reach is ice-covered on the day of the observation based on external climatological information (not the SWOT measurement). Values of 0, 1, and 2 indicate that the reach is likely not ice covered, may or may not be partially or fully ice covered, and likely fully ice covered, respectively.",
+                "comment": "Application of the climatological ice cover SWOT flag. A value of 1 indicates the indexed reach was overwritten and a value of 0 indicates the indexed reach was not overwritten.",
                 "valid_min": 0,
                 "valid_max": 1,
-                "flag_values": "0 1 2",
-                "flag_meanings": "no_ice_cover uncertain_ice_cover full_ice_cover",
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
                 "coverage_content_type": "qualityInformation"
             },
             "ice_dyn_f": {
                 "long_name": "dynamic_ice_flag",
-                "comment": "Dynamic ice cover flag indicating whether the surface is ice-covered on the day of the observation based on analysis of external satellite optical data. Values of 0, 1, and 2 indicate that the reach is not ice covered, partially ice covered, and fully ice covered, respectively.",
+                "comment": "Application of the dynamic ice cover SWOT flag. A value of 1 indicates the indexed reach was overwritten and a value of 0 indicates the indexed reach was not overwritten.",
                 "valid_min": 0,
                 "valid_max": 1,
-                "flag_values": "0 1 2",
-                "flag_meanings": "no_ice_cover partial_ice_cover full_ice_cover",
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
                 "coverage_content_type": "qualityInformation"
             },
             "dark_frac": {
                 "long_name": "dark_water_fraction",
-                "comment": "Fraction of reach area_total covered by dark water",
+                "comment": "Application of the fraction of reach area_total covered by dark water SWOT flag. A value of 1 indicates the indexed reach was overwritten and a value of 0 indicates the indexed reach was not overwritten.",
                 "valid_min": 0,
                 "valid_max": 1,
-                "coverage_content_type": "qualityInformation"
-            },
-            "n_good_nod": {
-                "long_name": "num_good_node",
-                "comment": "Number of nodes in the reach that have a valid node WSE. Note that the total number of nodes from the prior river database is given by p_n_nodes.",
-                "valid_min": 0,
-                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
                 "coverage_content_type": "qualityInformation"
             },
             "obs_frac_n": {
-                "long_name": "raction_of_observed_nodes",
-                "comment": "Fraction of nodes (n_good_nod/p_n_nodes) in the reach that have a valid node WSE. The value is between 0 and 1.",
+                "long_name": "fraction_of_observed_nodes",
+                "comment": "Application of the fraction of nodes SWOT flag. A value of 1 indicates the indexed reach was overwritten and a value of 0 indicates the indexed reach was not overwritten.",
                 "valid_min": 0,
                 "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
+                "coverage_content_type": "qualityInformation"
+            },
+            "reach_q": {
+                "long_name": "quality_indicator_for_reach",
+                "comment": "Application of the summary quality indicator for the reach measurement SWOT flag. A value of 1 indicates the indexed reach was overwritten and a value of 0 indicates the indexed reach was not overwritten.",
+                "valid_min": 0,
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
+                "coverage_content_type": "qualityInformation"
+            },
+            "xovr_cal_q": {
+                "long_name": "quality_indicator_for_reach",
+                "comment": "Application of quality of the cross-over calibration SWOT flag. A value of 1 indicates the indexed reach was overwritten and a value of 0 indicates the indexed reach was not overwritten.",
+                "valid_min": 0,
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
                 "coverage_content_type": "qualityInformation"
             },
             "width_outliers": {
@@ -950,27 +965,47 @@
         "node": {
             "ice_clim_f": {
                 "long_name": "climatological_ice_flag",
-                "comment": "Climatological ice cover flag indicating whether the node is ice-covered on the day of the observation based on external climatological information (not the SWOT measurement).",
+                "comment": "Application of the climatological ice cover SWOT flag. A value of 1 indicates the indexed node was overwritten and a value of 0 indicates the indexed node was not overwritten.",
                 "valid_min": 0,
                 "valid_max": 1,
-                "flag_values": "0 1 2",
-                "flag_meanings": "no_ice_cover uncertain_ice_cover full_ice_cover",
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
                 "coverage_content_type": "qualityInformation"
             },
             "ice_dyn_f": {
                 "long_name": "dynamic_ice_flag",
-                "comment": "Dynamic ice cover flag indicating whether the surface is ice-covered on the day of the observation based on analysis of external satellite optical data. Values of 0, 1, and 2 indicate that the node is not ice covered, partially ice covered, and fully ice covered, respectively.",
+                "comment": "Application of the dynamic ice cover SWOT flag. A value of 1 indicates the indexed node was overwritten and a value of 0 indicates the indexed node was not overwritten.",
                 "valid_min": 0,
                 "valid_max": 1,
-                "flag_values": "0 1 2",
-                "flag_meanings": "no_ice_cover partial_ice_cover full_ice_cover",
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
                 "coverage_content_type": "qualityInformation"
             },
             "dark_frac": {
                 "long_name": "dark_water_fraction",
-                "comment": "Fraction of node area_total covered by dark water.",
+                "comment": "Application of the fraction of node area_total covered by dark water SWOT flag. A value of 1 indicates the indexed node was overwritten and a value of 0 indicates the indexed node was not overwritten.",
                 "valid_min": 0,
                 "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
+                "coverage_content_type": "qualityInformation"
+            },
+            "node_q": {
+                "long_name": "quality_indicator_for_node",
+                "comment": "Application of the summary quality indicator for the node measurement SWOT flag. A value of 1 indicates the indexed node was overwritten and a value of 0 indicates the indexed node was not overwritten.",
+                "valid_min": 0,
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
+                "coverage_content_type": "qualityInformation"
+            },
+            "xovr_cal_q": {
+                "long_name": "quality_indicator_for_node",
+                "comment": "Application of quality of the cross-over calibration SWOT flag. A value of 1 indicates the indexed node was overwritten and a value of 0 indicates the indexed node was not overwritten.",
+                "valid_min": 0,
+                "valid_max": 1,
+                "flag_values": "0 1",
+                "flag_meanings": "not_overwritten overwritten",
                 "coverage_content_type": "qualityInformation"
             },
             "width_outliers": {
