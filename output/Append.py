@@ -27,6 +27,7 @@ import uuid
 # Third-party imports
 from netCDF4 import Dataset
 import numpy as np
+import xarray as xr
 
 # Local imports
 from output.modules.Hivdi import Hivdi
@@ -194,7 +195,13 @@ class Append:
 
         # Node and reach group
         write_reaches(prior_sos, result_sos, self.metadata_json)
-        write_nodes(prior_sos, result_sos, self.metadata_json)
+        
+        # netCDF4 library is not reading in node_ids - use xarray
+        ds = xr.open_dataset(self.sos_cur / f"{continent}_{self.PRIORS_SUFFIX}.nc",
+                             group="nodes", drop_variables="river_name")
+        node_ids = ds["node_id"].data
+        ds.close()
+        write_nodes(prior_sos, result_sos, self.metadata_json, node_ids)
 
         prior_sos.close()
         result_sos.close()
@@ -403,7 +410,7 @@ def write_reaches(prior_sos, result_sos, metadata_json):
     river_name[:] = prior_sos["reaches"]["river_name"][:]
     set_variable_atts(river_name, metadata_json["reaches"]["river_name"])
 
-def write_nodes(prior_sos, result_sos, metadata_json):
+def write_nodes(prior_sos, result_sos, metadata_json, node_ids):
     """Write node_id and reach_id variables with associated dimension to the
     SoS."""
 
@@ -412,8 +419,8 @@ def write_nodes(prior_sos, result_sos, metadata_json):
     # Node ID
     node_var = sos_node.createVariable("node_id", "i8", ("num_nodes",), compression="zlib")
     node_var.setncatts(prior_sos["nodes"]["node_id"].__dict__)
-    node_var[:] = prior_sos["nodes"]["node_id"][:]
-    set_variable_atts(node_var, metadata_json["nodes"]["reach_id"])
+    node_var[:] = node_ids
+    set_variable_atts(node_var, metadata_json["nodes"]["node_id"])
     
     # Reach ID
     reach_var = sos_node.createVariable("reach_id", "i8", ("num_nodes",), compression="zlib")
