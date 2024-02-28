@@ -179,34 +179,9 @@ class Sic4dvar(AbstractModule):
         self.set_variable_atts(var, metadata_json["sic4dvar"]["A0"])
         var = self.write_var(sv_grp, "n", "f8", ("num_reaches",), data_dict)
         self.set_variable_atts(var, metadata_json["sic4dvar"]["n"])
-        # var = self.write_var_nt(sv_grp, "Qalgo31", self.vlen_f, ("num_reaches"), data_dict)
-        # self.set_variable_atts(var, metadata_json["sic4dvar"]["Qalgo31"])
-        # var = self.write_var_nt(sv_grp, "Qalgo5", self.vlen_f, ("num_reaches"), data_dict)
-        # self.set_variable_atts(var, metadata_json["sic4dvar"]["Qalgo5"])
-
-        self.write_var_nt(sv_grp, "Q_mm", self.vlen_f, ("num_reaches"), data_dict)
-        self.write_var_nt(sv_grp, "Q_da", self.vlen_f, ("num_reaches"), data_dict)
-        # need attributes here
-        # self.write_var_nt(sv_grp, "Qalgo5", self.vlen_f, ("num_reaches"), data_dict)
-
-
-        # no longer using elevation or half width
-        # self.write_var_nt(sv_grp, "elevation", self.vlen_f, ("num_nodes"), data_dict)
-        # self.write_var_nt(sv_grp, "half_width", self.vlen_f, ("num_nodes"), data_dict)
-
-        # Variable length data
-        # indexes = np.where(data_dict["node_id"] != 0)
-        # sv_grp.createDimension("num_sic4dvar_nodes", None)
-        # nid = sv_grp.createVariable("sic4dvar_node_id", "i8", ("num_sic4dvar_nodes",))
-        # nid[:] = data_dict["node_id"][indexes]
-        # rid = sv_grp.createVariable("sic4dvar_reach_id", "i8", ("num_sic4dvar_nodes",))
-        # rid[:] = self.sos_nrids[indexes]
-
-        # vlen_t = sv_grp.createVLType(np.float64, "vlen")
-        # hw = sv_grp.createVariable("half_width", vlen_t, ("num_sic4dvar_nodes"))
-        # hw[:] = data_dict["half_width"][indexes]
-
-        # e = sv_grp.createVariable("elevation", vlen_t, ("num_sic4dvar_nodes"))
-        # e[:] = data_dict["elevation"][indexes]
+        var = self.write_var_nt(sv_grp, "Q_mm", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["Q_mm"])
+        var = self.write_var_nt(sv_grp, "Q_da", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["Q_da"])
         
         sos_ds.close()
