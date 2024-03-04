@@ -615,14 +615,14 @@
             "long_name": "node_identifier",
             "comment": "Taken from SWORD PDD: id of each node the high resolution centerline point is associated with. The format of the id is as follows: CBBBBBRRRRNNNT where\nC = Continent (the first number of the Pfafstetter basin code), B = Remaining Pfafstetter basin codes up to level 6, R = Reach id (assigned sequentially within a level 6 basin starting at the downstream end working upstream), N = Node id (assigned sequentially within a reach starting at the downstream end working upstream), T = Type (1 \u2013 river, 3 \u2013 lake on river, 4 \u2013 dam or waterfall, 5 \u2013 unreliable topology, 6 \u2013 ghost node)",
             "valid_min": -998,
-            "valid_max": 999999999999,
+            "valid_max": 999999999999999999,
             "coverage_content_type": "referenceInformation"
         },
         "reach_id": {
             "long_name": "reach_identifier",
             "comment": "Taken from SWORD PDD: id of the reach each node is associated with. The format of the id is as follows: CBBBBBRRRRT where C = Continent (the first number of the Pfafstetter basin code), B = Remaining Pfafstetter basin codes up to level 6, R = Reach id (assigned sequentially within a level 6 basin starting at the downstream end working upstream), T = Type (1 \u2013 river, 3 \u2013 lake on river, 4 \u2013 dam or waterfall, 5 \u2013 unreliable topology, 6 \u2013 ghost reach)d",
             "valid_min": -998,
-            "valid_max": 999999999999,
+            "valid_max": 999999999999999999,
             "coverage_content_type": "referenceInformation"
         },
         "time": {
@@ -1173,7 +1173,7 @@
             "long_name": "reach_identifier",
             "comment": "Taken from SWORD PDD: id of each reach. The format of none the id is as follows: CBBBBBRRRRT where C = Continent (the first number of the Pfafstetter basin code), B = Remaining Pfafstetter basin codes up to level 6, R = Reach id (assigned sequentially within a level 6 basin starting at the downstream end working upstream, T = Type (1 \u2013 river, 3 \u2013 lake on river, 4 \u2013 dam or waterfall, 5 \u2013 unreliable topology, 6 \u2013 ghost reach)",
             "valid_min": -998,
-            "valid_max": 999999999999,
+            "valid_max": 999999999999999999,
             "coverage_content_type": "referenceInformation"
         },
         "time": {
