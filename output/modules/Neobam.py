@@ -1,6 +1,7 @@
 # Standard imports
 import glob
 from pathlib import Path
+import os
 
 # Third-party imports
 from netCDF4 import Dataset
@@ -63,8 +64,17 @@ class Neobam(AbstractModule):
         """Extract HiVDI results from NetCDF files."""
 
         # Files and reach identifiers
-        nb_dir = self.input_dir / "geobam"
-        nb_files = [ Path(nb_file) for nb_file in glob.glob(f"{nb_dir}/{self.cont_ids}*.nc") ] 
+        # nb_dir = self.input_dir / "geobam"
+        nb_dir = os.path.join(self.input_dir, 'geobam')
+
+        if type(self.cont_ids) == list:
+            nb_files = []
+            for i in self.cont_ids:
+                nb_files_int = [ Path(nb_file) for nb_file in glob.glob(f"{nb_dir}/{i}*.nc") ]
+                nb_files.extend(nb_files_int)
+
+        else:
+            nb_files = [ Path(nb_file) for nb_file in glob.glob(f"{nb_dir}/{self.cont_ids}*.nc") ]
         nb_rids = [ int(nb_file.name.split('_')[0]) for nb_file in nb_files ]
 
         # Storage of results data
@@ -78,38 +88,65 @@ class Neobam(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in nb_rids:
-                    nb_ds = Dataset(nb_dir / f"{int(s_rid)}_geobam.nc", 'r')
+                    nb_ds = Dataset(os.path.join(nb_dir , f"{int(s_rid)}_geobam.nc"), 'r')
                     nb_dict["r"]["mean1"][index] = nb_ds["r"]["mean1"][:].filled(np.nan)
+                    nb_dict["r"]["attrs"]['mean1']['_FillValue'] = nb_ds["r"]['mean1']._FillValue
                     nb_dict["r"]["mean2"][index] = nb_ds["r"]["mean2"][:].filled(np.nan)
+                    nb_dict["r"]["attrs"]['mean2']['_FillValue'] = nb_ds["r"]['mean2']._FillValue
                     nb_dict["r"]["mean3"][index] = nb_ds["r"]["mean3"][:].filled(np.nan)
+                    nb_dict["r"]["attrs"]['mean3']['_FillValue'] = nb_ds["r"]['mean3']._FillValue
                     nb_dict["r"]["sd1"][index] = nb_ds["r"]["sd1"][:].filled(np.nan)
+                    nb_dict["r"]["attrs"]['sd1']['_FillValue'] = nb_ds["r"]['sd1']._FillValue
                     nb_dict["r"]["sd2"][index] = nb_ds["r"]["sd2"][:].filled(np.nan)
+                    nb_dict["r"]["attrs"]['sd2']['_FillValue'] = nb_ds["r"]['sd2']._FillValue
                     nb_dict["r"]["sd3"][index] = nb_ds["r"]["sd3"][:].filled(np.nan)
+                    nb_dict["r"]["attrs"]['sd3']['_FillValue'] = nb_ds["r"]['sd3']._FillValue
                     
                     nb_dict["logn"]["mean1"][index] = nb_ds["logn"]["mean1"][:].filled(np.nan)
+                    nb_dict["logn"]["attrs"]['mean1']['_FillValue'] = nb_ds["logn"]['mean1']._FillValue
                     nb_dict["logn"]["mean2"][index] = nb_ds["logn"]["mean2"][:].filled(np.nan)
+                    nb_dict["logn"]["attrs"]['mean2']['_FillValue'] = nb_ds["logn"]['mean2']._FillValue
                     nb_dict["logn"]["mean3"][index] = nb_ds["logn"]["mean3"][:].filled(np.nan)
+                    nb_dict["logn"]["attrs"]['mean3']['_FillValue'] = nb_ds["logn"]['mean3']._FillValue
                     nb_dict["logn"]["sd1"][index] = nb_ds["logn"]["sd1"][:].filled(np.nan)
+                    nb_dict["logn"]["attrs"]['sd1']['_FillValue'] = nb_ds["logn"]['sd1']._FillValue
                     nb_dict["logn"]["sd2"][index] = nb_ds["logn"]["sd2"][:].filled(np.nan)
+                    nb_dict["logn"]["attrs"]['sd2']['_FillValue'] = nb_ds["logn"]['sd2']._FillValue
                     nb_dict["logn"]["sd3"][index] = nb_ds["logn"]["sd3"][:].filled(np.nan)
+                    nb_dict["logn"]["attrs"]['sd3']['_FillValue'] = nb_ds["logn"]['sd3']._FillValue
                     
                     nb_dict["logWb"]["mean1"][index] = nb_ds["logWb"]["mean1"][:].filled(np.nan)
+                    nb_dict["logWb"]["attrs"]['mean1']['_FillValue'] = nb_ds["logWb"]['mean1']._FillValue
                     nb_dict["logWb"]["mean2"][index] = nb_ds["logWb"]["mean2"][:].filled(np.nan)
+                    nb_dict["logWb"]["attrs"]['mean2']['_FillValue'] = nb_ds["logWb"]['mean2']._FillValue
                     nb_dict["logWb"]["mean3"][index] = nb_ds["logWb"]["mean3"][:].filled(np.nan)
+                    nb_dict["logWb"]["attrs"]['mean3']['_FillValue'] = nb_ds["logWb"]['mean3']._FillValue
                     nb_dict["logWb"]["sd1"][index] = nb_ds["logWb"]["sd1"][:].filled(np.nan)
+                    nb_dict["logWb"]["attrs"]['sd1']['_FillValue'] = nb_ds["logWb"]['sd1']._FillValue
                     nb_dict["logWb"]["sd2"][index] = nb_ds["logWb"]["sd2"][:].filled(np.nan)
+                    nb_dict["logWb"]["attrs"]['sd2']['_FillValue'] = nb_ds["logWb"]['sd2']._FillValue
                     nb_dict["logWb"]["sd3"][index] = nb_ds["logWb"]["sd3"][:].filled(np.nan)
+                    nb_dict["logWb"]["attrs"]['sd3']['_FillValue'] = nb_ds["logWb"]['sd3']._FillValue
                     
                     nb_dict["logDb"]["mean1"][index] = nb_ds["logDb"]["mean1"][:].filled(np.nan)
+                    nb_dict["logDb"]["attrs"]['mean1']['_FillValue'] = nb_ds["logDb"]['mean1']._FillValue
                     nb_dict["logDb"]["mean2"][index] = nb_ds["logDb"]["mean2"][:].filled(np.nan)
+                    nb_dict["logDb"]["attrs"]['mean2']['_FillValue'] = nb_ds["logDb"]['mean2']._FillValue
                     nb_dict["logDb"]["mean3"][index] = nb_ds["logDb"]["mean3"][:].filled(np.nan)
+                    nb_dict["logDb"]["attrs"]['mean3']['_FillValue'] = nb_ds["logDb"]['mean3']._FillValue
                     nb_dict["logDb"]["sd1"][index] = nb_ds["logDb"]["sd1"][:].filled(np.nan)
+                    nb_dict["logDb"]["attrs"]['sd1']['_FillValue'] = nb_ds["logDb"]['sd1']._FillValue
                     nb_dict["logDb"]["sd2"][index] = nb_ds["logDb"]["sd2"][:].filled(np.nan)
+                    nb_dict["logDb"]["attrs"]['sd2']['_FillValue'] = nb_ds["logDb"]['sd2']._FillValue
                     nb_dict["logDb"]["sd3"][index] = nb_ds["logDb"]["sd3"][:].filled(np.nan)
+                    nb_dict["logDb"]["attrs"]['sd3']['_FillValue'] = nb_ds["logDb"]['sd3']._FillValue
                     
                     nb_dict["q"]["q1"][index] = nb_ds["q"]["q1"][:].filled(self.FILL["f8"])
+                    nb_dict['q']["attrs"]['q1']['_FillValue'] = nb_ds['q']['q1']._FillValue
                     nb_dict["q"]["q2"][index] = nb_ds["q"]["q2"][:].filled(self.FILL["f8"])
+                    nb_dict['q']["attrs"]['q2']['_FillValue'] = nb_ds['q']['q2']._FillValue
                     nb_dict["q"]["q3"][index] = nb_ds["q"]["q3"][:].filled(self.FILL["f8"])
+                    nb_dict['q']["attrs"]['q3']['_FillValue'] = nb_ds['q']['q3']._FillValue
                     
                     nb_ds.close()
                 index += 1
@@ -305,7 +342,6 @@ class Neobam(AbstractModule):
         data_dict: dict
             dictionary of neoBAM result data
         """
-
         c1 = grp.createVariable(f"{chain}1", vlen, dims)
         c1.missing_value = data_dict[name]["attrs"][f"{chain}1"]["_FillValue"]
         data_dict[name]["attrs"][f"{chain}1"].pop("_FillValue", None)
