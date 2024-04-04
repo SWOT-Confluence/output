@@ -340,8 +340,8 @@ class Momma(AbstractModule):
         var = self.write_var(mm_grp, "Qmean_momma.constrained", "f8", ("num_reaches",), data_dict)
         self.set_variable_atts(var, metadata_json["momma"]["Qmean_momma.constrained"])
 
-        self.write_var(mm_grp, "width_stage_corr", "f8", ("num_reaches",), data_dict)
-        # need atts here
+        var = self.write_var(mm_grp, "width_stage_corr", "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["momma"]["width_stage_corr"])
 
 
         sos_ds.close()
