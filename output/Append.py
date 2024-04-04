@@ -96,8 +96,8 @@ class Append:
     """
 
 
-    PRIORS_SUFFIX = "sword_v15_SOS_priors"
-    RESULTS_SUFFIX = "sword_v15_SOS_results"
+    PRIORS_SUFFIX = "sword_v16_SOS_priors"
+    RESULTS_SUFFIX = "sword_v16_SOS_results"
     # PRIORS_SUFFIX = "sword_v11_SOS_priors"
     # RESULTS_SUFFIX = "sword_v11_SOS_results"
     VERS_LENGTH = 4
@@ -173,10 +173,13 @@ class Append:
         result_sos.comment = f"{prior_sos.run_type.capitalize()} SoS version includes results from modules: {', '.join(self.modules_list)} and cycle pass observations plus time data from SWOT shapefiles"
         
         # Geospatial coverage
-        result_sos.geospatial_lat_min = prior_sos.geospatial_lat_min
-        result_sos.geospatial_lat_max = prior_sos.geospatial_lat_max
-        result_sos.geospatial_lon_min = prior_sos.geospatial_lon_min
-        result_sos.geospatial_lon_max = prior_sos.geospatial_lon_max
+        try:
+            result_sos.geospatial_lat_min = prior_sos.geospatial_lat_min
+            result_sos.geospatial_lat_max = prior_sos.geospatial_lat_max
+            result_sos.geospatial_lon_min = prior_sos.geospatial_lon_min
+            result_sos.geospatial_lon_max = prior_sos.geospatial_lon_max
+        except:
+            print('Geospatial data not present in sos...')
 
         # Global dimensions
         result_sos.createDimension("num_reaches", prior_sos["reaches"]["reach_id"][:].shape[0])             
@@ -391,18 +394,20 @@ def write_reaches(prior_sos, result_sos, metadata_json):
     reach_var.setncatts(prior_sos["reaches"]["reach_id"].__dict__)
     reach_var[:] = prior_sos["reaches"]["reach_id"][:]
     set_variable_atts(reach_var, metadata_json["reaches"]["reach_id"]) 
-    
-    # Latitude
-    x = sos_reach.createVariable("x", "f8", ("num_reaches"), compression="zlib")
-    x.setncatts(prior_sos["reaches"]["x"].__dict__)
-    x[:] = prior_sos["reaches"]["x"][:]
-    set_variable_atts(x, metadata_json["reaches"]["x"])
-    
-    # Longitude
-    y = sos_reach.createVariable("y", "f8", ("num_reaches"), compression="zlib")
-    y.setncatts(prior_sos["reaches"]["y"].__dict__)
-    y[:] = prior_sos["reaches"]["y"][:]
-    set_variable_atts(y, metadata_json["reaches"]["y"])
+    try:
+        # Latitude
+        x = sos_reach.createVariable("x", "f8", ("num_reaches"), compression="zlib")
+        x.setncatts(prior_sos["reaches"]["x"].__dict__)
+        x[:] = prior_sos["reaches"]["x"][:]
+        set_variable_atts(x, metadata_json["reaches"]["x"])
+        
+        # Longitude
+        y = sos_reach.createVariable("y", "f8", ("num_reaches"), compression="zlib")
+        y.setncatts(prior_sos["reaches"]["y"].__dict__)
+        y[:] = prior_sos["reaches"]["y"][:]
+        set_variable_atts(y, metadata_json["reaches"]["y"])
+    except:
+        print('Geospatial data not present in sos..')
     
     # River name
     river_name = sos_reach.createVariable("river_name", str, ("num_reaches"),)
