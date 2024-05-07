@@ -1438,11 +1438,11 @@
             "coverage_content_type": "modelResult"
         },
         "Q": {
-            "long_name": "placeholder",
-            "comment": "placeholder",
-            "units": "placeholder",
-            "valid_min": -998,
-            "valid_max": 999999999999,
+            "long_name": "MOMMA-estimated discharge",
+            "comment": "For cases with complete SWOT-observed data (slope, width, elevation)",
+            "units": "m^3/s",
+            "valid_min": 0,
+            "valid_max": 1000000,
             "coverage_content_type": "modelResult"
         },
         "Q_constrained": {
