@@ -25,7 +25,7 @@ class Upload:
         Transfers SOS data to S3 from EFS
     """
     
-    SWORD_VERSION = "v15"
+    SWORD_VERSION = "v16"
     VERS_LENGTH = 4
 
     def __init__(self, sos_file, sos_bucket, podaac_upload, podaac_bucket, \
