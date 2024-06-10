@@ -46,25 +46,41 @@ class Priors(AbstractModule):
             string suffix of priors file
         """
 
-        self.sos = None
         self.suffix = suffix
         super().__init__(cont_ids, input_dir, sos_new)
         
     def get_module_data(self):
         """Extract and return model group from priors SoS file."""
         
-        self.open_sos()
-        pri_dict = self.create_data_dict()
+        continent = self.sos_new.stem.split('_')[0]
+        sos_cur = Dataset(self.input_dir / f"{continent}_{self.suffix}.nc", 'r')
+        pri_dict = self.create_data_dict(sos_cur)
+        sos_cur.close()
         return pri_dict        
         
-    def create_data_dict(self):
+    def create_data_dict(self, sos):
         """Creates and returns Priors NetCDF 'model' group data dictionary."""
 
-        model = self.sos["model"]
-        return { 
-            "attributes": model.__dict__,
-            "dimensions": model.dimensions.items(),
-            "variables": model.variables.items()                   
+        model = sos["model"]
+
+        # Dimensions
+        dims = {}
+        for name, dimension in model.dimensions.items():
+            dims[name] = dimension.size if not dimension.isunlimited() else None
+        
+        # Variables
+        vars = {}
+        for name, variable in model.variables.items():
+            vars[name] = {
+                "data_type": variable.datatype,
+                "dimensions": variable.dimensions,
+                "attributes": variable.__dict__,
+                "data": variable[:]
+            }
+        
+        return {
+            "dimensions": dims,
+            "variables": vars                   
         }
     
     def append_module_data(self, data_dict, metadata_json):
@@ -75,29 +91,18 @@ class Priors(AbstractModule):
         data_dict: dict
             dictionary of Priors "model" group variables
         """
-
+        
         sos_ds = Dataset(self.sos_new, 'a')
         pri_grp = sos_ds.createGroup("priors")
-        # Attributes
-        pri_grp.setncatts(data_dict["attributes"])
+
         # Dimensions
-        for name, dimension in data_dict["dimensions"]:
-            pri_grp.createDimension(name, dimension.size if not dimension.isunlimited() else None)
+        for name, size in data_dict["dimensions"].items():
+            pri_grp.createDimension(name, size)
+        
         # Variables
-        for name, variable in data_dict["variables"]:
-            v = pri_grp.createVariable(name, variable.datatype, variable.dimensions, compression="zlib")
-            v.setncatts(self.sos["model"][name].__dict__)
-            v[:] = self.sos["model"][name][:]
+        for name, variable in data_dict["variables"].items():
+            v = pri_grp.createVariable(name, variable["data_type"], variable["dimensions"], compression="zlib")
+            v.setncatts(variable["attributes"])
+            v[:] = variable["data"]
             self.set_variable_atts(v, metadata_json["priors"][name])
-        self.close_sos()
-        
-    def open_sos(self):
-        """Open current SoS dataset for reading."""
-        
-        continent = self.sos_new.stem.split('_')[0]
-        self.sos = Dataset(self.input_dir / f"{continent}_{self.suffix}.nc", 'r')
-        
-    def close_sos(self):
-        """Closes current SoS dataset."""
-        
-        self.sos.close()
+        sos_ds.close()
