@@ -122,9 +122,9 @@
         }
     },
     "moi": {
-        "geobam": {
+        "neobam": {
             "q": {
-                "long_name": "geoBAM discharge time series",
+                "long_name": "neoBAM discharge time series",
                 "comment": "timeseries of discharge for each swot overpass for geoBAM",
                 "units": "m^3/s",
                 "valid_min": 0,
@@ -140,7 +140,7 @@
                 "coverage_content_type": "modelResult"
             },
             "n": {
-                "long_name": "temporally constant Manning's n for geoBAM",
+                "long_name": "temporally constant Manning's n for neoBAM",
                 "comment": "time-constant Manning's n",
                 "valid_min": 0.01,
                 "valid_max": 1,

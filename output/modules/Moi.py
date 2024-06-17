@@ -80,11 +80,11 @@ class Moi(AbstractModule):
                 if s_rid in moi_rids:
                     try:
                         moi_ds = Dataset(moi_dir / f"{int(s_rid)}_integrator.nc", 'r')
-                        moi_dict["geobam"]["q"][index] = moi_ds["geobam"]["q"][:].filled(self.FILL["f8"])
-                        moi_dict["geobam"]["a0"][index] = moi_ds["geobam"]["a0"][:].filled(np.nan)
-                        moi_dict["geobam"]["n"][index] = moi_ds["geobam"]["n"][:].filled(np.nan)
-                        moi_dict["geobam"]["qbar_reachScale"][index] = moi_ds["geobam"]["qbar_reachScale"][:].filled(np.nan)
-                        moi_dict["geobam"]["qbar_basinScale"][index] = moi_ds["geobam"]["qbar_basinScale"][:].filled(np.nan)
+                        moi_dict["neobam"]["q"][index] = moi_ds["neobam"]["q"][:].filled(self.FILL["f8"])
+                        moi_dict["neobam"]["a0"][index] = moi_ds["neobam"]["a0"][:].filled(np.nan)
+                        moi_dict["neobam"]["n"][index] = moi_ds["neobam"]["n"][:].filled(np.nan)
+                        moi_dict["neobam"]["qbar_reachScale"][index] = moi_ds["neobam"]["qbar_reachScale"][:].filled(np.nan)
+                        moi_dict["neobam"]["qbar_basinScale"][index] = moi_ds["neobam"]["qbar_basinScale"][:].filled(np.nan)
                         
                         moi_dict["hivdi"]["q"][index] = moi_ds["hivdi"]["q"][:].filled(self.FILL["f8"])
                         moi_dict["hivdi"]["Abar"][index] = moi_ds["hivdi"]["Abar"][:].filled(np.nan)
@@ -134,7 +134,7 @@ class Moi(AbstractModule):
         """Creates and returns MOI data dictionary."""
 
         data_dict = {
-            "geobam" : {
+            "neobam" : {
                 "q" : np.empty((self.sos_rids.shape[0]), dtype=object),
                 "a0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "n" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
@@ -226,7 +226,7 @@ class Moi(AbstractModule):
             }
         }
         # Vlen variables
-        data_dict["geobam"]["q"].fill(np.array([self.FILL["f8"]]))
+        data_dict["neobam"]["q"].fill(np.array([self.FILL["f8"]]))
         data_dict["hivdi"]["q"].fill(np.array([self.FILL["f8"]]))
         data_dict["metroman"]["q"].fill(np.array([self.FILL["f8"]]))
         data_dict["momma"]["q"].fill(np.array([self.FILL["f8"]]))
@@ -266,18 +266,18 @@ class Moi(AbstractModule):
         moi_grp = sos_ds.createGroup("moi")
 
         # MOI data
-        # geobam
-        gb_grp = moi_grp.createGroup("geobam")
-        var = self.write_var_nt(gb_grp, "q", self.vlen_f, ("num_reaches"), data_dict["geobam"])
-        self.set_variable_atts(var, metadata_json["moi"]["geobam"]["q"])
-        var = self.write_var(gb_grp, "a0", "f8", ("num_reaches",), data_dict["geobam"])
-        self.set_variable_atts(var, metadata_json["moi"]["geobam"]["a0"])
-        var = self.write_var(gb_grp, "n", "f8", ("num_reaches",), data_dict["geobam"])
-        self.set_variable_atts(var, metadata_json["moi"]["geobam"]["n"])
-        var = self.write_var(gb_grp, "qbar_reachScale", "f8", ("num_reaches",), data_dict["geobam"])
-        self.set_variable_atts(var, metadata_json["moi"]["geobam"]["qbar_reachScale"])
-        var = self.write_var(gb_grp, "qbar_basinScale", "f8", ("num_reaches",), data_dict["geobam"])
-        self.set_variable_atts(var, metadata_json["moi"]["geobam"]["qbar_basinScale"])
+        # neobam
+        gb_grp = moi_grp.createGroup("neobam")
+        var = self.write_var_nt(gb_grp, "q", self.vlen_f, ("num_reaches"), data_dict["neobam"])
+        self.set_variable_atts(var, metadata_json["moi"]["neobam"]["q"])
+        var = self.write_var(gb_grp, "a0", "f8", ("num_reaches",), data_dict["neobam"])
+        self.set_variable_atts(var, metadata_json["moi"]["neobam"]["a0"])
+        var = self.write_var(gb_grp, "n", "f8", ("num_reaches",), data_dict["neobam"])
+        self.set_variable_atts(var, metadata_json["moi"]["neobam"]["n"])
+        var = self.write_var(gb_grp, "qbar_reachScale", "f8", ("num_reaches",), data_dict["neobam"])
+        self.set_variable_atts(var, metadata_json["moi"]["neobam"]["qbar_reachScale"])
+        var = self.write_var(gb_grp, "qbar_basinScale", "f8", ("num_reaches",), data_dict["neobam"])
+        self.set_variable_atts(var, metadata_json["moi"]["neobam"]["qbar_basinScale"])
 
         # hivdi
         hv_grp = moi_grp.createGroup("hivdi")

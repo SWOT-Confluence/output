@@ -89,95 +89,99 @@ class Neobam(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in nb_rids:
-                    nb_ds = Dataset(os.path.join(nb_dir , f"{int(s_rid)}_geobam.nc"), 'r')
+                    try:
+                        nb_ds = Dataset(os.path.join(nb_dir , f"{int(s_rid)}_geobam.nc"), 'r')
 
 
-                    nb_dict["q"]["q"][index] = nb_ds["q"]["q"][:].filled(self.FILL["f8"])
-                    nb_dict['q']["attrs"]['q']['_FillValue'] = nb_ds['q']['q']._FillValue
-                    nb_dict["q"]["q_sd"][index] = nb_ds["q"]["q_sd"][:].filled(np.nan)
-                    nb_dict["q"]["attrs"]['q_sd']['_FillValue'] = nb_ds["q"]['q_sd']._FillValue
+                        nb_dict["q"]["q"][index] = nb_ds["q"]["q"][:].filled(self.FILL["f8"])
+                        nb_dict['q']["attrs"]['q']['_FillValue'] = nb_ds['q']['q']._FillValue
+                        nb_dict["q"]["q_sd"][index] = nb_ds["q"]["q_sd"][:].filled(np.nan)
+                        nb_dict["q"]["attrs"]['q_sd']['_FillValue'] = nb_ds["q"]['q_sd']._FillValue
 
-                    # # loop through node ids for the rest of the variable
-                    #     rids = nc["reaches"]["reach_id"][:]
-                    #     nrids = nc["nodes"]["reach_id"][:]
-                    #     nids = nc["nodes"]["node_id"][:]
-
-                    # node_index = 0
-                    # internal_node_count = 0
+                        # # loop through node ids for the rest of the variable
+                        #     rids = nc["reaches"]["reach_id"][:]
+                        #     nrids = nc["nodes"]["reach_id"][:]
+                        #     nids = nc["nodes"]["node_id"][:]
 
 
-                    # for nrid in self.sos_nrids:
-                    #     if len(np.where(self.sos_nrids == nrid)[0]) == len(nb_ds["r"]["mean"][:])
-                    #     if nrid == s_rid:
-                    #         try:
-                    #             intermed = nb_ds["r"]["mean"][internal_node_count]
-                    #         except:
-                    #             print(s_rid, index, node_index, internal_node_count, len(nb_ds["r"]["mean"][:]))
-                    #             print(len(np.where(self.sos_nrids == nrid)[0]))
-                    #         try:
-                    #             nb_dict["r"]["mean"][node_index] = nb_ds["r"]["mean"][internal_node_count]
-                    #         except:
-                    #             print(index, node_index, internal_node_count)
+                        internal_node_count = 0
+                        # np.where(data['nodes']['node_id'][:] == abs(data2.node_ids)[0])[0][0]
+
+                        
+                        for a_node_id in abs(nb_ds.node_ids)[:]:
+                            node_index = np.where(self.sos_nids == abs(a_node_id))[0][0]
+
+                            # if len(np.where(self.sos_nrids == nrid)[0]) == len(nb_ds["r"]["mean"][:])
+                            # print(len(nb_ds["r"]["mean"][:]),'len of rmean' )
+                            # print(len(nb_dict["r"]["mean"][:]), 'len of dict')
+                            # print(internal_node_count, 'internal cnt')
+                            # print(node_index, 'node_index')
+                            intermed = nb_ds["r"]["mean"][internal_node_count]
+                            nb_dict["r"]["mean"][node_index] = intermed
+
                                 
-                    #         nb_dict["r"]["attrs"]['mean']['_FillValue'] = nb_ds["r"]['mean']._FillValue
-                    #         # nb_dict["r"]["mean2"][index] = nb_ds["r"]["mean2"][:].filled(np.nan)
-                    #         # nb_dict["r"]["attrs"]['mean2']['_FillValue'] = nb_ds["r"]['mean2']._FillValue
-                    #         # nb_dict["r"]["mean3"][index] = nb_ds["r"]["mean3"][:].filled(np.nan)
-                    #         # nb_dict["r"]["attrs"]['mean3']['_FillValue'] = nb_ds["r"]['mean3']._FillValue
-                    #         nb_dict["r"]["sd"][node_index] = nb_ds["r"]["sd"][internal_node_count]
-                    #         nb_dict["r"]["attrs"]['sd']['_FillValue'] = nb_ds["r"]['sd']._FillValue
-                    #         # nb_dict["r"]["sd2"][index] = nb_ds["r"]["sd2"][:].filled(np.nan)
-                    #         # nb_dict["r"]["attrs"]['sd2']['_FillValue'] = nb_ds["r"]['sd2']._FillValue
-                    #         # nb_dict["r"]["sd3"][index] = nb_ds["r"]["sd3"][:].filled(np.nan)
-                    #         # nb_dict["r"]["attrs"]['sd3']['_FillValue'] = nb_ds["r"]['sd3']._FillValue
+                            nb_dict["r"]["attrs"]['mean']['_FillValue'] = nb_ds["r"]['mean']._FillValue
+                            # nb_dict["r"]["mean2"][index] = nb_ds["r"]["mean2"][:].filled(np.nan)
+                            # nb_dict["r"]["attrs"]['mean2']['_FillValue'] = nb_ds["r"]['mean2']._FillValue
+                            # nb_dict["r"]["mean3"][index] = nb_ds["r"]["mean3"][:].filled(np.nan)
+                            # nb_dict["r"]["attrs"]['mean3']['_FillValue'] = nb_ds["r"]['mean3']._FillValue
+                            nb_dict["r"]["sd"][index] = nb_ds["r"]["sd"][0]
+                            nb_dict["r"]["attrs"]['sd']['_FillValue'] = nb_ds["r"]['sd']._FillValue
+                            # nb_dict["r"]["sd2"][index] = nb_ds["r"]["sd2"][:].filled(np.nan)
+                            # nb_dict["r"]["attrs"]['sd2']['_FillValue'] = nb_ds["r"]['sd2']._FillValue
+                            # nb_dict["r"]["sd3"][index] = nb_ds["r"]["sd3"][:].filled(np.nan)
+                            # nb_dict["r"]["attrs"]['sd3']['_FillValue'] = nb_ds["r"]['sd3']._FillValue #
                             
-                    #         nb_dict["logn"]["mean"][node_index] = nb_ds["logn"]["mean"][internal_node_count]
-                    #         nb_dict["logn"]["attrs"]['mean']['_FillValue'] = nb_ds["logn"]['mean']._FillValue
-                    #         # nb_dict["logn"]["mean2"][index] = nb_ds["logn"]["mean2"][:].filled(np.nan)
-                    #         # nb_dict["logn"]["attrs"]['mean2']['_FillValue'] = nb_ds["logn"]['mean2']._FillValue
-                    #         # nb_dict["logn"]["mean3"][index] = nb_ds["logn"]["mean3"][:].filled(np.nan)
-                    #         # nb_dict["logn"]["attrs"]['mean3']['_FillValue'] = nb_ds["logn"]['mean3']._FillValue
-                    #         nb_dict["logn"]["sd"][node_index] = nb_ds["logn"]["sd"][internal_node_count]
-                    #         nb_dict["logn"]["attrs"]['sd']['_FillValue'] = nb_ds["logn"]['sd']._FillValue
-                    #         # nb_dict["logn"]["sd2"][index] = nb_ds["logn"]["sd2"][:].filled(np.nan)
-                    #         # nb_dict["logn"]["attrs"]['sd2']['_FillValue'] = nb_ds["logn"]['sd2']._FillValue
-                    #         # nb_dict["logn"]["sd3"][index] = nb_ds["logn"]["sd3"][:].filled(np.nan)
-                    #         # nb_dict["logn"]["attrs"]['sd3']['_FillValue'] = nb_ds["logn"]['sd3']._FillValue
+                            nb_dict["logn"]["mean"][node_index] = nb_ds["logn"]["mean"][internal_node_count]
+                            nb_dict["logn"]["attrs"]['mean']['_FillValue'] = nb_ds["logn"]['mean']._FillValue
+                            # nb_dict["logn"]["mean2"][index] = nb_ds["logn"]["mean2"][:].filled(np.nan)
+                            # nb_dict["logn"]["attrs"]['mean2']['_FillValue'] = nb_ds["logn"]['mean2']._FillValue
+                            # nb_dict["logn"]["mean3"][index] = nb_ds["logn"]["mean3"][:].filled(np.nan)
+                            # nb_dict["logn"]["attrs"]['mean3']['_FillValue'] = nb_ds["logn"]['mean3']._FillValue
+                            nb_dict["logn"]["sd"][index] = nb_ds["logn"]["sd"][0]
+                            nb_dict["logn"]["attrs"]['sd']['_FillValue'] = nb_ds["logn"]['sd']._FillValue
+                            # nb_dict["logn"]["sd2"][index] = nb_ds["logn"]["sd2"][:].filled(np.nan)
+                            # nb_dict["logn"]["attrs"]['sd2']['_FillValue'] = nb_ds["logn"]['sd2']._FillValue
+                            # nb_dict["logn"]["sd3"][index] = nb_ds["logn"]["sd3"][:].filled(np.nan)
+                            # nb_dict["logn"]["attrs"]['sd3']['_FillValue'] = nb_ds["logn"]['sd3']._FillValue
                             
-                    #         nb_dict["logWb"]["mean"][node_index] = nb_ds["logWb"]["mean"][internal_node_count]
-                    #         nb_dict["logWb"]["attrs"]['mean']['_FillValue'] = nb_ds["logWb"]['mean']._FillValue
-                    #         # nb_dict["logWb"]["mean2"][index] = nb_ds["logWb"]["mean2"][:].filled(np.nan)
-                    #         # nb_dict["logWb"]["attrs"]['mean2']['_FillValue'] = nb_ds["logWb"]['mean2']._FillValue
-                    #         # nb_dict["logWb"]["mean3"][index] = nb_ds["logWb"]["mean3"][:].filled(np.nan)
-                    #         # nb_dict["logWb"]["attrs"]['mean3']['_FillValue'] = nb_ds["logWb"]['mean3']._FillValue
-                    #         nb_dict["logWb"]["sd"][node_index] = nb_ds["logWb"]["sd"][internal_node_count]
-                    #         nb_dict["logWb"]["attrs"]['sd']['_FillValue'] = nb_ds["logWb"]['sd']._FillValue
-                    #         # nb_dict["logWb"]["sd2"][index] = nb_ds["logWb"]["sd2"][:].filled(np.nan)
-                    #         # nb_dict["logWb"]["attrs"]['sd2']['_FillValue'] = nb_ds["logWb"]['sd2']._FillValue
-                    #         # nb_dict["logWb"]["sd3"][index] = nb_ds["logWb"]["sd3"][:].filled(np.nan)
-                    #         # nb_dict["logWb"]["attrs"]['sd3']['_FillValue'] = nb_ds["logWb"]['sd3']._FillValue
+                            nb_dict["logWb"]["mean"][node_index] = nb_ds["logWb"]["mean"][internal_node_count]
+                            nb_dict["logWb"]["attrs"]['mean']['_FillValue'] = nb_ds["logWb"]['mean']._FillValue
+                            # nb_dict["logWb"]["mean2"][index] = nb_ds["logWb"]["mean2"][:].filled(np.nan)
+                            # nb_dict["logWb"]["attrs"]['mean2']['_FillValue'] = nb_ds["logWb"]['mean2']._FillValue
+                            # nb_dict["logWb"]["mean3"][index] = nb_ds["logWb"]["mean3"][:].filled(np.nan)
+                            # nb_dict["logWb"]["attrs"]['mean3']['_FillValue'] = nb_ds["logWb"]['mean3']._FillValue
+                            nb_dict["logWb"]["sd"][index] = nb_ds["logWb"]["sd"][0]
+                            nb_dict["logWb"]["attrs"]['sd']['_FillValue'] = nb_ds["logWb"]['sd']._FillValue
+                            # nb_dict["logWb"]["sd2"][index] = nb_ds["logWb"]["sd2"][:].filled(np.nan)
+                            # nb_dict["logWb"]["attrs"]['sd2']['_FillValue'] = nb_ds["logWb"]['sd2']._FillValue
+                            # nb_dict["logWb"]["sd3"][index] = nb_ds["logWb"]["sd3"][:].filled(np.nan)
+                            # nb_dict["logWb"]["attrs"]['sd3']['_FillValue'] = nb_ds["logWb"]['sd3']._FillValue
                             
-                    #         nb_dict["logDb"]["mean"][node_index] = nb_ds["logDb"]["mean"][internal_node_count]
-                    #         nb_dict["logDb"]["attrs"]['mean']['_FillValue'] = nb_ds["logDb"]['mean']._FillValue
-                    #         # nb_dict["logDb"]["mean2"][index] = nb_ds["logDb"]["mean2"][:].filled(np.nan)
-                    #         # nb_dict["logDb"]["attrs"]['mean2']['_FillValue'] = nb_ds["logDb"]['mean2']._FillValue
-                    #         # nb_dict["logDb"]["mean3"][index] = nb_ds["logDb"]["mean3"][:].filled(np.nan)
-                    #         # nb_dict["logDb"]["attrs"]['mean3']['_FillValue'] = nb_ds["logDb"]['mean3']._FillValue
-                    #         nb_dict["logDb"]["sd"][node_index] = nb_ds["logDb"]["sd"][internal_node_count]
-                    #         nb_dict["logDb"]["attrs"]['sd']['_FillValue'] = nb_ds["logDb"]['sd']._FillValue
-                    #         # nb_dict["logDb"]["sd2"][index] = nb_ds["logDb"]["sd2"][:].filled(np.nan)
-                    #         # nb_dict["logDb"]["attrs"]['sd2']['_FillValue'] = nb_ds["logDb"]['sd2']._FillValue
-                    #         # nb_dict["logDb"]["sd3"][index] = nb_ds["logDb"]["sd3"][:].filled(np.nan)
-                    #         # nb_dict["logDb"]["attrs"]['sd3']['_FillValue'] = nb_ds["logDb"]['sd3']._FillValue
+                            nb_dict["logDb"]["mean"][node_index] = nb_ds["logDb"]["mean"][internal_node_count]
+                            nb_dict["logDb"]["attrs"]['mean']['_FillValue'] = nb_ds["logDb"]['mean']._FillValue
+                            # nb_dict["logDb"]["mean2"][index] = nb_ds["logDb"]["mean2"][:].filled(np.nan)
+                            # nb_dict["logDb"]["attrs"]['mean2']['_FillValue'] = nb_ds["logDb"]['mean2']._FillValue
+                            # nb_dict["logDb"]["mean3"][index] = nb_ds["logDb"]["mean3"][:].filled(np.nan)
+                            # nb_dict["logDb"]["attrs"]['mean3']['_FillValue'] = nb_ds["logDb"]['mean3']._FillValue
+                            nb_dict["logDb"]["sd"][index] = nb_ds["logDb"]["sd"][0]
+                            nb_dict["logDb"]["attrs"]['sd']['_FillValue'] = nb_ds["logDb"]['sd']._FillValue
+                            # nb_dict["logDb"]["sd2"][index] = nb_ds["logDb"]["sd2"][:].filled(np.nan)
+                            # nb_dict["logDb"]["attrs"]['sd2']['_FillValue'] = nb_ds["logDb"]['sd2']._FillValue
+                            # nb_dict["logDb"]["sd3"][index] = nb_ds["logDb"]["sd3"][:].filled(np.nan)
+                            # nb_dict["logDb"]["attrs"]['sd3']['_FillValue'] = nb_ds["logDb"]['sd3']._FillValue
                             
 
-                    #         # nb_dict["q"]["q2"][index] = nb_ds["q"]["q2"][:].filled(self.FILL["f8"])
-                    #         # nb_dict['q']["attrs"]['q2']['_FillValue'] = nb_ds['q']['q2']._FillValue
-                    #         # nb_dict["q"]["q3"][index] = nb_ds["q"]["q3"][:].filled(self.FILL["f8"])
-                    #         # nb_dict['q']["attrs"]['q3']['_FillValue'] = nb_ds['q']['q3']._FillValue
-                    #         internal_node_count += 1
-                        # node_index += 1
-                    nb_ds.close()
+                            # nb_dict["q"]["q2"][index] = nb_ds["q"]["q2"][:].filled(self.FILL["f8"])
+                            # nb_dict['q']["attrs"]['q2']['_FillValue'] = nb_ds['q']['q2']._FillValue
+                            # nb_dict["q"]["q3"][index] = nb_ds["q"]["q3"][:].filled(self.FILL["f8"])
+                            # nb_dict['q']["attrs"]['q3']['_FillValue'] = nb_ds['q']['q3']._FillValue
+                            internal_node_count += 1
+
+
+                        nb_ds.close()
+                    except:
+                        print('Reach failed...',s_rid )
                 index += 1
         return nb_dict
     
@@ -185,70 +189,70 @@ class Neobam(AbstractModule):
         """Creates and returns HiVDI data dictionary."""
 
         data_dict = {
-            # "r" : {
-            #     "mean" : np.full(self.sos_nrids.shape[0], np.nan, dtype=np.float64),
-            #     # "mean2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     # "mean3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     "sd" : np.full(self.sos_nrids.shape[0], np.nan, dtype=np.float64),
-            #     # "sd2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     # "sd3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     "attrs" : {
-            #         "mean": {},
-            #         # "mean2": {},
-            #         # "mean3": {},
-            #         "sd": {},
-            #         # "sd2": {},
-            #         # "sd3": {}                    
-            #     }
-            # },
-            # "logn" : {
-            #     "mean" : np.full(self.sos_nrids.shape[0], np.nan, dtype=np.float64),
-            #     # "mean2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     # "mean3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     "sd" : np.full(self.sos_nrids.shape[0], np.nan, dtype=np.float64),
-            #     # "sd2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     # "sd3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     "attrs" : {
-            #         "mean": {},
-            #         # "mean2": {},
-            #         # "mean3": {},
-            #         "sd": {},
-            #         # "sd2": {},
-            #         # "sd3": {}                    
-            #     }
-            # },
-            # "logWb" : {
-            #     "mean" : np.full(self.sos_nrids.shape[0], np.nan, dtype=np.float64),
-            #     # "mean2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     # "mean3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     "sd" : np.full(self.sos_nrids.shape[0], np.nan, dtype=np.float64),
-            #     # "sd2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     # "sd3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     "attrs" : {
-            #         "mean": {},
-            #         # "mean2": {},
-            #         # "mean3": {},
-            #         "sd": {},
-            #         # "sd2": {},
-            #         # "sd3": {}                    
-            #     }
-            # },
-            # "logDb" : {
-            #     "mean" : np.full(self.sos_nrids.shape[0], np.nan, dtype=np.float64),
-            #     # "mean2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     # "mean3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     "sd" : np.full(self.sos_nrids.shape[0], np.nan, dtype=np.float64),
-            #     # "sd2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     # "sd3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-            #     "attrs" : {
-            #         "mean": {},
-            #         # "mean2": {},
-            #         # "mean3": {},
-            #         "sd": {},
-            #         # "sd2": {},
-            #         # "sd3": {}                    
-            #     }
-            # },
+            "r" : {
+                "mean" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
+                # "mean2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "mean3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "sd" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "sd2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "sd3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "attrs" : {
+                    "mean": {},
+                    # "mean2": {},
+                    # "mean3": {},
+                    "sd": {},
+                    # "sd2": {},
+                    # "sd3": {}                    
+                }
+            },
+            "logn" : {
+                "mean" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
+                # "mean2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "mean3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "sd" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "sd2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "sd3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "attrs" : {
+                    "mean": {},
+                    # "mean2": {},
+                    # "mean3": {},
+                    "sd": {},
+                    # "sd2": {},
+                    # "sd3": {}                    
+                }
+            },
+            "logWb" : {
+                "mean" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
+                # "mean2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "mean3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "sd" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "sd2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "sd3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "attrs" : {
+                    "mean": {},
+                    # "mean2": {},
+                    # "mean3": {},
+                    "sd": {},
+                    # "sd2": {},
+                    # "sd3": {}                    
+                }
+            },
+            "logDb" : {
+                "mean" : np.full(self.sos_nids.shape[0], np.nan, dtype=np.float64),
+                # "mean2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "mean3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "sd" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "sd2" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "sd3" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                "attrs" : {
+                    "mean": {},
+                    # "mean2": {},
+                    # "mean3": {},
+                    "sd": {},
+                    # "sd2": {},
+                    # "sd3": {}                    
+                }
+            },
             "q" : {
                 "q" : np.empty((self.sos_rids.shape[0]), dtype=object),
                 "q_sd": np.empty((self.sos_rids.shape[0]), dtype=object),
@@ -299,21 +303,21 @@ class Neobam(AbstractModule):
         sos_ds = Dataset(self.sos_new, 'a')
         nb_grp = sos_ds.createGroup("neobam")
         
-        # r_grp = nb_grp.createGroup("r")        
-        # self.write_var(r_grp, "r", "mean", ("num_reaches"), data_dict, metadata_json)
-        # self.write_var(r_grp, "r", "sd", ("num_reaches"), data_dict, metadata_json)
+        r_grp = nb_grp.createGroup("r")        
+        self.write_var(r_grp, "r", "mean", ("num_nodes"), data_dict, metadata_json)
+        self.write_var(r_grp, "r", "sd", ("num_reaches"), data_dict, metadata_json)
         
-        # logn_grp = nb_grp.createGroup("logn") 
-        # self.write_var(logn_grp, "logn", "mean", ("num_reaches"), data_dict, metadata_json)
-        # self.write_var(logn_grp, "logn", "sd", ("num_reaches"), data_dict, metadata_json)
+        logn_grp = nb_grp.createGroup("logn") 
+        self.write_var(logn_grp, "logn", "mean", ("num_nodes"), data_dict, metadata_json)
+        self.write_var(logn_grp, "logn", "sd", ("num_reaches"), data_dict, metadata_json)
         
-        # logDb_grp = nb_grp.createGroup("logDb") 
-        # self.write_var(logDb_grp, "logDb", "mean", ("num_reaches"), data_dict, metadata_json)
-        # self.write_var(logDb_grp, "logDb", "sd", ("num_reaches"), data_dict, metadata_json)
+        logDb_grp = nb_grp.createGroup("logDb") 
+        self.write_var(logDb_grp, "logDb", "mean", ("num_nodes"), data_dict, metadata_json)
+        self.write_var(logDb_grp, "logDb", "sd", ("num_reaches"), data_dict, metadata_json)
         
-        # logWb_grp = nb_grp.createGroup("logWb") 
-        # self.write_var(logWb_grp, "logWb", "mean", ("num_reaches"), data_dict, metadata_json)
-        # self.write_var(logWb_grp, "logWb", "sd", ("num_reaches"), data_dict, metadata_json)
+        logWb_grp = nb_grp.createGroup("logWb") 
+        self.write_var(logWb_grp, "logWb", "mean", ("num_nodes"), data_dict, metadata_json)
+        self.write_var(logWb_grp, "logWb", "sd", ("num_reaches"), data_dict, metadata_json)
         
         q_grp = nb_grp.createGroup("q")
         self.write_var_nt(q_grp, "q", "q", self.vlen_f, ("num_reaches"), data_dict, metadata_json)
