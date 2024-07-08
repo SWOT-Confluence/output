@@ -136,8 +136,8 @@ class Append:
             self.metadata_json = json.load(jf)
         self.modules_list = modules
         self.modules = []
-        with open(input_dir.joinpath("passes.json")) as jf:
-            self.pass_no = np.array(list(json.load(jf).keys()),dtype=np.int64)
+        # with open(input_dir.joinpath("passes.json")) as jf:
+        #     self.pass_no = np.array(list(json.load(jf).keys()),dtype=np.int64)
         self.version = "9999"
         self.vlen_f = None
         self.vlen_i = None
@@ -181,15 +181,15 @@ class Append:
         except:
             print('Geospatial data not present in sos...')
 
-        # Global dimensions
+        # # Global dimensions
         result_sos.createDimension("num_reaches", prior_sos["reaches"]["reach_id"][:].shape[0])             
         result_sos.createDimension("num_nodes", prior_sos["nodes"]["node_id"][:].shape[0])
-        result_sos.createDimension("num_observations", self.pass_no.shape[0])
+        # result_sos.createDimension("num_observations", self.pass_no.shape[0])
         
-        # Global variable(s)
-        obs_var = result_sos.createVariable("observations", "i4", ("num_observations"), fill_value=self.INT_FILL_VALUE, compression="zlib")
-        set_variable_atts(obs_var, self.metadata_json["observations"]["observations"])
-        obs_var[:] = self.pass_no
+        # # Global variable(s)
+        # obs_var = result_sos.createVariable("observations", "i4", ("num_observations"), fill_value=self.INT_FILL_VALUE, compression="zlib")
+        # set_variable_atts(obs_var, self.metadata_json["observations"]["observations"])
+        # obs_var[:] = self.pass_no
 
         # Variable length time steps
         self.vlen_f = result_sos.createVLType(np.float64, "vlen_float")
