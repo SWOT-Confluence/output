@@ -82,7 +82,7 @@ class Swot(AbstractModule):
                     obs = swot_ds["observations"][:].filled(self.FILL["i4"])
                     
                     # Reach
-                    swot_dict["reach"]["observations"][index] = obs
+                    # swot_dict["reach"]["observations"][index] = obs
                     swot_dict["reach"]["time"][index] = swot_ds["reach"]["time"][:].filled(self.FILL["f8"])
                     
                     # Node
@@ -152,7 +152,7 @@ class Swot(AbstractModule):
 
         for i in indexes[0]:
             try:
-                swot_dict["node"]["observations"][i] = obs
+                # swot_dict["node"]["observations"][i] = obs
                 swot_dict["node"]["time"][i] = swot_ds["node"]["time"][j,:].filled(self.FILL["f8"])
             except:
                 print('time variable filled, reach was partially observed')

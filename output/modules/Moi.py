@@ -78,47 +78,55 @@ class Moi(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in moi_rids:
-                    moi_ds = Dataset(moi_dir / f"{int(s_rid)}_integrator.nc", 'r')
-                    moi_dict["geobam"]["q"][index] = moi_ds["geobam"]["q"][:].filled(self.FILL["f8"])
-                    moi_dict["geobam"]["a0"][index] = moi_ds["geobam"]["a0"][:].filled(np.nan)
-                    moi_dict["geobam"]["n"][index] = moi_ds["geobam"]["n"][:].filled(np.nan)
-                    moi_dict["geobam"]["qbar_reachScale"][index] = moi_ds["geobam"]["qbar_reachScale"][:].filled(np.nan)
-                    moi_dict["geobam"]["qbar_basinScale"][index] = moi_ds["geobam"]["qbar_basinScale"][:].filled(np.nan)
-                    
-                    moi_dict["hivdi"]["q"][index] = moi_ds["hivdi"]["q"][:].filled(self.FILL["f8"])
-                    moi_dict["hivdi"]["Abar"][index] = moi_ds["hivdi"]["Abar"][:].filled(np.nan)
-                    moi_dict["hivdi"]["alpha"][index] = moi_ds["hivdi"]["alpha"][:].filled(np.nan)
-                    moi_dict["hivdi"]["beta"][index] = moi_ds["hivdi"]["beta"][:].filled(np.nan)
-                    moi_dict["hivdi"]["qbar_reachScale"][index] = moi_ds["hivdi"]["qbar_reachScale"][:].filled(np.nan)
-                    moi_dict["hivdi"]["qbar_basinScale"][index] = moi_ds["hivdi"]["qbar_basinScale"][:].filled(np.nan)
-                    
-                    moi_dict["metroman"]["q"][index] = moi_ds["metroman"]["q"][:].filled(self.FILL["f8"])
-                    moi_dict["metroman"]["Abar"][index] = moi_ds["metroman"]["Abar"][:].filled(np.nan)
-                    moi_dict["metroman"]["na"][index] = moi_ds["metroman"]["na"][:].filled(np.nan)
-                    moi_dict["metroman"]["x1"][index] = moi_ds["metroman"]["x1"][:].filled(np.nan)
-                    moi_dict["metroman"]["qbar_reachScale"][index] = moi_ds["metroman"]["qbar_reachScale"][:].filled(np.nan)
-                    moi_dict["metroman"]["qbar_basinScale"][index] = moi_ds["metroman"]["qbar_basinScale"][:].filled(np.nan)
-                    
-                    moi_dict["momma"]["q"][index] = moi_ds["momma"]["q"][:].filled(self.FILL["f8"])
-                    moi_dict["momma"]["B"][index] = moi_ds["momma"]["B"][:].filled(np.nan)
-                    moi_dict["momma"]["H"][index] = moi_ds["momma"]["H"][:].filled(np.nan)
-                    moi_dict["momma"]["Save"][index] = moi_ds["momma"]["Save"][:].filled(np.nan)
-                    moi_dict["momma"]["qbar_reachScale"][index] = moi_ds["momma"]["qbar_reachScale"][:].filled(np.nan)
-                    moi_dict["momma"]["qbar_basinScale"][index] = moi_ds["momma"]["qbar_basinScale"][:].filled(np.nan)
+                    try:
+                        moi_ds = Dataset(moi_dir / f"{int(s_rid)}_integrator.nc", 'r')
+                        moi_dict["neobam"]["q"][index] = moi_ds["neobam"]["q"][:].filled(self.FILL["f8"])
+                        moi_dict["neobam"]["a0"][index] = moi_ds["neobam"]["a0"][:].filled(np.nan)
+                        moi_dict["neobam"]["n"][index] = moi_ds["neobam"]["n"][:].filled(np.nan)
+                        moi_dict["neobam"]["qbar_reachScale"][index] = moi_ds["neobam"]["qbar_reachScale"][:].filled(np.nan)
+                        moi_dict["neobam"]["qbar_basinScale"][index] = moi_ds["neobam"]["qbar_basinScale"][:].filled(np.nan)
+                        
+                        moi_dict["hivdi"]["q"][index] = moi_ds["hivdi"]["q"][:].filled(self.FILL["f8"])
+                        moi_dict["hivdi"]["Abar"][index] = moi_ds["hivdi"]["Abar"][:].filled(np.nan)
+                        moi_dict["hivdi"]["alpha"][index] = moi_ds["hivdi"]["alpha"][:].filled(np.nan)
+                        moi_dict["hivdi"]["beta"][index] = moi_ds["hivdi"]["beta"][:].filled(np.nan)
+                        moi_dict["hivdi"]["qbar_reachScale"][index] = moi_ds["hivdi"]["qbar_reachScale"][:].filled(np.nan)
+                        moi_dict["hivdi"]["qbar_basinScale"][index] = moi_ds["hivdi"]["qbar_basinScale"][:].filled(np.nan)
+                        
+                        moi_dict["metroman"]["q"][index] = moi_ds["metroman"]["q"][:].filled(self.FILL["f8"])
+                        moi_dict["metroman"]["Abar"][index] = moi_ds["metroman"]["Abar"][:].filled(np.nan)
+                        moi_dict["metroman"]["na"][index] = moi_ds["metroman"]["na"][:].filled(np.nan)
+                        moi_dict["metroman"]["x1"][index] = moi_ds["metroman"]["x1"][:].filled(np.nan)
+                        moi_dict["metroman"]["qbar_reachScale"][index] = moi_ds["metroman"]["qbar_reachScale"][:].filled(np.nan)
+                        moi_dict["metroman"]["qbar_basinScale"][index] = moi_ds["metroman"]["qbar_basinScale"][:].filled(np.nan)
+                        
+                        moi_dict["momma"]["q"][index] = moi_ds["momma"]["q"][:].filled(self.FILL["f8"])
+                        moi_dict["momma"]["B"][index] = moi_ds["momma"]["B"][:].filled(np.nan)
+                        moi_dict["momma"]["H"][index] = moi_ds["momma"]["H"][:].filled(np.nan)
+                        moi_dict["momma"]["Save"][index] = moi_ds["momma"]["Save"][:].filled(np.nan)
+                        moi_dict["momma"]["qbar_reachScale"][index] = moi_ds["momma"]["qbar_reachScale"][:].filled(np.nan)
+                        moi_dict["momma"]["qbar_basinScale"][index] = moi_ds["momma"]["qbar_basinScale"][:].filled(np.nan)
 
-                    moi_dict["sad"]["q"][index] = moi_ds["sad"]["q"][:].filled(self.FILL["f8"])
-                    moi_dict["sad"]["a0"][index] = moi_ds["sad"]["a0"][:].filled(np.nan)
-                    moi_dict["sad"]["n"][index] = moi_ds["sad"]["n"][:].filled(np.nan)
-                    moi_dict["sad"]["qbar_reachScale"][index] = moi_ds["sad"]["qbar_reachScale"][:].filled(np.nan)
-                    moi_dict["sad"]["qbar_basinScale"][index] = moi_ds["sad"]["qbar_basinScale"][:].filled(np.nan)
+                        moi_dict["sad"]["q"][index] = moi_ds["sad"]["q"][:].filled(self.FILL["f8"])
+                        moi_dict["sad"]["a0"][index] = moi_ds["sad"]["a0"][:].filled(np.nan)
+                        moi_dict["sad"]["n"][index] = moi_ds["sad"]["n"][:].filled(np.nan)
+                        moi_dict["sad"]["qbar_reachScale"][index] = moi_ds["sad"]["qbar_reachScale"][:].filled(np.nan)
+                        moi_dict["sad"]["qbar_basinScale"][index] = moi_ds["sad"]["qbar_basinScale"][:].filled(np.nan)
 
-                    moi_dict["sic4dvar"]["q"][index] = moi_ds["sic4dvar"]["q"][:].filled(self.FILL["f8"])
-                    moi_dict["sic4dvar"]["a0"][index] = moi_ds["sic4dvar"]["a0"][:].filled(np.nan)
-                    moi_dict["sic4dvar"]["n"][index] = moi_ds["sic4dvar"]["n"][:].filled(np.nan)
-                    moi_dict["sic4dvar"]["qbar_reachScale"][index] = moi_ds["sic4dvar"]["qbar_reachScale"][:].filled(np.nan)
-                    moi_dict["sic4dvar"]["qbar_basinScale"][index] = moi_ds["sic4dvar"]["qbar_basinScale"][:].filled(np.nan)
-                    
-                    moi_ds.close()
+                        moi_dict["sic4dvar"]["q"][index] = moi_ds["sic4dvar"]["q"][:].filled(self.FILL["f8"])
+                        moi_dict["sic4dvar"]["a0"][index] = moi_ds["sic4dvar"]["a0"][:].filled(np.nan)
+                        moi_dict["sic4dvar"]["n"][index] = moi_ds["sic4dvar"]["n"][:].filled(np.nan)
+                        moi_dict["sic4dvar"]["qbar_reachScale"][index] = moi_ds["sic4dvar"]["qbar_reachScale"][:].filled(np.nan)
+                        moi_dict["sic4dvar"]["qbar_basinScale"][index] = moi_ds["sic4dvar"]["qbar_basinScale"][:].filled(np.nan)
+                        
+                        moi_ds.close()
+                    except:
+                        try:
+                            moi_ds.close()
+                        except:
+                            pass
+                        print(s_rid, 'failed in moi...')
+                            
                 index += 1
         return moi_dict
     
@@ -126,7 +134,7 @@ class Moi(AbstractModule):
         """Creates and returns MOI data dictionary."""
 
         data_dict = {
-            "geobam" : {
+            "neobam" : {
                 "q" : np.empty((self.sos_rids.shape[0]), dtype=object),
                 "a0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "n" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
@@ -218,7 +226,7 @@ class Moi(AbstractModule):
             }
         }
         # Vlen variables
-        data_dict["geobam"]["q"].fill(np.array([self.FILL["f8"]]))
+        data_dict["neobam"]["q"].fill(np.array([self.FILL["f8"]]))
         data_dict["hivdi"]["q"].fill(np.array([self.FILL["f8"]]))
         data_dict["metroman"]["q"].fill(np.array([self.FILL["f8"]]))
         data_dict["momma"]["q"].fill(np.array([self.FILL["f8"]]))
@@ -258,18 +266,18 @@ class Moi(AbstractModule):
         moi_grp = sos_ds.createGroup("moi")
 
         # MOI data
-        # geobam
-        gb_grp = moi_grp.createGroup("geobam")
-        var = self.write_var_nt(gb_grp, "q", self.vlen_f, ("num_reaches"), data_dict["geobam"])
-        self.set_variable_atts(var, metadata_json["moi"]["geobam"]["q"])
-        var = self.write_var(gb_grp, "a0", "f8", ("num_reaches",), data_dict["geobam"])
-        self.set_variable_atts(var, metadata_json["moi"]["geobam"]["a0"])
-        var = self.write_var(gb_grp, "n", "f8", ("num_reaches",), data_dict["geobam"])
-        self.set_variable_atts(var, metadata_json["moi"]["geobam"]["n"])
-        var = self.write_var(gb_grp, "qbar_reachScale", "f8", ("num_reaches",), data_dict["geobam"])
-        self.set_variable_atts(var, metadata_json["moi"]["geobam"]["qbar_reachScale"])
-        var = self.write_var(gb_grp, "qbar_basinScale", "f8", ("num_reaches",), data_dict["geobam"])
-        self.set_variable_atts(var, metadata_json["moi"]["geobam"]["qbar_basinScale"])
+        # neobam
+        gb_grp = moi_grp.createGroup("neobam")
+        var = self.write_var_nt(gb_grp, "q", self.vlen_f, ("num_reaches"), data_dict["neobam"])
+        self.set_variable_atts(var, metadata_json["moi"]["neobam"]["q"])
+        var = self.write_var(gb_grp, "a0", "f8", ("num_reaches",), data_dict["neobam"])
+        self.set_variable_atts(var, metadata_json["moi"]["neobam"]["a0"])
+        var = self.write_var(gb_grp, "n", "f8", ("num_reaches",), data_dict["neobam"])
+        self.set_variable_atts(var, metadata_json["moi"]["neobam"]["n"])
+        var = self.write_var(gb_grp, "qbar_reachScale", "f8", ("num_reaches",), data_dict["neobam"])
+        self.set_variable_atts(var, metadata_json["moi"]["neobam"]["qbar_reachScale"])
+        var = self.write_var(gb_grp, "qbar_basinScale", "f8", ("num_reaches",), data_dict["neobam"])
+        self.set_variable_atts(var, metadata_json["moi"]["neobam"]["qbar_basinScale"])
 
         # hivdi
         hv_grp = moi_grp.createGroup("hivdi")

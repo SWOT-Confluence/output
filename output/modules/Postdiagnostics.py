@@ -1,6 +1,7 @@
 # Standard imports
 import glob
 from pathlib import Path
+import os
 
 # Third-party imports
 from netCDF4 import Dataset, stringtochar
@@ -84,7 +85,7 @@ class Postdiagnostics(AbstractModule):
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:
-                if s_rid in pd_rids:
+                if s_rid in pd_rids and os.path.exists(os.path.join(self.input_dir, "basin", f"{int(s_rid)}_moi_diag.nc")) and os.path.exists(os.path.join(self.input_dir, "reach", f"{int(s_rid)}_flpe_diag.nc")):
                     pd_b_ds = Dataset(self.input_dir / "basin" / f"{int(s_rid)}_moi_diag.nc", 'r')
                     pd_r_ds = Dataset(self.input_dir / "reach" / f"{int(s_rid)}_flpe_diag.nc", 'r')
 
