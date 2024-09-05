@@ -396,49 +396,17 @@
     },
     "neobam": {
         "logDb": {
-            "mean1": {
-                "long_name": "chain 1 mean bankfull depth from neobam",
-                "comment": "chain 1 mean bankfull depth from neobam",
+            "mean": {
+                "long_name": "mean bankfull depth from neobam",
+                "comment": "mean bankfull depth from neobam",
                 "valid_min": -1,
                 "valid_max": 7,
                 "units": "m",
                 "coverage_content_type": "modelResult"
             },
-            "mean2": {
-                "long_name": "chain 2 mean bankfull depth from neobam",
-                "comment": "chain 2 mean bankfull depth from neobam",
-                "valid_min": -1,
-                "valid_max": 7,
-                "units": "m",
-                "coverage_content_type": "modelResult"
-            },
-            "mean3": {
-                "long_name": "chain 3 mean bankfull depth from neobam",
-                "comment": "chain 3 mean bankfull depth from neobam",
-                "valid_min": -1,
-                "valid_max": 7,
-                "units": "m",
-                "coverage_content_type": "modelResult"
-            },
-            "sd1": {
-                "long_name": "chain 1 sigma bankfull depth from neobam",
-                "comment": "chain 1 sigma bankfull depth from neobam",
-                "valid_min": -1,
-                "valid_max": 7,
-                "units": "m",
-                "coverage_content_type": "modelResult"
-            },
-            "sd2": {
-                "long_name": "chain 2 sigma bankfull depth from neobam",
-                "comment": "chain 2 sigma bankfull depth from neobam",
-                "valid_min": -1,
-                "valid_max": 7,
-                "units": "m",
-                "coverage_content_type": "modelResult"
-            },
-            "sd3": {
-                "long_name": "chain 3 sigma bankfull depth from neobam",
-                "comment": "chain 3 sigma bankfull depth from neobam",
+            "sd": {
+                "long_name": "sigma bankfull depth from neobam",
+                "comment": "sigma bankfull depth from neobam",
                 "valid_min": -1,
                 "valid_max": 7,
                 "units": "m",
@@ -446,93 +414,33 @@
             }
         },
         "logn": {
-            "mean1": {
-                "long_name": "chain 1 mean n from neobam",
-                "comment": "chain 1 mean n from neobam",
+            "mean": {
+                "long_name": "mean n from neobam",
+                "comment": "mean n from neobam",
                 "valid_min": -8,
                 "valid_max": 0,
                 "coverage_content_type": "modelResult"
             },
-            "mean2": {
-                "long_name": "chain 2 mean n from neobam",
-                "comment": "chain 2 mean n from neobam",
-                "valid_min": -8,
-                "valid_max": 0,
-                "coverage_content_type": "modelResult"
-            },
-            "mean3": {
-                "long_name": "chain 3 mean n from neobam",
-                "comment": "chain 3 mean n from neobam",
-                "valid_min": -8,
-                "valid_max": 0,
-                "coverage_content_type": "modelResult"
-            },
-            "sd1": {
-                "long_name": "chain 1 sigma n from neobam",
-                "comment": "chain 1 sigma n from neobam",
-                "valid_min": -8,
-                "valid_max": 0,
-                "coverage_content_type": "modelResult"
-            },
-            "sd2": {
-                "long_name": "chain 2 sigma n from neobam",
-                "comment": "chain 2 sigma n from neobam",
-                "valid_min": -8,
-                "valid_max": 0,
-                "coverage_content_type": "modelResult"
-            },
-            "sd3": {
-                "long_name": "chain 3 sigma n from neobam",
-                "comment": "chain 3 sigma n from neobam",
+            "sd": {
+                "long_name": "sigma n from neobam",
+                "comment": "sigma n from neobam",
                 "valid_min": -8,
                 "valid_max": 0,
                 "coverage_content_type": "modelResult"
             }
         },
         "logWb": {
-            "mean1": {
-                "long_name": "chain 1 mean bankfull width",
-                "comment": "chain 1 mean bankfull width",
+            "mean": {
+                "long_name": "mean bankfull width",
+                "comment": "mean bankfull width",
                 "valid_min": -1,
                 "valid_max": 7,
                 "units": "m",
                 "coverage_content_type": "modelResult"
             },
-            "mean2": {
-                "long_name": "chain 2 mean bankfull width",
-                "comment": "chain 2 mean bankfull width",
-                "valid_min": -1,
-                "valid_max": 7,
-                "units": "m",
-                "coverage_content_type": "modelResult"
-            },
-            "mean3": {
-                "long_name": "chain 3 mean bankfull width",
-                "comment": "chain 3 mean bankfull width",
-                "valid_min": -1,
-                "valid_max": 7,
-                "units": "m",
-                "coverage_content_type": "modelResult"
-            },
-            "sd1": {
-                "long_name": "chain 1 sigma bankfull width",
-                "comment": "chain 1 sigma bankfull width",
-                "valid_min": -1,
-                "valid_max": 7,
-                "units": "m",
-                "coverage_content_type": "modelResult"
-            },
-            "sd2": {
-                "long_name": "chain 2 sigma bankfull width",
-                "comment": "chain 2 sigma bankfull width",
-                "valid_min": -1,
-                "valid_max": 7,
-                "units": "m",
-                "coverage_content_type": "modelResult"
-            },
-            "sd3": {
-                "long_name": "chain 3 sigma bankfull width",
-                "comment": "chain 3 sigma bankfull width",
+            "sd": {
+                "long_name": "sigma bankfull width",
+                "comment": "sigma bankfull width",
                 "valid_min": -1,
                 "valid_max": 7,
                 "units": "m",
@@ -540,43 +448,15 @@
             }
         },
         "r": {
-            "mean1": {
-                "long_name": "chain 1 mean r",
+            "mean": {
+                "long_name": "mean r",
                 "comment": "r defined following Dingman 2007 JoH",
                 "valid_min": 0,
                 "valid_max": 100,
                 "coverage_content_type": "modelResult"
             },
-            "mean2": {
-                "long_name": "chain 2 mean r",
-                "comment": "r defined following Dingman 2007 JoH",
-                "valid_min": 0,
-                "valid_max": 100,
-                "coverage_content_type": "modelResult"
-            },
-            "mean3": {
-                "long_name": "chain 3 mean r",
-                "comment": "r defined following Dingman 2007 JoH",
-                "valid_min": 0,
-                "valid_max": 100,
-                "coverage_content_type": "modelResult"
-            },
-            "sd1": {
-                "long_name": "chain 1 sigma r",
-                "comment": "r defined following Dingman 2007 JoH",
-                "valid_min": 0,
-                "valid_max": 100,
-                "coverage_content_type": "modelResult"
-            },
-            "sd2": {
-                "long_name": "chain 2 sigma r",
-                "comment": "r defined following Dingman 2007 JoH",
-                "valid_min": 0,
-                "valid_max": 100,
-                "coverage_content_type": "modelResult"
-            },
-            "sd3": {
-                "long_name": "chain 3 sigma r",
+            "sd": {
+                "long_name": "sigma r",
                 "comment": "r defined following Dingman 2007 JoH",
                 "valid_min": 0,
                 "valid_max": 100,
@@ -584,28 +464,19 @@
             }
         },
         "q": {
-            "q1": {
-                "long_name": "chain 1 discharge",
+            "q": {
+                "long_name": "discharge",
                 "comment": "timeseries",
                 "valid_min": 0,
                 "valid_max": 1000000,
                 "units": "m^3/s",
                 "coverage_content_type": "modelResult"
             },
-            "q2": {
-                "long_name": "chain 2 discharge",
-                "comment": "timeseries",
-                "valid_min": 0,
+            "q_sd": {
+                "long_name": "sigma discharge",
+                "comment": "sigma discharge",
+                "valid_min": -1000000,
                 "valid_max": 1000000,
-                "units": "m^3/s",
-                "coverage_content_type": "modelResult"
-            },
-            "q3": {
-                "long_name": "chain 3 discharge",
-                "comment": "timeseries",
-                "valid_min": 0,
-                "valid_max": 1000000,
-                "units": "m^3/s",
                 "coverage_content_type": "modelResult"
             }
         }
