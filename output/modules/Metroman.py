@@ -1,6 +1,7 @@
 # Standard imports
 import glob
 from pathlib import Path
+import os
 
 # Third-party imports
 from netCDF4 import Dataset
@@ -67,29 +68,40 @@ class Metroman(AbstractModule):
         """Extract MetroMan results from NetCDF files."""
 
         # Files and reach identifiers
-        mn_dir = self.input_dir / "metroman"
-        mn_files = [ Path(mn_file) for mn_file in glob.glob(f"{mn_dir}/{self.cont_ids}*.nc") ] 
-        mn_rids = [ mn_file.name.split('_')[0].split('-') for mn_file in mn_files ]
-        mn_rids = [ int(rid) for rid_list in mn_rids for rid in rid_list ]
+        # mn_dir = self.input_dir / "metroman"
+        # mn_files = [ Path(mn_file) for mn_file in glob.glob(f"{mn_dir}/{self.cont_ids}*.nc") ] 
+        # mn_rids = [ mn_file.name.split('_')[0].split('-') for mn_file in mn_files ]
+        # mn_rids = [ int(rid) for rid_list in mn_rids for rid in rid_list ]
+        mn_dir = os.path.join(self.input_dir, 'metroman')
+        mn_files = glob.glob(os.path.join(mn_dir, '*.nc'))
+        mn_rids = [int(os.path.basename(mn_file).split('_')[0]) for mn_file in mn_files]
+
 
         # Storage of results data
         mn_dict = self.create_data_dict()
         
         if len(mn_files) != 0:
              # Storage of variable attributes
-            self.get_nc_attrs(mn_dir / mn_files[0], mn_dict)
+            self.get_nc_attrs(mn_files[0], mn_dict)
         
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in mn_rids:
-                    mn_file = [ f for f in glob.glob(f"{mn_dir}/*{int(s_rid)}*.nc") ][0]
+                    mn_file = os.path.join(mn_dir,str(s_rid) + "_metroman.nc")
                     mn_ds = Dataset(mn_file, 'r')
-                    self.__insert_nt(s_rid, "allq", index, mn_ds, mn_dict)
-                    self.__insert_nt(s_rid, "q_u", index, mn_ds, mn_dict)
-                    self.__insert_nr(s_rid, "A0hat", index, mn_ds, mn_dict)
-                    self.__insert_nr(s_rid, "nahat", index, mn_ds, mn_dict)
-                    self.__insert_nr(s_rid, "x1hat", index, mn_ds, mn_dict)
+                    # self.__insert_nt(s_rid, "allq", index, mn_ds, mn_dict)
+                    # self.__insert_nt(s_rid, "q_u", index, mn_ds, mn_dict)
+                    # self.__insert_nr(s_rid, "A0hat", index, mn_ds, mn_dict)
+                    # self.__insert_nr(s_rid, "nahat", index, mn_ds, mn_dict)
+                    # self.__insert_nr(s_rid, "x1hat", index, mn_ds, mn_dict)
+                    mn_dict["allq"][index] = mn_ds["average"]["allq"][:].filled(self.FILL["f8"])
+                    mn_dict["q_u"][index] = mn_ds["average"]["q_u"][:].filled(np.nan)
+                    mn_dict["A0hat"][index] = mn_ds["average"]["A0hat"][:].filled(np.nan)
+                    mn_dict["x1hat"][index] = mn_ds["average"]["x1hat"][:].filled(np.nan)
+
+
+
                     mn_ds.close()
                 index += 1
 
@@ -130,11 +142,11 @@ class Metroman(AbstractModule):
         """
         
         ds = Dataset(nc_file, 'r')
-        data_dict["attrs"]["allq"] = ds["allq"].__dict__
-        data_dict["attrs"]["A0hat"] = ds["A0hat"].__dict__
-        data_dict["attrs"]["nahat"] = ds["nahat"].__dict__
-        data_dict["attrs"]["x1hat"] = ds["x1hat"].__dict__
-        data_dict["attrs"]["q_u"] = ds["q_u"].__dict__
+        data_dict["attrs"]["allq"] = ds['average']["allq"].__dict__
+        data_dict["attrs"]["A0hat"] = ds['average']["A0hat"].__dict__
+        data_dict["attrs"]["nahat"] = ds['average']["nahat"].__dict__
+        data_dict["attrs"]["x1hat"] = ds['average']["x1hat"].__dict__
+        data_dict["attrs"]["q_u"] = ds['average']["q_u"].__dict__
         ds.close()
 
     def __insert_nr(self, s_rid, name, index, mn_ds, mn_dict):
