@@ -180,7 +180,9 @@ class AbstractModule(metaclass=ABCMeta):
         
     def set_variable_atts(self, variable, variable_dict):
         """Set the variable attribute metdata."""
-        
-        for name, value in variable_dict.items():
-            setattr(variable, name, value)
+        try:
+            for name, value in variable_dict.items():
+                setattr(variable, name, value)
+        except:
+            print('could not find metadata for', variable)
 
