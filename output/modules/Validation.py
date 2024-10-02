@@ -36,7 +36,7 @@ class Validation(AbstractModule):
         retrieve num_algos and nchar dimensions
     """
 
-    def __init__(self, cont_ids, input_dir, sos_new, rids, nrids, nids):
+    def __init__(self, cont_ids, input_dir, sos_new, logger, rids, nrids, nids):
         """
         Parameters
         ----------
@@ -46,6 +46,8 @@ class Validation(AbstractModule):
             path to input directory
         sos_new: Path
             path to new SOS file
+        logger: logging.Logger
+            logger to log statements with
         rids: nd.array
             array of SoS reach identifiers associated with continent
         nrids: nd.array
@@ -83,7 +85,7 @@ class Validation(AbstractModule):
             '_o':'offline'
         }
 
-        super().__init__(cont_ids, input_dir, sos_new, rids=rids, nrids=nrids, 
+        super().__init__(cont_ids, input_dir, sos_new, logger, rids=rids, nrids=nrids, 
                          nids=nids)
 
 
@@ -113,7 +115,7 @@ class Validation(AbstractModule):
             for s_rid in self.sos_rids:
                 if s_rid in val_rids:
                     val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
-                    print('processing ', s_rid)
+                    self.logger.info('processing validation reach: %s', s_rid)
                     for suffix in self.suffixes :
                         # val_dict[self.suffix_dict[suffix]]["algo_names"][:self.num_algos,:val_ds[f"algorithm{suffix}"][0].shape[0]] = val_ds[f"algorithm{suffix}"][:].filled('')
 

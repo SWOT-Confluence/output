@@ -32,7 +32,7 @@ class Neobam(AbstractModule):
         get NetCDF attributes for each NetCDF variable.
     """
 
-    def __init__(self, cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s,
+    def __init__(self, cont_ids, input_dir, sos_new, logger, vlen_f, vlen_i, vlen_s,
                  rids, nrids, nids):
         """
         Parameters
@@ -43,6 +43,8 @@ class Neobam(AbstractModule):
             path to input directory
         sos_new: Path
             path to new SOS file
+        logger: logging.Logger
+            logger to log statements with
         vlen_f: VLType
             variable length float data type for NetCDF ragged arrays
         vlen_i: VLType
@@ -57,7 +59,7 @@ class Neobam(AbstractModule):
             array of SOS node identifiers
         """
 
-        super().__init__(cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
+        super().__init__(cont_ids, input_dir, sos_new, logger, vlen_f, vlen_i, vlen_s, \
             rids, nrids, nids)
 
 

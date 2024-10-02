@@ -36,7 +36,7 @@ class Postdiagnostics(AbstractModule):
         get NetCDF attributes for each NetCDF variable.
     """
     
-    def __init__(self, cont_ids, input_dir, sos_new, rids, nrids, nids):
+    def __init__(self, cont_ids, input_dir, sos_new, logger, rids, nrids, nids):
         """
         Parameters
         ----------
@@ -46,6 +46,8 @@ class Postdiagnostics(AbstractModule):
             path to input directory
         sos_new: Path
             path to new SOS file
+        logger: logging.Logger
+            logger to log statements with
         rids: nd.array
             array of SoS reach identifiers associated with continent
         nrids: nd.array
@@ -58,7 +60,7 @@ class Postdiagnostics(AbstractModule):
         self.basin_num_algos = 0
         self.reach_algo_names = np.array([])
         self.reach_num_algos = 0
-        super().__init__(cont_ids, input_dir, sos_new, rids=rids, nrids=nrids, 
+        super().__init__(cont_ids, input_dir, sos_new, logger, rids=rids, nrids=nrids, 
                          nids=nids)
 
     def get_module_data(self):

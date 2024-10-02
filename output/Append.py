@@ -242,58 +242,58 @@ class Append:
         
         # Must create output results for SWOT NetCDF data
         self.modules.append(Swot(list(self.cont.values())[0], \
-            input_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+            input_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
             self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
         
         # All other modules are optional
         for module in self.modules_list:
             if module == "hivdi":
                 self.modules.append(Hivdi(list(self.cont.values())[0], \
-                    flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
                     self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "metroman":
                 self.modules.append(Metroman(list(self.cont.values())[0], \
-                    flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
                     self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "moi":
                 self.modules.append(Moi(list(self.cont.values())[0], \
-                    moi_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    moi_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
                     self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "momma":
                 self.modules.append(Momma(list(self.cont.values())[0], \
-                    flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
                     self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "neobam":
                 self.modules.append(Neobam(list(self.cont.values())[0], \
-                    flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
                     self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "offline":
                 self.modules.append(Offline(list(self.cont.values())[0], \
-                    off_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    off_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
                     self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "postdiagnostics":
                 self.modules.append(Postdiagnostics(list(self.cont.values())[0], \
-                    diag_dir / "postdiagnostics", self.sos_file, self.sos_rids, \
+                    diag_dir / "postdiagnostics", self.sos_file, self.logger, self.sos_rids, \
                     self.sos_nrids, self.sos_nids))
             if module == "prediagnostics":
                 self.modules.append(Prediagnostics(list(self.cont.values())[0], \
-                    diag_dir / "prediagnostics", self.sos_file, self.vlen_f, \
+                    diag_dir / "prediagnostics", self.sos_file, self.logger, self.vlen_f, \
                     self.vlen_i, self.vlen_s, self.sos_rids, self.sos_nrids, \
                     self.sos_nids)) 
             if module == "priors" and run_type == "constrained":
                 self.modules.append(Priors(list(self.cont.values())[0], \
-                    self.sos_cur, self.sos_file, self.PRIORS_SUFFIX))
+                    self.sos_cur, self.sos_file, self.logger, self.PRIORS_SUFFIX))
             if module == "sad":
                 self.modules.append(Sad(list(self.cont.values())[0], \
-                    flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
                     self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "sic4dvar":
                 self.modules.append(Sic4dvar(list(self.cont.values())[0], \
-                    flpe_dir, self.sos_file, self.vlen_f, self.vlen_i, \
+                    flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
                     self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "validation":
                 self.modules.append(Validation(list(self.cont.values())[0], \
-                    val_dir, self.sos_file, self.sos_rids, self.sos_nrids, \
+                    val_dir, self.sos_file, self.logger, self.sos_rids, self.sos_nrids, \
                     self.sos_nids))
                 
     def update_time_coverage(self):

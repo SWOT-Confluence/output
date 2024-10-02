@@ -49,7 +49,7 @@ class AbstractModule(metaclass=ABCMeta):
         "S1": "x"
     }
     
-    def __init__(self, cont_ids, input_dir, sos_new, vlen_f=None, vlen_i=None, 
+    def __init__(self, cont_ids, input_dir, sos_new, logger, vlen_f=None, vlen_i=None, 
                  vlen_s=None, rids=None, nrids=None, nids=None):
         
         """
@@ -61,6 +61,8 @@ class AbstractModule(metaclass=ABCMeta):
             path to input directory
         sos_new: Path
             path to new SOS file
+        logger: logging.Logger
+            logger to log statements with
         vlen_f: VLType
             variable length float data type for NetCDF ragged arrays
         vlen_i: VLType
@@ -78,6 +80,7 @@ class AbstractModule(metaclass=ABCMeta):
         self.cont_ids = cont_ids
         self.input_dir = input_dir
         self.sos_new = sos_new
+        self.logger = logger
         self.vlen_f = vlen_f
         self.vlen_i = vlen_i
         self.vlen_s = vlen_s
