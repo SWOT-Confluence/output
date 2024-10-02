@@ -28,7 +28,7 @@ class Offline(AbstractModule):
         get NetCDF attributes for each NetCDF variable.
     """
 
-    def __init__(self, cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s,
+    def __init__(self, cont_ids, input_dir, sos_new, logger, vlen_f, vlen_i, vlen_s,
                  rids, nrids, nids):
         
         """
@@ -40,6 +40,8 @@ class Offline(AbstractModule):
             path to input directory
         sos_new: Path
             path to new SOS file
+        logger: logging.Logger
+            logger to log statements with
         vlen_f: VLType
             variable length float data type for NetCDF ragged arrays
         vlen_i: VLType
@@ -54,7 +56,7 @@ class Offline(AbstractModule):
             array of SOS node identifiers
         """
 
-        super().__init__(cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
+        super().__init__(cont_ids, input_dir, sos_new, logger, vlen_f, vlen_i, vlen_s, \
             rids, nrids, nids)
 
     def get_module_data(self):
@@ -85,13 +87,14 @@ class Offline(AbstractModule):
                     off_dict["hivdi_q_c"][index] = off_ds["dschg_gh"][:].filled(self.FILL["f8"])
                     off_dict["momma_q_c"][index] = off_ds["dschg_go"][:].filled(self.FILL["f8"])
                     off_dict["sads_q_c"][index] = off_ds["dschg_gs"][:].filled(self.FILL["f8"])
+                    off_dict["sic4dvar_q_c"][index] = off_ds["dschg_gi"][:].filled(self.FILL["f8"])
                     off_dict["consensus_q_c"][index] = off_ds["dschg_gc"][:].filled(self.FILL["f8"])
                     off_dict["metro_q_uc"][index] = off_ds["dschg_m"][:].filled(self.FILL["f8"])
                     off_dict["bam_q_uc"][index] = off_ds["dschg_b"][:].filled(self.FILL["f8"])
                     off_dict["hivdi_q_uc"][index] = off_ds["dschg_h"][:].filled(self.FILL["f8"])
                     off_dict["momma_q_uc"][index] = off_ds["dschg_o"][:].filled(self.FILL["f8"])
                     off_dict["sads_q_uc"][index] = off_ds["dschg_s"][:].filled(self.FILL["f8"])
-                    # off_dict["sic4dvar_q_uc"][index] = off_ds["dschg_i"][:].filled(self.FILL["f8"])
+                    off_dict["sic4dvar_q_uc"][index] = off_ds["dschg_i"][:].filled(self.FILL["f8"])
                     off_dict["consensus_q_uc"][index] = off_ds["dschg_c"][:].filled(self.FILL["f8"])
                     off_ds.close()
                                         # off_ds = Dataset(off_dir / f"{int(s_rid)}_offline.nc", 'r')
@@ -125,12 +128,14 @@ class Offline(AbstractModule):
             "hivdi_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "momma_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "sads_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "sic4dvar_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "consensus_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "metro_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "bam_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "hivdi_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "momma_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "sads_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "sic4dvar_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "consensus_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "attrs": {
                 "d_x_area" : {},
@@ -140,12 +145,14 @@ class Offline(AbstractModule):
                 "hivdi_q_c" : {},
                 "momma_q_c" : {},
                 "sads_q_c" : {},
+                "sic4dvar_q_c" : {},
                 "consensus_q_c" : {},
                 "metro_q_uc" : {},
                 "bam_q_uc" : {},
                 "hivdi_q_uc" : {},
                 "momma_q_uc" : {},
                 "sads_q_uc" : {},
+                "sic4dvar_q_uc" : {},
                 "consensus_q_uc" : {}
             }
         }
@@ -158,12 +165,14 @@ class Offline(AbstractModule):
         data_dict["hivdi_q_c"].fill(np.array([self.FILL["f8"]]))
         data_dict["momma_q_c"].fill(np.array([self.FILL["f8"]]))
         data_dict["sads_q_c"].fill(np.array([self.FILL["f8"]]))
+        data_dict["sic4dvar_q_c"].fill(np.array([self.FILL["f8"]]))
         data_dict["consensus_q_c"].fill(np.array([self.FILL["f8"]]))
         data_dict["metro_q_uc"].fill(np.array([self.FILL["f8"]]))
         data_dict["bam_q_uc"].fill(np.array([self.FILL["f8"]]))
         data_dict["hivdi_q_uc"].fill(np.array([self.FILL["f8"]]))
         data_dict["momma_q_uc"].fill(np.array([self.FILL["f8"]]))
         data_dict["sads_q_uc"].fill(np.array([self.FILL["f8"]]))
+        data_dict["sic4dvar_q_uc"].fill(np.array([self.FILL["f8"]]))
         data_dict["consensus_q_uc"].fill(np.array([self.FILL["f8"]]))
         return data_dict
     
@@ -184,13 +193,14 @@ class Offline(AbstractModule):
             "hivdi_q_c":"dschg_gh",
             "momma_q_c":"dschg_go",
             "sads_q_c":"dschg_gs",
+            "sic4dvar_q_c":"dschg_gi",
             "consensus_q_c":"dschg_gc",
             "metro_q_uc":"dschg_m",
             "bam_q_uc":"dschg_b",
             "hivdi_q_uc":"dschg_h",
             "momma_q_uc":"dschg_o",
             "sads_q_uc":"dschg_s",
-            # "sic4dvar_q_uc":"dschg_i",
+            "sic4dvar_q_uc":"dschg_i",
             "consensus_q_uc":"dschg_c",
             "d_x_area":"d_x_area",
             "d_x_area_u":"d_x_area_u",
