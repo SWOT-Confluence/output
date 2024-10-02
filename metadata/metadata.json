@@ -590,6 +590,14 @@
             "valid_max": 10000000,
             "coverage_content_type": "modelResult"
         },
+        "sic4dvar_q_c": {
+            "long_name": "SADS discharge",
+            "comment": "SADS discharge",
+            "units": "m^3/s",
+            "valid_min": -998,
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
+        },
         "consensus_q_c": {
             "long_name": "gauge-constrained consensus discharge",
             "comment": "gauge-constrained consensus discharge",
@@ -631,6 +639,14 @@
             "coverage_content_type": "modelResult"
         },
         "sads_q_uc": {
+            "long_name": "SADS discharge",
+            "comment": "SADS discharge",
+            "units": "m^3/s",
+            "valid_min": -998,
+            "valid_max": 999999999999,
+            "coverage_content_type": "modelResult"
+        },
+        "sic4dvar_q_uc": {
             "long_name": "SADS discharge",
             "comment": "SADS discharge",
             "units": "m^3/s",
