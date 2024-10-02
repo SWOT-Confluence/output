@@ -129,29 +129,29 @@ class AbstractModule(metaclass=ABCMeta):
         raise NotImplementedError
     
     def write_var(self, grp, name, type, dims, data_dict):
-            """Create NetCDF variable and write module data to it.
-    
-            Parameters
-            ----------
-            grp: netCDF4._netCDF4.Group
-                dicharge NetCDF4 group to write data to
-            name: str
-                name of variable
-            type: str
-                string type of NetCDF variable
-            dims: tuple
-                tuple of NetCDF4 dimensions that matches shape of var data
-            data_dict: dict
-                dictionary of result data
-            """
+        """Create NetCDF variable and write module data to it.
 
-            var = grp.createVariable(name, type, dims, fill_value=self.FILL[type], compression="zlib")
-            if data_dict["attrs"][name]: var.setncatts(data_dict["attrs"][name])
-            if type == "f8" or type == "i4": 
-                var[:] = np.nan_to_num(data_dict[name], copy=True, nan=self.FILL[type])
-            else:
-                var[:] = data_dict[name]
-            return var
+        Parameters
+        ----------
+        grp: netCDF4._netCDF4.Group
+            dicharge NetCDF4 group to write data to
+        name: str
+            name of variable
+        type: str
+            string type of NetCDF variable
+        dims: tuple
+            tuple of NetCDF4 dimensions that matches shape of var data
+        data_dict: dict
+            dictionary of result data
+        """
+
+        var = grp.createVariable(name, type, dims, fill_value=self.FILL[type], compression="zlib")
+        if data_dict["attrs"][name]: var.setncatts(data_dict["attrs"][name])
+        if type == "f8" or type == "i4":
+            var[:] = np.nan_to_num(data_dict[name], copy=True, nan=self.FILL[type])
+        else:
+            var[:] = data_dict[name]
+        return var
     
     def write_var_nt(self, grp, name, vlen, dims, data_dict, fill=0):
         """Create NetCDF variable length data variable and write module data.
@@ -187,5 +187,5 @@ class AbstractModule(metaclass=ABCMeta):
             for name, value in variable_dict.items():
                 setattr(variable, name, value)
         except:
-            print('could not find metadata for', variable)
+            self.logger.warn('could not find metadata for %s', variable)
 
