@@ -32,7 +32,7 @@ class Priors(AbstractModule):
         closes current SoS dataset.
     """
     
-    def __init__(self, cont_ids, input_dir, logger, sos_new, suffix):
+    def __init__(self, cont_ids, input_dir, sos_new, logger, suffix):
         """
         Parameters
         ----------
@@ -49,7 +49,7 @@ class Priors(AbstractModule):
         """
 
         self.suffix = suffix
-        super().__init__(cont_ids, input_dir, sos_new, logger,)
+        super().__init__(cont_ids, input_dir, sos_new, logger)
         
     def get_module_data(self):
         """Extract and return model group from priors SoS file."""
