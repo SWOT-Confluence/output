@@ -38,15 +38,6 @@
     "global_attributes_extra": {
         "confluence_version": "0.1.0"
     },
-    "observations": {
-        "observations": {
-            "long_name": "pass number that indicates cycle/pass observations",
-            "comment": "A list of pass numbers that identify each reach and node observation.",
-            "valid_min": 1,
-            "valid_max": 584,
-            "coverage_content_type": "coordinate"
-        }
-    },
     "hivdi": {
         "A0": {
             "long_name": "unobserved cross-sectional area",
@@ -506,7 +497,7 @@
         },
         "observations": {
             "long_name": "cycle pass observations",
-            "comment": "Pass numbers associated with observations for each node.",
+            "comment": "Pass numbers associated with observations for each node. Cycle passes are taken from shapefile name where a single cycle, pass combination is separated by an underscored (e.g., 112_386 representing cycle 112 and pass 386). Cycle, pass combinations are stored as strings with each cycle_pass element separated by a comma for each node that has observations.",
             "valid_min": 1,
             "valid_max": 584,
             "coverage_content_type": "coordinate"
@@ -1073,7 +1064,7 @@
         },
         "observations": {
             "long_name": "cycle pass observations",
-            "comment": "Pass numbers associated with observations for each reach.",
+            "comment": "Pass numbers associated with observations for each reach. Cycle passes are taken from shapefile name where a single cycle, pass combination is separated by an underscored (e.g., 112_386 representing cycle 112 and pass 386). Cycle, pass combinations are stored as strings with each cycle_pass element separated by a comma for each reach that has observations.",
             "valid_min": 1,
             "valid_max": 584,
             "coverage_content_type": "coordinate"

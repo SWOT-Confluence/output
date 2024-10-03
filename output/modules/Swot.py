@@ -4,6 +4,7 @@ from pathlib import Path
 
 # Third-party imports
 from netCDF4 import Dataset
+from netCDF4 import chartostring
 import numpy as np
 
 # Local imports
@@ -81,15 +82,14 @@ class Swot(AbstractModule):
             for s_rid in self.sos_rids:
                 if s_rid in swot_rids:
                     swot_ds = Dataset(swot_dir / f"{int(s_rid)}_SWOT.nc", 'r')
-                    obs = swot_ds["observations"][:].filled(self.FILL["i4"])
                     
                     # Reach
-                    # swot_dict["reach"]["observations"][index] = obs
+                    swot_dict["reach"]["observations"][index] = ','.join(chartostring(swot_ds["observations"][:]))
                     swot_dict["reach"]["time"][index] = swot_ds["reach"]["time"][:].filled(self.FILL["f8"])
                     
                     # Node
                     indexes = np.where(self.sos_nrids == s_rid)
-                    self._insert_nx(swot_dict, swot_ds, obs, indexes)
+                    self._insert_nx(swot_dict, swot_ds, indexes)
                     
                     swot_ds.close()
                 index += 1
@@ -113,9 +113,9 @@ class Swot(AbstractModule):
                 }            
         }
         # Vlen variables
-        data_dict["reach"]["observations"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
+        data_dict["reach"]["observations"].fill("xxxxxxxxxx")
         data_dict["reach"]["time"].fill(np.array([self.FILL["f8"]]))
-        data_dict["node"]["observations"].fill(np.array([self.FILL["i4"]], dtype=np.int32))
+        data_dict["node"]["observations"].fill("xxxxxxxxxx")
         data_dict["node"]["time"].fill(np.array([self.FILL["f8"]]))
         return data_dict
         
@@ -137,7 +137,7 @@ class Swot(AbstractModule):
         data_dict["node"]["attrs"]["time"] = ds["node"]["time"].__dict__
         ds.close()
         
-    def _insert_nx(self, swot_dict, swot_ds, obs, indexes):
+    def _insert_nx(self, swot_dict, swot_ds, indexes):
         """Insert node flags into prediagnostics dictionary.
         
         Parameters
@@ -154,10 +154,10 @@ class Swot(AbstractModule):
 
         for i in indexes[0]:
             try:
-                # swot_dict["node"]["observations"][i] = obs
+                swot_dict["node"]["observations"][i] = ','.join(chartostring(swot_ds["observations"][:]))
                 swot_dict["node"]["time"][i] = swot_ds["node"]["time"][j,:].filled(self.FILL["f8"])
             except:
-                print('time variable filled, reach was partially observed')
+                self.logging.warn('time variable filled, reach was partially observed')
                 return
             j +=1
         
@@ -170,16 +170,16 @@ class Swot(AbstractModule):
             dictionary of SWOT time variables
         """
 
-        sos_ds = Dataset(self.sos_new, 'a')        
-        
+        sos_ds = Dataset(self.sos_new, 'a')
+
         # Reach
-        var = self.write_var_nt(sos_ds["reaches"], "observations", self.vlen_i, ("num_reaches"), data_dict["reach"], fill=-1)
+        var = self.write_var_nt(sos_ds["reaches"], "observations", str, ("num_reaches"), data_dict["reach"], fill=-1)
         self.set_variable_atts(var, metadata_json["reaches"]["observations"])
         var = self.write_var_nt(sos_ds["reaches"], "time", self.vlen_f, ("num_reaches"), data_dict["reach"])
         self.set_variable_atts(var, metadata_json["reaches"]["time"])
         
         # Node
-        var = self.write_var_nt(sos_ds["nodes"], "observations", self.vlen_i, ("num_nodes"), data_dict["node"], fill=-1)
+        var = self.write_var_nt(sos_ds["nodes"], "observations", str, ("num_nodes"), data_dict["node"], fill=-1)
         self.set_variable_atts(var, metadata_json["nodes"]["observations"])
         var = self.write_var_nt(sos_ds["nodes"], "time", self.vlen_f, ("num_nodes"), data_dict["node"])
         self.set_variable_atts(var, metadata_json["nodes"]["time"])
