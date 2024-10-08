@@ -147,22 +147,14 @@ class Offline(AbstractModule):
                 "hivdi_q_c" : {},
                 "momma_q_c" : {},
                 "sads_q_c" : {},
-<<<<<<< HEAD
                 "sic4dvar_q_c" : {},
-=======
-                "sic4dvar_q_c": {},
->>>>>>> 044177ae63bf6731db398506241289ddbdb04902
                 "consensus_q_c" : {},
                 "metro_q_uc" : {},
                 "bam_q_uc" : {},
                 "hivdi_q_uc" : {},
                 "momma_q_uc" : {},
                 "sads_q_uc" : {},
-<<<<<<< HEAD
                 "sic4dvar_q_uc" : {},
-=======
-                "sic4dvar_q_uc":{},
->>>>>>> 044177ae63bf6731db398506241289ddbdb04902
                 "consensus_q_uc" : {}
             }
         }
