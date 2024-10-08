@@ -126,12 +126,14 @@ class Offline(AbstractModule):
             "metro_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "bam_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "hivdi_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "sic4dvar_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "momma_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "sads_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "sic4dvar_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "consensus_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "metro_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "bam_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "sic4dvar_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "hivdi_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "momma_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "sads_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
@@ -145,14 +147,22 @@ class Offline(AbstractModule):
                 "hivdi_q_c" : {},
                 "momma_q_c" : {},
                 "sads_q_c" : {},
+<<<<<<< HEAD
                 "sic4dvar_q_c" : {},
+=======
+                "sic4dvar_q_c": {},
+>>>>>>> 044177ae63bf6731db398506241289ddbdb04902
                 "consensus_q_c" : {},
                 "metro_q_uc" : {},
                 "bam_q_uc" : {},
                 "hivdi_q_uc" : {},
                 "momma_q_uc" : {},
                 "sads_q_uc" : {},
+<<<<<<< HEAD
                 "sic4dvar_q_uc" : {},
+=======
+                "sic4dvar_q_uc":{},
+>>>>>>> 044177ae63bf6731db398506241289ddbdb04902
                 "consensus_q_uc" : {}
             }
         }
@@ -168,6 +178,7 @@ class Offline(AbstractModule):
         data_dict["sic4dvar_q_c"].fill(np.array([self.FILL["f8"]]))
         data_dict["consensus_q_c"].fill(np.array([self.FILL["f8"]]))
         data_dict["metro_q_uc"].fill(np.array([self.FILL["f8"]]))
+        data_dict["sic4dvar_q_uc"].fill(np.array([self.FILL["f8"]]))
         data_dict["bam_q_uc"].fill(np.array([self.FILL["f8"]]))
         data_dict["hivdi_q_uc"].fill(np.array([self.FILL["f8"]]))
         data_dict["momma_q_uc"].fill(np.array([self.FILL["f8"]]))
@@ -195,6 +206,7 @@ class Offline(AbstractModule):
             "sads_q_c":"dschg_gs",
             "sic4dvar_q_c":"dschg_gi",
             "consensus_q_c":"dschg_gc",
+            "sic4dvar_q_c":"dschg_gi",
             "metro_q_uc":"dschg_m",
             "bam_q_uc":"dschg_b",
             "hivdi_q_uc":"dschg_h",
