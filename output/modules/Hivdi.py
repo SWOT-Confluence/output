@@ -78,11 +78,11 @@ class Hivdi(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in hv_rids:
-                    hv_ds = Dataset(hv_dir / f"{int(s_rid)}_hivdi.nc", 'r')
+                    hv_ds = Dataset(hv_dir / f"{int(s_rid)}_h2ivdi.nc", 'r')
                     hv_dict["reach"]["Q"][index] = hv_ds["reach"]["Q"][:].filled(self.FILL["f8"])
                     hv_dict["reach"]["A0"][index] = hv_ds["reach"]["A0"][:].filled(np.nan)
-                    hv_dict["reach"]["alpha"][index] = hv_ds["reach"]["alpha"][:].filled(np.nan)
-                    hv_dict["reach"]["beta"][index] = hv_ds["reach"]["beta"][:].filled(np.nan)
+                    # hv_dict["reach"]["alpha"][index] = hv_ds["reach"]["alpha"][:].filled(np.nan)
+                    # hv_dict["reach"]["beta"][index] = hv_ds["reach"]["beta"][:].filled(np.nan)s
                     hv_ds.close()
                 index += 1    
         return hv_dict
@@ -94,13 +94,13 @@ class Hivdi(AbstractModule):
             "reach" : {
                 "Q" : np.empty((self.sos_rids.shape[0]), dtype=object),
                 "A0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-                "alpha" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
-                "beta" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "alpha" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+                # "beta" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
                 "attrs" : {
                     "Q": {},
                     "A0": {},
-                    "alpha": {},
-                    "beta": {}
+                    # "alpha": {},
+                    # "beta": {}
                 }
             }
         }
@@ -122,8 +122,8 @@ class Hivdi(AbstractModule):
         
         ds = Dataset(nc_file, 'r')
         data_dict["reach"]["attrs"]["A0"] = ds["reach"]["A0"].__dict__
-        data_dict["reach"]["attrs"]["alpha"] = ds["reach"]["alpha"].__dict__
-        data_dict["reach"]["attrs"]["beta"] = ds["reach"]["beta"].__dict__
+        # data_dict["reach"]["attrs"]["alpha"] = ds["reach"]["alpha"].__dict__
+        # data_dict["reach"]["attrs"]["beta"] = ds["reach"]["beta"].__dict__
         data_dict["reach"]["attrs"]["Q"] = ds["reach"]["Q"].__dict__
         ds.close()
         
@@ -143,8 +143,8 @@ class Hivdi(AbstractModule):
         self.set_variable_atts(var, metadata_json["hivdi"]["Q"])
         var = self.write_var(hv_grp, "A0", "f8", ("num_reaches",), data_dict["reach"])
         self.set_variable_atts(var, metadata_json["hivdi"]["A0"])
-        var = self.write_var(hv_grp, "beta", "f8", ("num_reaches",), data_dict["reach"])
-        self.set_variable_atts(var, metadata_json["hivdi"]["beta"])
-        var = self.write_var(hv_grp, "alpha", "f8", ("num_reaches",), data_dict["reach"])
-        self.set_variable_atts(var, metadata_json["hivdi"]["alpha"])
+        # var = self.write_var(hv_grp, "beta", "f8", ("num_reaches",), data_dict["reach"])
+        # self.set_variable_atts(var, metadata_json["hivdi"]["beta"])
+        # var = self.write_var(hv_grp, "alpha", "f8", ("num_reaches",), data_dict["reach"])
+        # self.set_variable_atts(var, metadata_json["hivdi"]["alpha"])
         sos_ds.close()

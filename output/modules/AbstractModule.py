@@ -134,6 +134,7 @@ class AbstractModule(metaclass=ABCMeta):
                 dicharge NetCDF4 group to write data to
             name: str
                 name of variable
+if data_dict["attrs"][name]: var.setncatts(data_dict["attrs"][name])
             type: str
                 string type of NetCDF variable
             dims: tuple
@@ -143,7 +144,8 @@ class AbstractModule(metaclass=ABCMeta):
             """
 
             var = grp.createVariable(name, type, dims, fill_value=self.FILL[type], compression="zlib")
-            if data_dict["attrs"][name]: var.setncatts(data_dict["attrs"][name])
+            if data_dict["attrs"][name]: 
+                var.setncatts(data_dict["attrs"][name])
             if type == "f8" or type == "i4": 
                 var[:] = np.nan_to_num(data_dict[name], copy=True, nan=self.FILL[type])
             else:
@@ -180,7 +182,9 @@ class AbstractModule(metaclass=ABCMeta):
         
     def set_variable_atts(self, variable, variable_dict):
         """Set the variable attribute metdata."""
-        
-        for name, value in variable_dict.items():
-            setattr(variable, name, value)
+        try:
+            for name, value in variable_dict.items():
+                setattr(variable, name, value)
+        except:
+            print('could not find metadata for', variable)
 
