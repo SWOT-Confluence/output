@@ -36,7 +36,7 @@ class Metroman(AbstractModule):
         insert discharge values into dictionary with nr by nt dimensions
     """
     
-    def __init__(self, cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s,
+    def __init__(self, cont_ids, input_dir, sos_new, logger, vlen_f, vlen_i, vlen_s,
                  rids, nrids, nids):
         """
         Parameters
@@ -47,6 +47,8 @@ class Metroman(AbstractModule):
             path to input directory
         sos_new: Path
             path to new SOS file
+        logger: logging.Logger
+            logger to log statements with
         vlen_f: VLType
             variable length float data type for NetCDF ragged arrays
         vlen_i: VLType
@@ -61,7 +63,7 @@ class Metroman(AbstractModule):
             array of SOS node identifiers
         """
 
-        super().__init__(cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
+        super().__init__(cont_ids, input_dir, sos_new, logger, vlen_f, vlen_i, vlen_s, \
             rids, nrids, nids)
 
     def get_module_data(self):
