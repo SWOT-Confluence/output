@@ -80,15 +80,25 @@ class Upload:
                             Bucket=self.sos_bucket,
                             Key=f"{run_type}/{vers}/{self.sos_file.name}",
                             ExtraArgs={"ServerSideEncryption": "aws:kms"})
-            self.logger.info(f"Uploaded: {run_type}/{vers}/{self.sos_file.name}.")
+            self.logger.info(f"Uploaded: {self.sos_bucket}/{run_type}/{vers}/{self.sos_file.name}.")
             # Upload validation figures to S3 bucket
             if 'validation' in modules:
                 with scandir(val_dir) as entries:
                     for entry in entries:
-                        s3.upload_file(Filename=str(Path(entry)),
-                            Bucket="confluence-sos",
-                            Key=f"figs/{run_type}/{vers}/{entry.name}")
-                        self.logger.info(f"Uploaded: figs/{run_type}/{vers}/{entry.name}.")
+                        if self.sos_bucket == "confluence-sos":
+                            s3.upload_file(
+                                Filename=str(Path(entry)),
+                                Bucket=self.sos_bucket,
+                                Key=f"figs/{run_type}/{vers}/{entry.name}"
+                            )
+                        else:
+                            s3.upload_file(
+                                Filename=str(Path(entry)),
+                                Bucket=self.sos_bucket,
+                                Key=f"figs/{run_type}/{vers}/{entry.name}",
+                                ExtraArgs={"ServerSideEncryption": "aws:kms"}
+                            )
+                        self.logger.info(f"Uploaded: {self.sos_bucket}/figs/{run_type}/{vers}/{entry.name}.")
         except botocore.exceptions.ClientError as error:
             raise error
         

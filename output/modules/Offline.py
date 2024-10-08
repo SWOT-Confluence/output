@@ -28,7 +28,7 @@ class Offline(AbstractModule):
         get NetCDF attributes for each NetCDF variable.
     """
 
-    def __init__(self, cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s,
+    def __init__(self, cont_ids, input_dir, sos_new, logger, vlen_f, vlen_i, vlen_s,
                  rids, nrids, nids):
         
         """
@@ -40,6 +40,8 @@ class Offline(AbstractModule):
             path to input directory
         sos_new: Path
             path to new SOS file
+        logger: logging.Logger
+            logger to log statements with
         vlen_f: VLType
             variable length float data type for NetCDF ragged arrays
         vlen_i: VLType
@@ -54,7 +56,7 @@ class Offline(AbstractModule):
             array of SOS node identifiers
         """
 
-        super().__init__(cont_ids, input_dir, sos_new, vlen_f, vlen_i, vlen_s, \
+        super().__init__(cont_ids, input_dir, sos_new, logger, vlen_f, vlen_i, vlen_s, \
             rids, nrids, nids)
 
     def get_module_data(self):
@@ -127,6 +129,7 @@ class Offline(AbstractModule):
             "sic4dvar_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "momma_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "sads_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "sic4dvar_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "consensus_q_c" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "metro_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "bam_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
@@ -134,6 +137,7 @@ class Offline(AbstractModule):
             "hivdi_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "momma_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "sads_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "sic4dvar_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "consensus_q_uc" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "attrs": {
                 "d_x_area" : {},
@@ -143,14 +147,22 @@ class Offline(AbstractModule):
                 "hivdi_q_c" : {},
                 "momma_q_c" : {},
                 "sads_q_c" : {},
+<<<<<<< HEAD
+                "sic4dvar_q_c" : {},
+=======
                 "sic4dvar_q_c": {},
+>>>>>>> 044177ae63bf6731db398506241289ddbdb04902
                 "consensus_q_c" : {},
                 "metro_q_uc" : {},
                 "bam_q_uc" : {},
                 "hivdi_q_uc" : {},
                 "momma_q_uc" : {},
                 "sads_q_uc" : {},
+<<<<<<< HEAD
+                "sic4dvar_q_uc" : {},
+=======
                 "sic4dvar_q_uc":{},
+>>>>>>> 044177ae63bf6731db398506241289ddbdb04902
                 "consensus_q_uc" : {}
             }
         }
@@ -171,6 +183,7 @@ class Offline(AbstractModule):
         data_dict["hivdi_q_uc"].fill(np.array([self.FILL["f8"]]))
         data_dict["momma_q_uc"].fill(np.array([self.FILL["f8"]]))
         data_dict["sads_q_uc"].fill(np.array([self.FILL["f8"]]))
+        data_dict["sic4dvar_q_uc"].fill(np.array([self.FILL["f8"]]))
         data_dict["consensus_q_uc"].fill(np.array([self.FILL["f8"]]))
         return data_dict
     
@@ -191,6 +204,7 @@ class Offline(AbstractModule):
             "hivdi_q_c":"dschg_gh",
             "momma_q_c":"dschg_go",
             "sads_q_c":"dschg_gs",
+            "sic4dvar_q_c":"dschg_gi",
             "consensus_q_c":"dschg_gc",
             "sic4dvar_q_c":"dschg_gi",
             "metro_q_uc":"dschg_m",
@@ -222,99 +236,36 @@ class Offline(AbstractModule):
         off_grp = sos_ds.createGroup("offline")
 
         # Offline data
-        var = self.write_var_nt(off_grp, "d_x_area", self.vlen_f, ("num_reaches",), data_dict)
-        if "d_x_area" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["d_x_area"])
-        else:
-            print(f"Metadata not found for d_x_area")
-
-        var = self.write_var_nt(off_grp, "d_x_area_u", self.vlen_f, ("num_reaches",), data_dict)
-        if "d_x_area_u" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["d_x_area_u"])
-        else:
-            print(f"Metadata not found for d_x_area_u")
-
-        var = self.write_var_nt(off_grp, "metro_q_c", self.vlen_f, ("num_reaches",), data_dict)
-        if "metro_q_c" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["metro_q_c"])
-        else:
-            print(f"Metadata not found for metro_q_c")
-
-        var = self.write_var_nt(off_grp, "bam_q_c", self.vlen_f, ("num_reaches",), data_dict)
-        if "bam_q_c" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["bam_q_c"])
-        else:
-            print(f"Metadata not found for bam_q_c")
-
-        var = self.write_var_nt(off_grp, "hivdi_q_c", self.vlen_f, ("num_reaches",), data_dict)
-        if "hivdi_q_c" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["hivdi_q_c"])
-        else:
-            print(f"Metadata not found for hivdi_q_c")
-
-        var = self.write_var_nt(off_grp, "momma_q_c", self.vlen_f, ("num_reaches",), data_dict)
-        if "momma_q_c" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["momma_q_c"])
-        else:
-            print(f"Metadata not found for momma_q_c")
-
-        var = self.write_var_nt(off_grp, "sads_q_c", self.vlen_f, ("num_reaches",), data_dict)
-        if "sads_q_c" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["sads_q_c"])
-        else:
-            print(f"Metadata not found for sads_q_c")
-
-        var = self.write_var_nt(off_grp, "sic4dvar_q_c", self.vlen_f, ("num_reaches",), data_dict)
-        if "sic4dvar_q_c" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["sic4dvar_q_c"])
-        else:
-            print(f"Metadata not found for sic4dvar_q_c")
-
-        var = self.write_var_nt(off_grp, "consensus_q_c", self.vlen_f, ("num_reaches",), data_dict)
-        if "consensus_q_c" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["consensus_q_c"])
-        else:
-            print(f"Metadata not found for consensus_q_c")
-
-        var = self.write_var_nt(off_grp, "metro_q_uc", self.vlen_f, ("num_reaches",), data_dict)
-        if "metro_q_uc" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["metro_q_uc"])
-        else:
-            print(f"Metadata not found for metro_q_uc")
-
-        var = self.write_var_nt(off_grp, "sic4dvar_q_uc", self.vlen_f, ("num_reaches",), data_dict)
-        if "sic4dvar_q_uc" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["sic4dvar_q_uc"])
-        else:
-            print(f"Metadata not found for sic4dvar_q_uc")
-
-        var = self.write_var_nt(off_grp, "bam_q_uc", self.vlen_f, ("num_reaches",), data_dict)
-        if "bam_q_uc" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["bam_q_uc"])
-        else:
-            print(f"Metadata not found for bam_q_uc")
-
-        var = self.write_var_nt(off_grp, "hivdi_q_uc", self.vlen_f, ("num_reaches",), data_dict)
-        if "hivdi_q_uc" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["hivdi_q_uc"])
-        else:
-            print(f"Metadata not found for hivdi_q_uc")
-
-        var = self.write_var_nt(off_grp, "momma_q_uc", self.vlen_f, ("num_reaches",), data_dict)
-        if "momma_q_uc" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["momma_q_uc"])
-        else:
-            print(f"Metadata not found for momma_q_uc")
-
-        var = self.write_var_nt(off_grp, "sads_q_uc", self.vlen_f, ("num_reaches",), data_dict)
-        if "sads_q_uc" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["sads_q_uc"])
-        else:
-            print(f"Metadata not found for sads_q_uc")
-
-        var = self.write_var_nt(off_grp, "consensus_q_uc", self.vlen_f, ("num_reaches",), data_dict)
-        if "consensus_q_uc" in metadata_json["offline"]:
-            self.set_variable_atts(var, metadata_json["offline"]["consensus_q_uc"])
-        else:
-            print(f"Metadata not found for consensus_q_uc")
+        var = self.write_var_nt(off_grp, "d_x_area", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["d_x_area"])
+        var = self.write_var_nt(off_grp, "d_x_area_u", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["d_x_area_u"])
+        var = self.write_var_nt(off_grp, "metro_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["metro_q_c"])
+        var = self.write_var_nt(off_grp, "bam_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["bam_q_c"])
+        var = self.write_var_nt(off_grp, "hivdi_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["hivdi_q_c"])
+        var = self.write_var_nt(off_grp, "momma_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["momma_q_c"])
+        var = self.write_var_nt(off_grp, "sads_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["sads_q_c"])
+        var = self.write_var_nt(off_grp, "sic4dvar_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["sic4dvar_q_c"])
+        var = self.write_var_nt(off_grp, "consensus_q_c", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["consensus_q_c"])
+        var = self.write_var_nt(off_grp, "metro_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["metro_q_uc"])
+        var = self.write_var_nt(off_grp, "bam_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["bam_q_uc"])
+        var = self.write_var_nt(off_grp, "hivdi_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["hivdi_q_uc"])
+        var = self.write_var_nt(off_grp, "momma_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["momma_q_uc"])
+        var = self.write_var_nt(off_grp, "sads_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["sads_q_uc"])
+        var = self.write_var_nt(off_grp, "sic4dvar_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["sic4dvar_q_uc"])
+        var = self.write_var_nt(off_grp, "consensus_q_uc", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["offline"]["consensus_q_uc"])
         sos_ds.close()
