@@ -582,8 +582,8 @@
             "coverage_content_type": "modelResult"
         },
         "sic4dvar_q_c": {
-            "long_name": "SADS discharge",
-            "comment": "SADS discharge",
+            "long_name": "SIC4DVar discharge",
+            "comment": "SIC4DVar discharge",
             "units": "m^3/s",
             "valid_min": -998,
             "valid_max": 999999999999,
@@ -638,8 +638,8 @@
             "coverage_content_type": "modelResult"
         },
         "sic4dvar_q_uc": {
-            "long_name": "SADS discharge",
-            "comment": "SADS discharge",
+            "long_name": "SIC4DVar discharge",
+            "comment": "SIC4DVar discharge",
             "units": "m^3/s",
             "valid_min": -998,
             "valid_max": 999999999999,
@@ -1249,7 +1249,26 @@
             "valid_min": 0,
             "valid_max": 1000,
             "coverage_content_type": "modelResult"
+        },
+        "gageid": {
+            "long_name": "Agency_gage_identifier",
+            "comment": "agency identification code for in situ gage",
+            "coverage_content_type": "referenceInformation"
+        },
+        "spearmanr": {
+            "long_name": "Spearman_correlation_coefficient",
+            "comment": "Spearman correlation coefficient between estimated and measured in situ discharge",
+            "valid_min": -1,
+            "valid_max": 1,
+            "coverage_content_type": "referenceInformation"
+        },
+        "sige": {
+            "long_name": "Sigma_Epsalon",
+            "comment": "standard deviation of the unnormalized discharge error, divided by the mean flow",
+            "valid_min": 0,
+            "coverage_content_type": "referenceInformation"
         }
+
     },
     "momma": {
         "stage": {
