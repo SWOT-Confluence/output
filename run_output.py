@@ -103,13 +103,15 @@ def get_logger():
 
 def main():
     start = datetime.now()
-    
+
+    # Logging
+    logger = get_logger()
+
     # Command line arguments
     arg_parser = create_args()
     args = arg_parser.parse_args()
-    
-    # Logging
-    logger = get_logger()
+    for arg in vars(args):
+        logger.info("%s: %s", arg, getattr(args, arg))
 
     # AWS Batch index
     index = args.index if args.index != -235 else int(os.environ.get("AWS_BATCH_JOB_ARRAY_INDEX"))
