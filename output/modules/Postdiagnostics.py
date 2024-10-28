@@ -68,69 +68,93 @@ class Postdiagnostics(AbstractModule):
 
         # Files and reach identifiers
         pd_basin_files = [ Path(pd_file) for pd_file in glob.glob(f"{self.input_dir}/basin/{self.cont_ids}*.nc") ]
-        pd_rids = [ int(pd_file.name.split('_')[0]) for pd_file in pd_basin_files ]        
-        
-        if len(pd_basin_files) == 0:
+        pd_reach_files = [ Path(pd_file) for pd_file in glob.glob(f"{self.input_dir}/reach/{self.cont_ids}*.nc") ]
+
+        pd_basin_rids = [ int(pd_file.name.split('_')[0]) for pd_file in pd_basin_files ]
+        pd_reach_rids = [ int(pd_file.name.split('_')[0]) for pd_file in pd_reach_files ]
+        pd_rids = pd_basin_rids + pd_reach_rids
+
+        if len(pd_basin_files) == 0 and len(pd_reach_files) == 0:
             # Store empty data
             pd_dict = self.create_data_dict()
         else:
             # Get names number of algorithms processed
-            self.__get_algo_data(pd_basin_files, pd_rids)
+            self.__get_algo_data(pd_basin_files, pd_reach_files)
 
             # Storage initialization
             pd_dict = self.create_data_dict()
             
-            # Storage of variable attributes
-            self.get_nc_attrs(self.input_dir / pd_basin_files[0], pd_dict)
-            self.get_nc_attrs(self.input_dir / "reach" / f"{pd_rids[0]}_flpe_diag.nc", pd_dict)
+            # Storage of variable attributes - taken from first file in list
+            self.get_nc_attrs(pd_basin_files[0], pd_dict)
+            self.get_nc_attrs(pd_reach_files[0], pd_dict)
 
             # Data extraction
             index = 0
             for s_rid in self.sos_rids:
-                if s_rid in pd_rids and os.path.exists(os.path.join(self.input_dir, "basin", f"{int(s_rid)}_moi_diag.nc")) and os.path.exists(os.path.join(self.input_dir, "reach", f"{int(s_rid)}_flpe_diag.nc")):
-                    pd_b_ds = Dataset(self.input_dir / "basin" / f"{int(s_rid)}_moi_diag.nc", 'r')
-                    pd_r_ds = Dataset(self.input_dir / "reach" / f"{int(s_rid)}_flpe_diag.nc", 'r')
+                # data for reach identifier
+                if s_rid in pd_rids:
+                    # basin
+                    if os.path.exists(os.path.join(self.input_dir, "basin", f"{int(s_rid)}_moi_diag.nc")):
+                        pd_b_ds = Dataset(self.input_dir / "basin" / f"{int(s_rid)}_moi_diag.nc", 'r')
+                        basin_realism_flags = list(pd_b_ds["realism_flags"][:].filled(np.nan))
+                        basin_stability_flags = list(pd_b_ds["stability_flags"][:].filled(np.nan))
+                        basin_prepost_flags = list(pd_b_ds["prepost_flags"][:].filled(np.nan))
 
-                    basin_realism_flags = list(pd_b_ds["realism_flags"][:].filled(np.nan))
-                    basin_stability_flags = list(pd_b_ds["stability_flags"][:].filled(np.nan))
-                    basin_prepost_flags = list(pd_b_ds["prepost_flags"][:].filled(np.nan))
-                    reach_realism_flags = list(pd_r_ds["realism_flags"][:].filled(np.nan))
-                    reach_stability_flags = list(pd_r_ds["stability_flags"][:].filled(np.nan))
+                        # sometimes different algos dont run for some flpes
+                        # the blocks below ensure that no matter what algos are run ,the order is persserved
+                        # if an algo didn't run, then it will be filled with nan
+                        dif = [x for x in self.basin_algo_names if x not in pd_b_ds['algo_names']]
+                        for missing_algo in dif:
+                            missing_index = list(self.basin_algo_names).index(missing_algo)
+                            basin_realism_flags.insert(missing_index, np.nan)
+                            basin_stability_flags.insert(missing_index, np.nan)
+                            basin_prepost_flags.insert(missing_index, np.nan)
 
-                    # somtimes different algos dont run for some flpes
-                    # the blocks below ensure that no matter what algos are run ,the order is persserved
-                    # if an algo didn't run, then it will be filled with nan
-                    dif = [x for x in self.basin_algo_names if x not in pd_b_ds['algo_names']]
+                        pd_dict["basin"]["realism_flags"][index, :] = np.asarray(basin_realism_flags)
+                        pd_dict["basin"]["stability_flags"][index, :] = np.asarray(basin_stability_flags)
+                        pd_dict["basin"]["prepost_flags"][index, :] = np.asarray(basin_prepost_flags)
+                    else:
+                        # the below prevents ragged arrays
+                        empty_basin = np.empty(len(self.basin_algo_names),)
+                        empty_basin[:]= np.nan
+                        pd_dict["basin"]["realism_flags"][index, :] = empty_basin
+                        pd_dict["basin"]["stability_flags"][index, :] = empty_basin
+                        pd_dict["basin"]["prepost_flags"][index, :] = empty_basin
 
-                    for missing_algo in dif:
-                        missing_index = list(self.basin_algo_names).index(missing_algo)
-                        basin_realism_flags.insert(missing_index, np.nan)
-                        basin_stability_flags.insert(missing_index, np.nan)
-                        basin_prepost_flags.insert(missing_index, np.nan)
+                    # reach
+                    if os.path.exists(os.path.join(self.input_dir, "reach", f"{int(s_rid)}_flpe_diag.nc")):
+                        pd_r_ds = Dataset(self.input_dir / "reach" / f"{int(s_rid)}_flpe_diag.nc", 'r')
+                        reach_realism_flags = list(pd_r_ds["realism_flags"][:].filled(np.nan))
+                        reach_stability_flags = list(pd_r_ds["stability_flags"][:].filled(np.nan))
 
-                    dif = [x for x in self.reach_algo_names if x not in pd_r_ds['algo_names']]
+                        # sometimes different algos dont run for some flpes
+                        # the blocks below ensure that no matter what algos are run ,the order is persserved
+                        # if an algo didn't run, then it will be filled with nan
+                        dif = [x for x in self.reach_algo_names if x not in pd_r_ds['algo_names']]
+                        for missing_algo in dif:
+                            missing_index = list(self.reach_algo_names).index(missing_algo)
+                            reach_realism_flags.insert(missing_index, np.nan)
+                            reach_stability_flags.insert(missing_index, np.nan)
 
-                    for missing_algo in dif:
-                        missing_index = list(self.reach_algo_names).index(missing_algo)
-                        reach_realism_flags.insert(missing_index, np.nan)
-                        reach_stability_flags.insert(missing_index, np.nan)
+                        pd_dict["reach"]["realism_flags"][index, :] = np.asarray(reach_realism_flags)
+                        pd_dict["reach"]["stability_flags"][index, :] = np.asarray(reach_stability_flags)
+                        pd_b_ds.close()
+                        pd_r_ds.close()
+                    else:
+                        # the below prevents ragged arrays
+                        empty_reach = np.empty(len(self.reach_algo_names),)
+                        empty_reach[:]= np.nan
+                        pd_dict["reach"]["realism_flags"][index, :] = empty_reach
+                        pd_dict["reach"]["stability_flags"][index, :] = empty_reach
 
-                    pd_dict["basin"]["realism_flags"][index, :] = np.asarray(basin_realism_flags)
-                    pd_dict["basin"]["stability_flags"][index, :] = np.asarray(basin_stability_flags)
-                    pd_dict["basin"]["prepost_flags"][index, :] = np.asarray(basin_prepost_flags)
-                    pd_dict["reach"]["realism_flags"][index, :] = np.asarray(reach_realism_flags)
-                    pd_dict["reach"]["stability_flags"][index, :] = np.asarray(reach_stability_flags)
-                    pd_b_ds.close()
-                    pd_r_ds.close()
+                # no data for reach identifier
                 else:
                     # the below prevents ragged arrays
                     empty_basin = np.empty(len(self.basin_algo_names),)
                     empty_basin[:]= np.nan
-                    # empty_basin = list(empty_basin)
 
                     empty_reach = np.empty(len(self.reach_algo_names),)
                     empty_reach[:]= np.nan
-                    # empty_reach = list(empty_reach)
 
                     pd_dict["basin"]["realism_flags"][index, :] = empty_basin
                     pd_dict["basin"]["stability_flags"][index, :] = empty_basin
@@ -141,15 +165,15 @@ class Postdiagnostics(AbstractModule):
                 index += 1
         return pd_dict
     
-    def __get_algo_data(self, basin_files, rids):
+    def __get_algo_data(self, basin_files, reach_files):
         """Store basin and reach algorithn names and number.
 
         Parameters
         -----------
         basin_files: list
             list of basin file paths
-        rids: list
-            list of reach identifiers
+        reach_files: list
+            list of reach file paths
         """
         self.basin_algo_names = []
         self.basin_num_algos = 0
@@ -165,14 +189,13 @@ class Postdiagnostics(AbstractModule):
         self.reach_algo_names = []
         self.reach_num_algos = 0
 
-        for i in rids:
-            pd_r_ds = Dataset(self.input_dir / "reach" / f"{i}_flpe_diag.nc", 'r')
+        for i in reach_files:
+            pd_r_ds = Dataset(i, 'r')
             if len(pd_r_ds["algo_names"][:]) > len(self.reach_algo_names):
                 self.reach_algo_names = pd_r_ds["algo_names"][:]
                 self.reach_num_algos = pd_r_ds.dimensions["num_algos"].size
             pd_r_ds.close()
 
-    
     def create_data_dict(self):
         """Creates and returns Postdiagnostics data dictionary."""
 
