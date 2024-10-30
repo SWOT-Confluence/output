@@ -15,8 +15,8 @@ resource "aws_batch_job_definition" "generate_batch_jd_output" {
       }
     },
     "resourceRequirements": [
-      {"type": "MEMORY", "value": "2048"},
-      {"type": "VCPU", "value": "1"}
+      {"type": "MEMORY", "value": "8192"},
+      {"type": "VCPU", "value": "2"}
     ],
     "mountPoints": [
       {
