@@ -113,6 +113,7 @@ class Postdiagnostics(AbstractModule):
                         pd_dict["basin"]["realism_flags"][index, :] = np.asarray(basin_realism_flags)
                         pd_dict["basin"]["stability_flags"][index, :] = np.asarray(basin_stability_flags)
                         pd_dict["basin"]["prepost_flags"][index, :] = np.asarray(basin_prepost_flags)
+                        pd_b_ds.close()
                     else:
                         # the below prevents ragged arrays
                         empty_basin = np.empty(len(self.basin_algo_names),)
@@ -138,7 +139,6 @@ class Postdiagnostics(AbstractModule):
 
                         pd_dict["reach"]["realism_flags"][index, :] = np.asarray(reach_realism_flags)
                         pd_dict["reach"]["stability_flags"][index, :] = np.asarray(reach_stability_flags)
-                        pd_b_ds.close()
                         pd_r_ds.close()
                     else:
                         # the below prevents ragged arrays
