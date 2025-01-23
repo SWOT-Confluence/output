@@ -126,15 +126,19 @@ def main():
     append.append_data()
     append.update_time_coverage()
     
+
     # Upload SoS data
-    upload = Upload(append.sos_file, args.sosbucket, args.podaacupload, args.podaacbucket, \
-        list(append.cont.keys())[0], append.run_date, args.runtype, logger)
-    try:
-        upload.upload_data(OUTPUT, VALIDATION / "figs", args.runtype, args.modules)
-    except botocore.exceptions.ClientError as error:
-        logger.error("Error encountered when trying to upload results file and figures.")
-        logger.error(error)
-        sys.exit(1)
+    if args.sosbucket != 'local':
+        upload = Upload(append.sos_file, args.sosbucket, args.podaacupload, args.podaacbucket, \
+            list(append.cont.keys())[0], append.run_date, args.runtype, logger)
+        try:
+            upload.upload_data(OUTPUT, VALIDATION / "figs", args.runtype, args.modules)
+        except botocore.exceptions.ClientError as error:
+            logger.error("Error encountered when trying to upload results file and figures.")
+            logger.error(error)
+            sys.exit(1)
+    else:
+        logger.info("Local run, skipping uploading to PO.DAAC or S3")
     
     end = datetime.now()
     logger.info(f"Execution time: {end - start}")
