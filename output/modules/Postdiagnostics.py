@@ -175,26 +175,26 @@ class Postdiagnostics(AbstractModule):
         reach_files: list
             list of reach file paths
         """
+
         self.basin_algo_names = []
         self.basin_num_algos = 0
-
-        # ensure we base the dict
         for i in basin_files:
             pd_b_ds = Dataset(i, 'r')
-            if len(pd_b_ds["algo_names"][:]) > len(self.basin_algo_names):
-                self.basin_algo_names = pd_b_ds["algo_names"][:]
-                self.basin_num_algos = pd_b_ds.dimensions["num_algos"].size
+            self.basin_algo_names.extend(pd_b_ds["algo_names"][:])
             pd_b_ds.close()
+        self.basin_algo_names = list(set(self.basin_algo_names))
+        self.basin_algo_names.sort()
+        self.basin_num_algos = len(self.basin_algo_names)
 
         self.reach_algo_names = []
         self.reach_num_algos = 0
-
         for i in reach_files:
             pd_r_ds = Dataset(i, 'r')
-            if len(pd_r_ds["algo_names"][:]) > len(self.reach_algo_names):
-                self.reach_algo_names = pd_r_ds["algo_names"][:]
-                self.reach_num_algos = pd_r_ds.dimensions["num_algos"].size
+            self.reach_algo_names.extend(pd_r_ds["algo_names"][:])
             pd_r_ds.close()
+        self.reach_algo_names = list(set(self.reach_algo_names))
+        self.reach_algo_names.sort()
+        self.reach_num_algos = len(self.reach_algo_names)
 
     def create_data_dict(self):
         """Creates and returns Postdiagnostics data dictionary."""
