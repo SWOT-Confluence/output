@@ -43,7 +43,8 @@ from output.modules.Sad import Sad
 from output.modules.Sic4dvar import Sic4dvar
 from output.modules.Swot import Swot
 from output.modules.Validation import Validation
-
+# from output.modules.ssc import ssc
+# from output.modules.lakeflow import lakeflow
 class Append:
     """
     A class that creates a new version of the SoS and appends Confluence results.
@@ -292,6 +293,14 @@ class Append:
                     flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
                     self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "validation":
+                self.modules.append(Validation(list(self.cont.values())[0], \
+                    val_dir, self.sos_file, self.logger, self.sos_rids, self.sos_nrids, \
+                    self.sos_nids))
+            if module == "ssc":
+                self.modules.append(ssc(list(self.cont.values())[0], \
+                    ssc_dir, self.sos_file, self.logger, self.sos_rids, self.sos_nrids, \
+                    self.sos_nids))
+            if module == "lakeflow":
                 self.modules.append(Validation(list(self.cont.values())[0], \
                     val_dir, self.sos_file, self.logger, self.sos_rids, self.sos_nrids, \
                     self.sos_nids))

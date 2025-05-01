@@ -125,7 +125,6 @@ def main():
         VALIDATION / "stats")
     append.append_data()
     append.update_time_coverage()
-    
 
     # Upload SoS data
     if args.sosbucket != 'local':
