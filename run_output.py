@@ -37,6 +37,7 @@ OFFLINE = Path("/mnt/data/offline")
 VALIDATION = Path("/mnt/data/validation")
 OUTPUT = Path("/mnt/data/output")
 LAKEFLOW = Path("/mnt/data/input/lakeflow")
+SSC = Path("/mnt/data/input/ssc")
 
 def create_args():
     """Create and return argparser with arguments."""
@@ -123,7 +124,7 @@ def main():
         logger, args.metadatajson)
     append.create_new_version()
     append.create_modules(args.runtype, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
-        VALIDATION / "stats", LAKEFLOW)
+        VALIDATION / "stats", LAKEFLOW, SSC)
     append.append_data()
     append.update_time_coverage()
 

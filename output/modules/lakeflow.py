@@ -76,32 +76,29 @@ class lakeflow(AbstractModule):
 
         else:
             lakeflow_files = [ Path(lakeflow_file) for lakeflow_file in glob.glob(f"{lakeflow_dir}/{self.cont_ids}*.csv") ]
-        print('processing', len(lakeflow_files), 'lakeflow files for', self.cont_ids)
         
         df = pd.concat((pd.read_csv(f) for f in lakeflow_files), ignore_index=True)
-        print('found', len(df), 'entries')
         
         # encode catagorical vars
         df["type"] = df["type"].map({"inflow": 0, "outflow": 1})
         df["prior_fit"] = df["prior_fit"].map({"sos": 0, "geobam": 1})
 
+        # Make sure your 'date' column is parsed to datetime, handling NaNs
+        df['date_parsed'] = pd.to_datetime(df['date'], errors='coerce')
 
-        self.sorted_dates = sorted(df['date'].dropna().map(pd.to_datetime).dt.strftime('%Y-%m-%d').unique())
+        epoch_diff = 946684800  # seconds between 1970-01-01 and 2000-01-01
 
+        # Add column of UNIX timestamps (as integers), skipping NaT
+        df['unix_timestamp'] = df['date_parsed'].astype('int64') // 10**9 - epoch_diff
 
-        unix_timestamps = pd.to_datetime(self.sorted_dates).astype(int) // 10**9  # integer seconds
-        unix_timestamps_list = unix_timestamps.tolist()
+        self.sorted_dates = sorted(df['unix_timestamp'].dropna().unique().astype(int).tolist())
 
-        
         lakeflow_rids = df.reach_id.unique()
 
-        
         # Storage of results data
         lakeflow_dict = self.create_data_dict()
-        lakeflow_dict["date"] = unix_timestamps_list[:]
-        lakeflow_dict["reach_id"] = self.sos_rids[:]
-        print('here are some sos ids', self.sos_rids[:10])
-        
+        # lakeflow_dict["reach_id"] = self.sos_rids[:]
+        lakeflow_dict['lakeflow_date'] = self.sorted_dates
         
         if len(lakeflow_files) != 0:
             reach_index = 0
@@ -109,13 +106,8 @@ class lakeflow(AbstractModule):
                 if s_rid in lakeflow_rids:
                     try:
                         lakeflow_ds = df[df["reach_id"] == s_rid]
-
-                  
-
-                        # Scalars
                         
                         lakeflow_dict["lake_id"][reach_index] = lakeflow_ds["lake_id"].iloc[0]
-                        print('here is it being written...', lakeflow_dict["lake_id"][reach_index])
                         lakeflow_dict["prior_fit"][reach_index] = lakeflow_ds["prior_fit"].iloc[0]
                         lakeflow_dict["type"][reach_index] = lakeflow_ds["type"].iloc[0]
                         lakeflow_dict["q_upper"][reach_index] = lakeflow_ds["q_upper"].iloc[0]
@@ -142,30 +134,16 @@ class lakeflow(AbstractModule):
 
                         
                         for _, row in lakeflow_ds.iterrows():
-                            if row["date"] in self.sorted_dates:
-                                col_idx = self.sorted_dates.index(row["date"])
+                            if row["unix_timestamp"] in self.sorted_dates:
+                                timestamp = int(row["unix_timestamp"])
+                                col_idx = self.sorted_dates.index(timestamp)
                                 
                                 for a_var in nt_vars:
                                     lakeflow_dict[a_var][reach_index, col_idx] = row[a_var]  # or whatever variable
 
-                        # lakeflow_dict["width"][index] = np.array(lakeflow_ds["width"].dropna().tolist(), dtype='float64') if "width" in lakeflow_ds else np.array([self.FILL["f8"]], dtype='float64')
-                        # lakeflow_dict["slope2"][index] = np.array(lakeflow_ds["slope2"].dropna().tolist(), dtype='float64') if "slope2" in lakeflow_ds else np.array([self.FILL["f8"]], dtype='float64')
-                        # lakeflow_dict["da"][index] = np.array(lakeflow_ds["da"].dropna().tolist(), dtype='float64') if "da" in lakeflow_ds else np.array([self.FILL["f8"]], dtype='float64')
-                        # lakeflow_dict["wse"][index] = np.array(lakeflow_ds["wse"].dropna().tolist(), dtype='float64') if "wse" in lakeflow_ds else np.array([self.FILL["f8"]], dtype='float64')
-                        # lakeflow_dict["storage"][index] = np.array(lakeflow_ds["storage"].dropna().tolist(), dtype='float64') if "storage" in lakeflow_ds else np.array([self.FILL["f8"]], dtype='float64')
-                        # lakeflow_dict["dv"][index] = np.array(lakeflow_ds["dv"].dropna().tolist(), dtype='float64') if "dv" in lakeflow_ds else np.array([self.FILL["f8"]], dtype='float64')
-                        # lakeflow_dict["q_model"][index] = np.array(lakeflow_ds["q_model"].dropna().tolist(), dtype='float64') if "q_model" in lakeflow_ds else np.array([self.FILL["f8"]], dtype='float64')
-                        # lakeflow_dict["tributary"][index] = np.array(lakeflow_ds["tributary"].dropna().tolist(), dtype='float64') if "tributary" in lakeflow_ds else np.array([self.FILL["f8"]], dtype='float64')
-                        # lakeflow_dict["et"][index] = np.array(lakeflow_ds["et"].dropna().tolist(), dtype='float64') if "et" in lakeflow_ds else np.array([self.FILL["f8"]], dtype='float64')
-                        # lakeflow_dict["bayes_q"][index] = np.array(lakeflow_ds["bayes_q"].dropna().tolist(), dtype='float64') if "bayes_q" in lakeflow_ds else np.array([self.FILL["f8"]], dtype='float64')
-                        # lakeflow_dict["bayes_q_sd"][index] = np.array(lakeflow_ds["bayes_q_sd"].dropna().tolist(), dtype='float64') if "bayes_q_sd" in lakeflow_ds else np.array([self.FILL["f8"]], dtype='float64')
-                        # lakeflow_dict["q_lakeflow"][index] = np.array(lakeflow_ds["q_lakeflow"].dropna().tolist(), dtype='float64') if "q_lakeflow" in lakeflow_ds else np.array([self.FILL["f8"]], dtype='float64')
-                        # lakeflow_dict["n_lakeflow"][index] = np.array(lakeflow_ds["n_lakeflow"].dropna().tolist(), dtype='float64') if "n_lakeflow" in lakeflow_ds else np.array([self.FILL["f8"]], dtype='float64')
-
                     except Exception as e:
                         self.logger.warn(f"Reach failed: {s_rid} | Error: {str(e)}")
                 reach_index += 1
-        print('pull data reaches', lakeflow_dict["date"][:10])
         return lakeflow_dict
     
     def create_data_dict(self):
@@ -181,7 +159,7 @@ class lakeflow(AbstractModule):
 
         data_dict = {
             # Scalars (1D arrays, one value per reach)
-            "reach_id": np.full(num_reaches, fill_i4, dtype=np.int32),
+            # "reach_id": np.full(num_reaches, fill_i4, dtype=np.int32),
             "lake_id": np.full(num_reaches, fill_i4, dtype=np.int32),
             "prior_fit": np.full(num_reaches, fill_i4, dtype=np.int32),
             "type": np.full(num_reaches, fill_i4, dtype=np.int32),
@@ -189,7 +167,7 @@ class lakeflow(AbstractModule):
             "q_lower": np.full(num_reaches, fill_f8, dtype=np.float64),
             "n_lakeflow_sd": np.full(num_reaches, fill_f8, dtype=np.float64),
             "a0_lakeflow": np.full(num_reaches, fill_f8, dtype=np.float64),
-            "date": np.full(num_dates, fill_i8, dtype=np.int64),
+            "lakeflow_date": np.full(num_dates, fill_i8, dtype=np.int64),
 
 
             # Time-varying variables (2D arrays: num_reaches x num_dates)
@@ -208,7 +186,8 @@ class lakeflow(AbstractModule):
             "n_lakeflow": np.full((num_reaches, num_dates), fill_f8, dtype=np.float64),
             
             "attrs": {
-                "reach_id": {},
+                # "reach_id": {},
+                "lakeflow_date":{},
                 "lake_id": {},
                 "prior_fit": {},
                 "type": {},
@@ -216,7 +195,7 @@ class lakeflow(AbstractModule):
                 "q_lower": {},
                 "n_lakeflow_sd": {},
                 "a0_lakeflow": {},
-                "date": {},
+                # "date": {},
                 "width": {},
                 "slope2": {},
                 "da": {},
@@ -233,13 +212,6 @@ class lakeflow(AbstractModule):
             }
         }
 
-
-        # Vlen variables
-        # data_dict["date"].fill(np.array([self.FILL["f8"]]))
-        # data_dict["date"].fill(np.array([self.FILL["f8"]]))
-        
-        
-        # data_dict["q"]["q_sd"].fill(np.array([self.FILL["f8"]]))
         
         return data_dict
         
@@ -257,9 +229,9 @@ class lakeflow(AbstractModule):
         lakeflow_grp.createDimension("lakeflow_dates", len(self.sorted_dates))      
         
         # Scalars
-        var = self.write_var(lakeflow_grp, "reach_id", "f8", ("num_reaches",), data_dict)
-        if "lakeflow" in metadata_json and "reach_id" in metadata_json["lakeflow"]:
-            self.set_variable_atts(var, metadata_json["lakeflow"]["reach_id"])
+        # var = self.write_var(lakeflow_grp, "reach_id", "f8", ("num_reaches",), data_dict)
+        # if "lakeflow" in metadata_json and "reach_id" in metadata_json["lakeflow"]:
+        #     self.set_variable_atts(var, metadata_json["lakeflow"]["reach_id"])
 
         var = self.write_var(lakeflow_grp, "lake_id", "i4", ("num_reaches",), data_dict)
         if "lakeflow" in metadata_json and "lake_id" in metadata_json["lakeflow"]:
@@ -289,9 +261,9 @@ class lakeflow(AbstractModule):
         if "lakeflow" in metadata_json and "a0_lakeflow" in metadata_json["lakeflow"]:
             self.set_variable_atts(var, metadata_json["lakeflow"]["a0_lakeflow"])
             
-        var = self.write_var(lakeflow_grp, "date", "i8", ("lakeflow_dates",), data_dict)
-        if "lakeflow" in metadata_json and "date" in metadata_json["lakeflow"]:
-            self.set_variable_atts(var, metadata_json["lakeflow"]["date"])
+        var = self.write_var(lakeflow_grp, "lakeflow_date", "i8", ("lakeflow_dates",), data_dict)
+        if "lakeflow" in metadata_json and "lakeflow_date" in metadata_json["lakeflow"]:
+            self.set_variable_atts(var, metadata_json["lakeflow"]["lakeflow_date"])
 
 
         # VLENs

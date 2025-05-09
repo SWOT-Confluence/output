@@ -16,42 +16,59 @@ class ssc(AbstractModule):
     A class that represents the results of the SSC module.
     """
 
-    def __init__(self, cont_ids, input_dir, sos_new, logger, vlen_f, vlen_i, vlen_s,
+    def __init__(self, cont_ids, input_dir, sos_new, logger, 
                  rids, nrids, nids):
-        super().__init__(cont_ids, input_dir, sos_new, logger, vlen_f, vlen_i, vlen_s,
+        super().__init__(cont_ids, input_dir, sos_new, logger,
                          rids, nrids, nids)
+        
+        self.nids = nids
 
     def get_module_data(self):
-        ssc_dir = os.path.join(self.input_dir, 'out')
 
-        # if isinstance(self.cont_ids, list):
-        #     ssc_files = []
-        #     for cid in self.cont_ids:
-        #         ssc_files.extend(Path(f) for f in glob.glob(f"{ssc_dir}/{cid}*.csv"))
-        # else:
-        #     ssc_files = [Path(f) for f in glob.glob(f"{ssc_dir}/{self.cont_ids}*.csv")]
-        ssc_files = glob.glob(os.path.join(ssc_dir, *.csv))
+        ssc_files = glob.glob(os.path.join(self.input_dir,'results', '*.csv'))
 
-        df = pd.concat((pd.read_csv(f) for f in ssc_files), ignore_index=True)
-        self.sorted_dates = sorted(df['date_y'].dropna().map(pd.to_datetime).dt.strftime('%Y-%m-%d').unique())
+        dfs = []
+        for f in ssc_files:
+            tile_name = os.path.basename(f).removesuffix(".csv")
+            df = pd.read_csv(f)
+            df["tile_name"] = tile_name
+            dfs.append(df)
 
-        ssc_node_ids = df.node_id.unique()
+        self.df = pd.concat(dfs, ignore_index=True)
+
+        # parsed to datetime, handling NaNs
+        self.df['date_parsed'] = pd.to_datetime(self.df['date_x'], errors='coerce')
+
+        epoch_diff = 946684800  # seconds between 1970-01-01 and 2000-01-01
+
+        # Add column of UNIX timestamps (as integers), skipping NaT
+        self.df['unix_timestamp'] = self.df['date_parsed'].astype('int64') // 10**9 - epoch_diff
+
+        self.sorted_dates = sorted(self.df['unix_timestamp'].dropna().unique().astype(int).tolist())
+
+
+
+        ssc_node_ids = self.df.node_id.unique()
         ssc_dict = self.create_data_dict()
-        ssc_dict["date"] = self.sorted_dates
+
+        ssc_dict['date'] = self.sorted_dates[:]
+
 
         node_index = 0
-        for node_id in self.sos_nids:
+        for node_id in self.nids:
             if node_id in ssc_node_ids:
                 try:
-                    node_df = df[df["node_id"] == node_id]
-                    ssc_dict["node_id"][node_index] = node_id
-                    ssc_dict["reach_id"][node_index] = node_df["reach_id"].iloc[0]
+                    node_df = self.df[self.df["node_id"] == node_id]
 
                     for _, row in node_df.iterrows():
-                        if row["date_y"] in self.sorted_dates:
-                            col_idx = self.sorted_dates.index(row["date_y"])
-                            for col in self.nt_vars:
-                                ssc_dict[col][node_index, col_idx] = row[col]
+                        timestamp = int(row["unix_timestamp"])
+                        col_idx = self.sorted_dates.index(timestamp)
+                        value = row['SSC']
+                        if pd.notna(value):
+                            ssc_dict['ssc_pred'][node_index, col_idx] = value
+
+                        ssc_dict['tile_name'][node_index, col_idx] = row['tile_name']
+
 
                 except Exception as e:
                     self.logger.warning(f"Node failed: {node_id} | Error: {str(e)}")
@@ -60,32 +77,32 @@ class ssc(AbstractModule):
         return ssc_dict
 
     def create_data_dict(self):
-        num_nodes = self.sos_nids.shape[0]
-        num_dates = len(self.sorted_dates)
-        fill_f8 = self.FILL["f8"]
+      
+        # num_dates = len(self.sorted_dates)
+        self.fill_f8 = self.FILL["f8"]
+        self.fill_s48 = self.FILL["S48"]
 
-        # Read the first CSV to extract the variable names
-        ssc_dir = os.path.join(self.input_dir, 'out')
-        sample_file = next(Path(f) for f in glob.glob(f"{ssc_dir}/*.csv"))
-        df = pd.read_csv(sample_file)
+        self.num_nodes = self.nids.shape[0]
+        self.num_dates = len(self.sorted_dates)
+        self.num_byte_padding = len(self.fill_s48)
 
-        exclude_cols = {"node_id", "reach_id", "date_y", "date_x", "Latitude_trunc", "Longitude_trunc", "MGRS", "LorS"}
-        nt_vars = [col for col in df.columns if col not in exclude_cols]
-        self.nt_vars = nt_vars
+
 
         data_dict = {
-            "node_id": np.full(num_nodes, np.nan, dtype=np.int64),
-            "reach_id": np.full(num_nodes, np.nan, dtype=np.int64),
+            "ssc_pred": np.full((self.num_nodes, self.num_dates), self.fill_f8, dtype=np.int64),
+            "date": np.full(self.num_dates, self.fill_f8, dtype=np.int64),
+            "tile_name": np.full(
+                        (self.num_nodes, self.num_dates),  # or just (num_nodes,) if one string per node
+                        fill_value= self.fill_s48,  # or any default
+                        dtype="S48"  # fixed-length byte string
+                    ),
             "attrs": {
-                "node_id": {},
-                "reach_id": {},
-                "date": {}
+                "ssc_pred": {},
+                "date": {},
+                "tile_name": {}
             }
         }
 
-        for var in nt_vars:
-            data_dict[var] = np.full((num_nodes, num_dates), fill_f8, dtype=np.float64)
-            data_dict["attrs"][var] = {}
 
         return data_dict
 
@@ -93,22 +110,23 @@ class ssc(AbstractModule):
         sos_ds = Dataset(self.sos_new, 'a')
         ssc_grp = sos_ds.createGroup("ssc")
         ssc_grp.createDimension("ssc_dates", len(self.sorted_dates))
+        ssc_grp.createDimension("num_nodes")
 
-        # Scalars
-        for scalar_var in ["node_id", "reach_id"]:
-            var = self.write_var(ssc_grp, scalar_var, "i8", ("num_nodes",), data_dict)
-            if "ssc" in metadata_json and scalar_var in metadata_json["ssc"]:
-                self.set_variable_atts(var, metadata_json["ssc"][scalar_var])
 
         # Dates
-        var = self.write_var(ssc_grp, "date", "S1", ("ssc_dates",), data_dict)
+        var = self.write_var(ssc_grp, "date", "f8", ("ssc_dates",), data_dict)
         if "ssc" in metadata_json and "date" in metadata_json["ssc"]:
             self.set_variable_atts(var, metadata_json["ssc"]["date"])
 
         # Time-varying vars
-        for varname in self.nt_vars:
-            var = self.write_var(ssc_grp, varname, "f8", ("num_nodes", "ssc_dates"), data_dict)
-            if "ssc" in metadata_json and varname in metadata_json["ssc"]:
-                self.set_variable_atts(var, metadata_json["ssc"][varname])
+        var = self.write_var_nt(ssc_grp, "ssc_pred", "f8", ("num_nodes", "ssc_dates"), data_dict)
+        if "ssc" in metadata_json and "ssc_pred" in metadata_json["ssc"]:
+            self.set_variable_atts(var, metadata_json["ssc"]["ssc_pred"])
+
+
+        var = self.write_var_nt(ssc_grp, "tile_name", "S48", ("num_nodes", "ssc_dates"), data_dict)
+        if "ssc" in metadata_json and "tile_name" in metadata_json["ssc"]:
+            self.set_variable_atts(var, metadata_json["ssc"]["tile_name"])
+
 
         sos_ds.close()

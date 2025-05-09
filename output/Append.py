@@ -43,7 +43,7 @@ from output.modules.Sad import Sad
 from output.modules.Sic4dvar import Sic4dvar
 from output.modules.Swot import Swot
 from output.modules.Validation import Validation
-# from output.modules.ssc import ssc
+from output.modules.ssc import ssc
 from output.modules.lakeflow import lakeflow
 
 class Append:
@@ -220,7 +220,7 @@ class Append:
             self.logger.info(f"Appended {module.__class__.__name__} data to {self.sos_file.name}.")
         
     def create_modules(self, run_type, input_dir, diag_dir, flpe_dir, moi_dir, \
-                       off_dir, val_dir, lakeflow_dir):
+                       off_dir, val_dir, lakeflow_dir, ssc_dir):
         
         """Create and stores a list of AbstractModule objects.
         
