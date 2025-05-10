@@ -48,7 +48,7 @@ class AbstractModule(metaclass=ABCMeta):
         "i4": -999,
         "i8": -999999999999,
         "S1": "x",
-        "S48": b"\x00" * 48            # 48-byte padded string fill (e.g., tile_name)
+        "S48": b"\x00" * 48        # 48-byte padded string fill (e.g., tile_name)
     }
     
     def __init__(self, cont_ids, input_dir, sos_new, logger, vlen_f=None, vlen_i=None, 

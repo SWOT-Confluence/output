@@ -51,7 +51,7 @@ class ssc(AbstractModule):
         ssc_node_ids = self.df.node_id.unique()
         ssc_dict = self.create_data_dict()
 
-        ssc_dict['date'] = self.sorted_dates[:]
+        ssc_dict['ssc_date'] = self.sorted_dates[:]
 
 
         node_index = 0
@@ -90,7 +90,7 @@ class ssc(AbstractModule):
 
         data_dict = {
             "ssc_pred": np.full((self.num_nodes, self.num_dates), self.fill_f8, dtype=np.int64),
-            "date": np.full(self.num_dates, self.fill_f8, dtype=np.int64),
+            "ssc_date": np.full(self.num_dates, self.fill_f8, dtype=np.int64),
             "tile_name": np.full(
                         (self.num_nodes, self.num_dates),  # or just (num_nodes,) if one string per node
                         fill_value= self.fill_s48,  # or any default
@@ -98,7 +98,7 @@ class ssc(AbstractModule):
                     ),
             "attrs": {
                 "ssc_pred": {},
-                "date": {},
+                "ssc_date": {},
                 "tile_name": {}
             }
         }
@@ -114,9 +114,9 @@ class ssc(AbstractModule):
 
 
         # Dates
-        var = self.write_var(ssc_grp, "date", "f8", ("ssc_dates",), data_dict)
-        if "ssc" in metadata_json and "date" in metadata_json["ssc"]:
-            self.set_variable_atts(var, metadata_json["ssc"]["date"])
+        var = self.write_var(ssc_grp, "ssc_date", "f8", ("ssc_dates",), data_dict)
+        if "ssc" in metadata_json and "ssc_date" in metadata_json["ssc"]:
+            self.set_variable_atts(var, metadata_json["ssc"]["ssc_date"])
 
         # Time-varying vars
         var = self.write_var_nt(ssc_grp, "ssc_pred", "f8", ("num_nodes", "ssc_dates"), data_dict)
