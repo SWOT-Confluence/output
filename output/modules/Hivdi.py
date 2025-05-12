@@ -80,12 +80,15 @@ class Hivdi(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in hv_rids:
-                    hv_ds = Dataset(hv_dir / f"{int(s_rid)}_h2ivdi.nc", 'r')
-                    hv_dict["reach"]["Q"][index] = hv_ds["reach"]["Q"][:].filled(self.FILL["f8"])
-                    hv_dict["reach"]["A0"][index] = hv_ds["reach"]["A0"][:].filled(np.nan)
-                    # hv_dict["reach"]["alpha"][index] = hv_ds["reach"]["alpha"][:].filled(np.nan)
-                    # hv_dict["reach"]["beta"][index] = hv_ds["reach"]["beta"][:].filled(np.nan)s
-                    hv_ds.close()
+                    try:
+                        hv_ds = Dataset(hv_dir / f"{int(s_rid)}_h2ivdi.nc", 'r')
+                        hv_dict["reach"]["Q"][index] = hv_ds["reach"]["Q"][:].filled(self.FILL["f8"])
+                        hv_dict["reach"]["A0"][index] = hv_ds["reach"]["A0"][:].filled(np.nan)
+                        # hv_dict["reach"]["alpha"][index] = hv_ds["reach"]["alpha"][:].filled(np.nan)
+                        # hv_dict["reach"]["beta"][index] = hv_ds["reach"]["beta"][:].filled(np.nan)s
+                        hv_ds.close()
+                    except:
+                        self.logger.warn(f'Reach {s_rid} failed for HIVDI ...')
                 index += 1    
         return hv_dict
     
