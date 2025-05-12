@@ -36,8 +36,8 @@ DIAGNOSTICS = Path("/mnt/data/diagnostics")
 OFFLINE = Path("/mnt/data/offline")
 VALIDATION = Path("/mnt/data/validation")
 OUTPUT = Path("/mnt/data/output")
-LAKEFLOW = Path("/mnt/data/input/lakeflow")
-SSC = Path("/mnt/data/input/ssc")
+LAKEFLOW = Path("/mnt/data/flpe/lakeflow")
+SSC = Path("/mnt/data/flpe/ssc")
 
 def create_args():
     """Create and return argparser with arguments."""
