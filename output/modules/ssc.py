@@ -25,7 +25,7 @@ class ssc(AbstractModule):
 
     def get_module_data(self):
 
-        ssc_files = glob.glob(os.path.join(self.input_dir,'results', '*.csv'))
+        ssc_files = glob.glob(os.path.join(self.input_dir, '*.csv'))
 
         dfs = []
         for f in ssc_files:

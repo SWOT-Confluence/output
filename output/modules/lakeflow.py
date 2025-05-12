@@ -66,7 +66,7 @@ class lakeflow(AbstractModule):
         """Extract lakeflow results from csv files."""
 
         # Files and reach identifiers
-        lakeflow_dir = os.path.join(self.input_dir, 'out')
+        lakeflow_dir = self.input_dir
 
         if type(self.cont_ids) == list:
             lakeflow_files = []
