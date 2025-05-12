@@ -91,20 +91,21 @@ class Metroman(AbstractModule):
             for s_rid in self.sos_rids:
                 if s_rid in mn_rids:
                     mn_file = os.path.join(mn_dir,str(s_rid) + "_metroman.nc")
-                    mn_ds = Dataset(mn_file, 'r')
-                    # self.__insert_nt(s_rid, "allq", index, mn_ds, mn_dict)
-                    # self.__insert_nt(s_rid, "q_u", index, mn_ds, mn_dict)
-                    # self.__insert_nr(s_rid, "A0hat", index, mn_ds, mn_dict)
-                    # self.__insert_nr(s_rid, "nahat", index, mn_ds, mn_dict)
-                    # self.__insert_nr(s_rid, "x1hat", index, mn_ds, mn_dict)
-                    mn_dict["allq"][index] = mn_ds["average"]["allq"][:].filled(self.FILL["f8"])
-                    mn_dict["q_u"][index] = mn_ds["average"]["q_u"][:].filled(np.nan)
-                    mn_dict["A0hat"][index] = mn_ds["average"]["A0hat"][:].filled(np.nan)
-                    mn_dict["x1hat"][index] = mn_ds["average"]["x1hat"][:].filled(np.nan)
-
-
-
-                    mn_ds.close()
+                    try:
+                        mn_ds = Dataset(mn_file, 'r')
+                        # self.__insert_nt(s_rid, "allq", index, mn_ds, mn_dict)
+                        # self.__insert_nt(s_rid, "q_u", index, mn_ds, mn_dict)
+                        # self.__insert_nr(s_rid, "A0hat", index, mn_ds, mn_dict)
+                        # self.__insert_nr(s_rid, "nahat", index, mn_ds, mn_dict)
+                        # self.__insert_nr(s_rid, "x1hat", index, mn_ds, mn_dict)
+                        mn_dict["allq"][index] = mn_ds["average"]["allq"][:].filled(self.FILL["f8"])
+                        mn_dict["q_u"][index] = mn_ds["average"]["q_u"][:].filled(np.nan)
+                        mn_dict["A0hat"][index] = mn_ds["average"]["A0hat"][:].filled(np.nan)
+                        mn_dict["x1hat"][index] = mn_ds["average"]["x1hat"][:].filled(np.nan)
+                        mn_ds.close()
+                    except:
+                        self.logger.warn(f'Reach {s_rid} failed for MetroMan ...')
+                        
                 index += 1
 
         return mn_dict

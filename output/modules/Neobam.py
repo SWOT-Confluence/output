@@ -126,7 +126,7 @@ class Neobam(AbstractModule):
 
                         nb_ds.close()
                     except:
-                        self.logger.warn('Reach failed...',s_rid )
+                        self.logger.warn(f'Reach {s_rid} failed for Neobam...')
                 index += 1
 
         return nb_dict

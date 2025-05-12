@@ -83,17 +83,20 @@ class Sic4dvar(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in sv_rids:
-                    sv_ds = Dataset(sv_dir / f"{int(s_rid)}_sic4dvar.nc", 'r')
-                    sv_dict["A0"][index] = sv_ds["A0"][:].filled(np.nan)
-                    sv_dict["n"][index] = sv_ds["n"][:].filled(np.nan)                    
-                    # sv_dict["Qalgo5"][index] = sv_ds["Qalgo5"][:].filled(self.FILL["f8"])
-                    # sv_dict["Qalgo31"][index] = sv_ds["Qalgo31"][:].filled(self.FILL["f8"])
-                    sv_dict["Q_mm"][index] = sv_ds["Q_mm"][:].filled(self.FILL["f8"])
-                    sv_dict["Q_da"][index] = sv_ds["Q_da"][:].filled(self.FILL["f8"])
-                    indexes = np.where(s_rid == self.sos_nrids)
-                    sv_dict["node_id"][indexes] = self.sos_nids[indexes]
-                    # self.__insert_nx(sv_dict, sv_ds, indexes)
-                    sv_ds.close()
+                    try:
+                        sv_ds = Dataset(sv_dir / f"{int(s_rid)}_sic4dvar.nc", 'r')
+                        sv_dict["A0"][index] = sv_ds["A0"][:].filled(np.nan)
+                        sv_dict["n"][index] = sv_ds["n"][:].filled(np.nan)                    
+                        # sv_dict["Qalgo5"][index] = sv_ds["Qalgo5"][:].filled(self.FILL["f8"])
+                        # sv_dict["Qalgo31"][index] = sv_ds["Qalgo31"][:].filled(self.FILL["f8"])
+                        sv_dict["Q_mm"][index] = sv_ds["Q_mm"][:].filled(self.FILL["f8"])
+                        sv_dict["Q_da"][index] = sv_ds["Q_da"][:].filled(self.FILL["f8"])
+                        indexes = np.where(s_rid == self.sos_nrids)
+                        sv_dict["node_id"][indexes] = self.sos_nids[indexes]
+                        # self.__insert_nx(sv_dict, sv_ds, indexes)
+                        sv_ds.close()
+                    except:
+                        self.logger.warn(f'Reach {s_rid} failed for SIC4DVAR ...')
                 index += 1
         return sv_dict
     

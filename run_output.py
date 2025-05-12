@@ -129,12 +129,12 @@ def main():
     # Upload SoS data
     upload = Upload(append.sos_file, args.sosbucket, args.podaacupload, args.podaacbucket, \
         list(append.cont.keys())[0], append.run_date, args.runtype, logger)
-    try:
-        upload.upload_data(OUTPUT, VALIDATION / "figs", args.runtype, args.modules)
-    except botocore.exceptions.ClientError as error:
-        logger.error("Error encountered when trying to upload results file and figures.")
-        logger.error(error)
-        sys.exit(1)
+    # try:
+    #     upload.upload_data(OUTPUT, VALIDATION / "figs", args.runtype, args.modules)
+    # except botocore.exceptions.ClientError as error:
+    #     logger.error("Error encountered when trying to upload results file and figures.")
+        # logger.error(error)
+        # sys.exit(1)
     
     end = datetime.now()
     logger.info(f"Execution time: {end - start}")
