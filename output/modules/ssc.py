@@ -48,30 +48,31 @@ class ssc(AbstractModule):
 
 
 
-        ssc_node_ids = self.df.node_id.unique()
+        self.ssc_node_ids = self.df.node_id.unique()
         ssc_dict = self.create_data_dict()
 
         ssc_dict['ssc_date'] = self.sorted_dates[:]
+        ssc_dict['ssc_nodes'] = list(self.ssc_node_ids[:])
 
 
         node_index = 0
-        for node_id in self.nids:
-            if node_id in ssc_node_ids:
-                try:
-                    node_df = self.df[self.df["node_id"] == node_id]
+        for node_id in self.ssc_node_ids:
+            # if node_id in self.ssc_node_ids:
+            try:
+                node_df = self.df[self.df["node_id"] == node_id]
 
-                    for _, row in node_df.iterrows():
-                        timestamp = int(row["unix_timestamp"])
-                        col_idx = self.sorted_dates.index(timestamp)
-                        value = row['SSC']
-                        if pd.notna(value):
-                            ssc_dict['ssc_pred'][node_index, col_idx] = value
+                for _, row in node_df.iterrows():
+                    timestamp = int(row["unix_timestamp"])
+                    col_idx = self.sorted_dates.index(timestamp)
+                    value = row['SSC']
+                    if pd.notna(value):
+                        ssc_dict['ssc_pred'][node_index, col_idx] = value
 
-                        ssc_dict['tile_name'][node_index, col_idx] = row['tile_name']
+                    ssc_dict['tile_name'][node_index, col_idx] = row['tile_name']
 
 
-                except Exception as e:
-                    self.logger.warning(f"Node failed: {node_id} | Error: {str(e)}")
+            except Exception as e:
+                self.logger.warning(f"Node failed: {node_id} | Error: {str(e)}")
             node_index += 1
 
         return ssc_dict
@@ -82,7 +83,7 @@ class ssc(AbstractModule):
         self.fill_f8 = self.FILL["f8"]
         self.fill_s48 = self.FILL["S48"]
 
-        self.num_nodes = self.nids.shape[0]
+        self.num_nodes = len(self.ssc_node_ids)
         self.num_dates = len(self.sorted_dates)
         self.num_byte_padding = len(self.fill_s48)
 
@@ -90,6 +91,7 @@ class ssc(AbstractModule):
 
         data_dict = {
             "ssc_pred": np.full((self.num_nodes, self.num_dates), self.fill_f8, dtype=np.int64),
+            "ssc_nodes": np.full((self.num_nodes,), self.fill_f8, dtype=np.int64),
             "ssc_date": np.full(self.num_dates, self.fill_f8, dtype=np.int64),
             "tile_name": np.full(
                         (self.num_nodes, self.num_dates),  # or just (num_nodes,) if one string per node
@@ -98,6 +100,7 @@ class ssc(AbstractModule):
                     ),
             "attrs": {
                 "ssc_pred": {},
+                "ssc_nodes": {},
                 "ssc_date": {},
                 "tile_name": {}
             }
@@ -110,21 +113,25 @@ class ssc(AbstractModule):
         sos_ds = Dataset(self.sos_new, 'a')
         ssc_grp = sos_ds.createGroup("ssc")
         ssc_grp.createDimension("ssc_dates", len(self.sorted_dates))
-        ssc_grp.createDimension("num_nodes")
+        ssc_grp.createDimension("num_ssc_nodes")
 
 
         # Dates
         var = self.write_var(ssc_grp, "ssc_date", "f8", ("ssc_dates",), data_dict)
         if "ssc" in metadata_json and "ssc_date" in metadata_json["ssc"]:
             self.set_variable_atts(var, metadata_json["ssc"]["ssc_date"])
+        
+        var = self.write_var(ssc_grp, "ssc_nodes", "f8", ("num_ssc_nodes",), data_dict)
+        if "ssc" in metadata_json and "ssc_nodes" in metadata_json["ssc"]:
+            self.set_variable_atts(var, metadata_json["ssc"]["ssc_nodes"])
 
         # Time-varying vars
-        var = self.write_var_nt(ssc_grp, "ssc_pred", "f8", ("num_nodes", "ssc_dates"), data_dict)
+        var = self.write_var_nt(ssc_grp, "ssc_pred", "f8", ("num_ssc_nodes", "ssc_dates"), data_dict)
         if "ssc" in metadata_json and "ssc_pred" in metadata_json["ssc"]:
             self.set_variable_atts(var, metadata_json["ssc"]["ssc_pred"])
 
 
-        var = self.write_var_nt(ssc_grp, "tile_name", "S48", ("num_nodes", "ssc_dates"), data_dict)
+        var = self.write_var_nt(ssc_grp, "tile_name", "S48", ("num_ssc_nodes", "ssc_dates"), data_dict)
         if "ssc" in metadata_json and "tile_name" in metadata_json["ssc"]:
             self.set_variable_atts(var, metadata_json["ssc"]["tile_name"])
 
