@@ -38,6 +38,191 @@
     "global_attributes_extra": {
         "confluence_version": "0.1.0"
     },
+
+    "ssc": {
+        "ssc_date": {
+            "long_name": "ssc date",
+            "comment": "The date in unix timestamp that the observation was made",
+            "units": "seconds since 2000-01-01 00:00:00.000",
+            "valid_min": 0,
+            "valid_max": 1000000000,
+            "coverage_content_type": "coordinate"
+        },
+        "ssc_pred": {
+            "long_name": "ssc prediction",
+            "comment": "Suspended sediment concentration estimated by deep learning models.",
+            "units": "mg/L",
+            "valid_min": 0,
+            "valid_max": 100000000,
+            "coverage_content_type": "modelResult"
+        },
+        "tile_name": {
+            "long_name": "HLS tile name",
+            "comment": "The tile that was read in from the LP.DAAC s3 bucket to run prediction on",
+            "coverage_content_type": "coordinate"
+        }
+    },
+    "lakeflow": {
+        "q_lakeflow": {
+            "long_name": "estimated discharge",
+            "units": "m^3/s",
+            "valid_min": 0,
+            "valid_max": 1000000000,
+            "fill": -9999999,
+            "coverage_content_type": "modelResult"
+        },
+        "n_lakeflow": {
+            "long_name": "estimated manning's n",
+            "units": "s/m",
+            "valid_min": 0,
+            "valid_max": 1,
+            "fill": -9999999,
+            "coverage_content_type": "modelResult"
+        },
+        "a0_lakeflow": {
+            "long_name": "estimated bathymetry",
+            "units": "m^2",
+            "valid_min": 0,
+            "valid_max": 1000000000,
+            "fill": -9999999,
+            "coverage_content_type": "modelResult"
+        },
+        "lakeflow_date": {
+            "long_name": "observation date",
+            "valid_min": -998,
+            "valid_max": 999999999999,
+            "coverage_content_type": "coordinate",
+            "units": "seconds since 2000-01-01 00:00:00.000"
+        },
+        "lake_id": {
+            "long_name": "lake ID",
+            "valid_min": -998,
+            "valid_max": 999999999999999999,
+            "coverage_content_type": "identifier"
+        },
+        "q_model": {
+            "long_name": "prior discharge from GEOGLOWS model",
+            "units": "m^3/s",
+            "valid_min": -10000000,
+            "valid_max": 1000000000,
+            "fill": -9999999,
+            "coverage_content_type": "referenceInformation"
+        },
+        "width": {
+            "long_name": "reach width (log scaled)",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "m",
+            "coverage_content_type": "derived"
+        },
+        "slope2": {
+            "long_name": "smoothed slope (log scaled)",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "m/m",
+            "coverage_content_type": "derived"
+        },
+        "da": {
+            "long_name": "change in cross-sectional area (scaled to be >0)",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "m^2",
+            "coverage_content_type": "derived"
+        },
+        "wse": {
+            "long_name": "water surface elevation",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "m",
+            "coverage_content_type": "observed"
+        },
+        "storage": {
+            "long_name": "lake storage",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "m^3",
+            "coverage_content_type": "observed"
+        },
+        "dv": {
+            "long_name": "rate of change in volume",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "m^3/s",
+            "coverage_content_type": "derived"
+        },
+        "tributary": {
+            "long_name": "lateral tributary inflows",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "m^3/s",
+            "coverage_content_type": "observed"
+        },
+        "et": {
+            "long_name": "evaporative loss",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "m^3/s",
+            "coverage_content_type": "observed"
+        },
+        "type": {
+            "long_name": "reach type (inflow/outflow)",
+            "valid_min": 0,
+            "valid_max": 1,
+            "flag_values": "0 1",
+            "flag_meanings": "inflow outflow",
+            "coverage_content_type": "auxiliaryInformation"
+        },
+        "n_lakeflow_sd": {
+            "long_name": "standard deviation of estimated manning's n",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "s/m",
+            "coverage_content_type": "uncertainty"
+        },
+        "a0_lakeflow_sd": {
+            "long_name": "standard deviation of estimated bathymetry",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "m^2",
+            "coverage_content_type": "uncertainty"
+        },
+        "q_upper": {
+            "long_name": "maximum discharge (log scaled)",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "m^3/s",
+            "coverage_content_type": "derived"
+        },
+        "q_lower": {
+            "long_name": "minimum discharge (log scaled)",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "m^3/s",
+            "coverage_content_type": "derived"
+        },
+        "bayes_q": {
+            "long_name": "bayesian estimate of inflow/outflow",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "m^3/s",
+            "coverage_content_type": "modelResult"
+        },
+        "bayes_q_sd": {
+            "long_name": "standard deviation of bayesian estimate of inflow/outflow",
+            "valid_min": -10000000,
+            "valid_max": 10000000,
+            "units": "m^3/s",
+            "coverage_content_type": "uncertainty"
+        },
+        "prior_fit": {
+            "long_name": "source of priors (sos or geobam)",
+            "valid_min": 0,
+            "valid_max": 1,
+            "flag_values": "0 1",
+            "flag_meanings": "sos geobam",
+            "coverage_content_type": "referenceInformation"
+        }
+    },
     "hivdi": {
         "A0": {
             "long_name": "unobserved cross-sectional area",
