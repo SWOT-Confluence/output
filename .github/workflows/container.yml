@@ -1,5 +1,8 @@
 # Main build pipeline that verifies, builds, and deploys the software
 name: Build Docker image (ghcr.io)
+permissions:
+  contents: read
+  packages: write
 # Events that trigger the workflow
 on:
   # Run workflow manually from the Actions tab
