@@ -19,31 +19,31 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
-data "aws_efs_file_system" "aws_efs_input" {
+data "aws_efs_file_system" "input" {
   creation_token = "${var.prefix}-input"
 }
 
-data "aws_efs_file_system" "aws_efs_flpe" {
+data "aws_efs_file_system" "flpe" {
   creation_token = "${var.prefix}-flpe"
 }
 
-data "aws_efs_file_system" "aws_efs_moi" {
+data "aws_efs_file_system" "moi" {
   creation_token = "${var.prefix}-moi"
 }
 
-data "aws_efs_file_system" "aws_efs_diagnostics" {
+data "aws_efs_file_system" "diagnostics" {
   creation_token = "${var.prefix}-diagnostics"
 }
 
-data "aws_efs_file_system" "aws_efs_offline" {
+data "aws_efs_file_system" "offline" {
   creation_token = "${var.prefix}-offline"
 }
 
-data "aws_efs_file_system" "aws_efs_validation" {
+data "aws_efs_file_system" "validation" {
   creation_token = "${var.prefix}-validation"
 }
 
-data "aws_efs_file_system" "aws_efs_output" {
+data "aws_efs_file_system" "output" {
   creation_token = "${var.prefix}-output"
 }
 
@@ -70,7 +70,7 @@ module "confluence-output" {
   app_version       = var.app_version
   aws_region        = var.aws_region
   efs_file_system_ids = {
-    input = data.aws_efs_file_system.aws_efs_input.file_system_id
+    input = data.aws_efs_file_system.input.file_system_id
     flpe = data.aws_efs_file_system.flpe.file_system_id
     moi = data.aws_efs_file_system.moi.file_system_id
     diagnostics = data.aws_efs_file_system.diagnostics.file_system_id
