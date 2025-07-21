@@ -46,7 +46,9 @@ class AbstractModule(metaclass=ABCMeta):
     FILL = {
         "f8": -999999999999.0,
         "i4": -999,
-        "S1": "x"
+        "i8": -999999999999,
+        "S1": "x",
+        "S48": b"\x00" * 48        # 48-byte padded string fill (e.g., tile_name)
     }
     
     def __init__(self, cont_ids, input_dir, sos_new, logger, vlen_f=None, vlen_i=None, 
@@ -179,7 +181,14 @@ class AbstractModule(metaclass=ABCMeta):
             data_dict["attrs"][name].pop("_FillValue", None)
             var.setncatts(data_dict["attrs"][name])
         for i, x in enumerate(data_dict[name][:]):
-            var[i] = data_dict[name][i]
+
+            try:
+                var[i] = data_dict[name][i][:]
+
+            except Exception as e:
+                print('problem',data_dict[name][i], type(data_dict[name][i]), e)
+                raise
+
         return var
         
     def set_variable_atts(self, variable, variable_dict):
