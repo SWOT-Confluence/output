@@ -43,8 +43,10 @@ from output.modules.Sad import Sad
 from output.modules.Sic4dvar import Sic4dvar
 from output.modules.Swot import Swot
 from output.modules.Validation import Validation
+
 from output.modules.ssc import ssc
 from output.modules.lakeflow import lakeflow
+
 
 class Append:
     """
@@ -302,7 +304,7 @@ class Append:
                     ssc_dir, self.sos_file, self.logger, self.sos_rids, self.sos_nrids, \
                     self.sos_nids))
             if module == "lakeflow":
-                     
+         
                 self.modules.append(
                     lakeflow(
                         list(self.cont.values())[0],
@@ -317,6 +319,7 @@ class Append:
                         self.sos_nids
                     )
                 )
+
                 
     def update_time_coverage(self):
         """Update time coverage for results."""

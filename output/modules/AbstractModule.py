@@ -181,13 +181,14 @@ class AbstractModule(metaclass=ABCMeta):
             data_dict["attrs"][name].pop("_FillValue", None)
             var.setncatts(data_dict["attrs"][name])
         for i, x in enumerate(data_dict[name][:]):
+
             try:
                 var[i] = data_dict[name][i][:]
 
             except Exception as e:
                 print('problem',data_dict[name][i], type(data_dict[name][i]), e)
                 raise
-        
+
         return var
         
     def set_variable_atts(self, variable, variable_dict):
