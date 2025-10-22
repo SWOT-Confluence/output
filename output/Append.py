@@ -43,6 +43,8 @@ from output.modules.Sad import Sad
 from output.modules.Sic4dvar import Sic4dvar
 from output.modules.Swot import Swot
 from output.modules.Validation import Validation
+from output.modules.ssc import ssc
+from output.modules.lakeflow import lakeflow
 
 class Append:
     """
@@ -218,7 +220,7 @@ class Append:
             self.logger.info(f"Appended {module.__class__.__name__} data to {self.sos_file.name}.")
         
     def create_modules(self, run_type, input_dir, diag_dir, flpe_dir, moi_dir, \
-                       off_dir, val_dir):
+                       off_dir, val_dir, lakeflow_dir, ssc_dir):
         
         """Create and stores a list of AbstractModule objects.
         
@@ -295,6 +297,26 @@ class Append:
                 self.modules.append(Validation(list(self.cont.values())[0], \
                     val_dir, self.sos_file, self.logger, self.sos_rids, self.sos_nrids, \
                     self.sos_nids))
+            if module == "ssc":
+                self.modules.append(ssc(list(self.cont.values())[0], \
+                    ssc_dir, self.sos_file, self.logger, self.sos_rids, self.sos_nrids, \
+                    self.sos_nids))
+            if module == "lakeflow":
+                     
+                self.modules.append(
+                    lakeflow(
+                        list(self.cont.values())[0],
+                        lakeflow_dir,
+                        self.sos_file,
+                        self.logger,
+                        self.vlen_f, 
+                        self.vlen_i,
+                        self.vlen_s,
+                        self.sos_rids,
+                        self.sos_nrids,
+                        self.sos_nids
+                    )
+                )
                 
     def update_time_coverage(self):
         """Update time coverage for results."""

@@ -115,29 +115,37 @@ class Validation(AbstractModule):
             for s_rid in self.sos_rids:
                 if s_rid in val_rids:
                     try:
-                        val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
-                        self.logger.info('processing validation reach: %s', s_rid)
-                        for suffix in self.suffixes :
-                            # val_dict[self.suffix_dict[suffix]]["algo_names"][:self.num_algos,:val_ds[f"algorithm{suffix}"][0].shape[0]] = val_ds[f"algorithm{suffix}"][:].filled('')
+		        val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
+		        self.logger.info('processing validation reach: %s', s_rid)
+		            
+		        # write consensus and time since they are the odd ones out with dimensions, this will be ragged
+
+		        val_dict['flpe']["time"][index] = val_ds[f"time"][:].filled(self.FILL["i4"])
+		        val_dict['flpe']["consensus_flpe"][index] = val_ds[f"consensus_flpe"][:].filled(self.FILL["f8"])
+		            
+		            
+		        for suffix in self.suffixes :
+		        # val_dict[self.suffix_dict[suffix]]["algo_names"][:self.num_algos,:val_ds[f"algorithm{suffix}"][0].shape[0]] = val_ds[f"algorithm{suffix}"][:].filled('')
 
 
 
 
-                            val_dict[self.suffix_dict[suffix]]["has_validation"][index] = getattr(val_ds, f'has_validation{suffix}')
-                            val_dict[self.suffix_dict[suffix]]["gageid"][index,:val_ds[f"gageID{suffix}"][0].shape[0]] = val_ds[f"gageID{suffix}"][0].filled('')
-                            val_dict[self.suffix_dict[suffix]]["nse"][index,:val_ds[f"NSE{suffix}"].shape[0]] = val_ds[f"NSE{suffix}"][:].filled(np.nan)
-                            val_dict[self.suffix_dict[suffix]]["rsq"][index,:val_ds[f"Rsq{suffix}"].shape[0]] = val_ds[f"Rsq{suffix}"][:].filled(np.nan)
-                            val_dict[self.suffix_dict[suffix]]["kge"][index,:val_ds[f"KGE{suffix}"].shape[0]] = val_ds[f"KGE{suffix}"][:].filled(np.nan)
-                            val_dict[self.suffix_dict[suffix]]["rmse"][index,:val_ds[f"RMSE{suffix}"].shape[0]] = val_ds[f"RMSE{suffix}"][:].filled(np.nan)
-                            val_dict[self.suffix_dict[suffix]]["nrmse"][index,:val_ds[f"nRMSE{suffix}"].shape[0]] = val_ds[f"nRMSE{suffix}"][:].filled(np.nan)
-                            val_dict[self.suffix_dict[suffix]]["nbias"][index,:val_ds[f"nBIAS{suffix}"].shape[0]] = val_ds[f"nBIAS{suffix}"][:].filled(np.nan)
-                            # val_dict[self.suffix_dict[suffix]]["rrmse"][index,:] = val_ds[f"rRMSE{suffix}"][:].filled(np.nan)
-                            val_dict[self.suffix_dict[suffix]]["sige"][index,:val_ds[f"SIGe{suffix}"].shape[0]] = val_ds[f"SIGe{suffix}"][:].filled(np.nan)
-                            val_dict[self.suffix_dict[suffix]]["spearmanr"][index,:val_ds[f"Spearmanr{suffix}"].shape[0]] = val_ds[f"Spearmanr{suffix}"][:].filled(np.nan)
-                            val_dict[self.suffix_dict[suffix]]["testn"][index,:val_ds[f"testn{suffix}"].shape[0]] = val_ds[f"testn{suffix}"][:].filled(np.nan)
-                        val_ds.close()
+		             val_dict[self.suffix_dict[suffix]]["has_validation"][index] = getattr(val_ds, f'has_validation{suffix}')
+		             val_dict[self.suffix_dict[suffix]]["gageid"][index,:val_ds[f"gageID{suffix}"][0].shape[0]] = val_ds[f"gageID{suffix}"][0].filled('')
+		             val_dict[self.suffix_dict[suffix]]["nse"][index,:val_ds[f"NSE{suffix}"].shape[0]] = val_ds[f"NSE{suffix}"][:].filled(np.nan)
+		             val_dict[self.suffix_dict[suffix]]["rsq"][index,:val_ds[f"Rsq{suffix}"].shape[0]] = val_ds[f"Rsq{suffix}"][:].filled(np.nan)
+		             val_dict[self.suffix_dict[suffix]]["kge"][index,:val_ds[f"KGE{suffix}"].shape[0]] = val_ds[f"KGE{suffix}"][:].filled(np.nan)
+		             val_dict[self.suffix_dict[suffix]]["rmse"][index,:val_ds[f"RMSE{suffix}"].shape[0]] = val_ds[f"RMSE{suffix}"][:].filled(np.nan)
+		             val_dict[self.suffix_dict[suffix]]["nrmse"][index,:val_ds[f"nRMSE{suffix}"].shape[0]] = val_ds[f"nRMSE{suffix}"][:].filled(np.nan)
+		             val_dict[self.suffix_dict[suffix]]["nbias"][index,:val_ds[f"nBIAS{suffix}"].shape[0]] = val_ds[f"nBIAS{suffix}"][:].filled(np.nan)
+		             # val_dict[self.suffix_dict[suffix]]["rrmse"][index,:] = val_ds[f"rRMSE{suffix}"][:].filled(np.nan)
+		             val_dict[self.suffix_dict[suffix]]["sige"][index,:val_ds[f"SIGe{suffix}"].shape[0]] = val_ds[f"SIGe{suffix}"][:].filled(np.nan)
+		             val_dict[self.suffix_dict[suffix]]["spearmanr"][index,:val_ds[f"Spearmanr{suffix}"].shape[0]] = val_ds[f"Spearmanr{suffix}"][:].filled(np.nan)
+		             val_dict[self.suffix_dict[suffix]]["testn"][index,:val_ds[f"testn{suffix}"].shape[0]] = val_ds[f"testn{suffix}"][:].filled(np.nan)
+		        val_ds.close()
                     except:
                         self.logger.warn(f'Reach {s_rid} failed for Validation ...')
+
                 index += 1
         return val_dict
     
@@ -161,7 +169,6 @@ class Validation(AbstractModule):
         """Creates and returns Validation data dictionary."""
 
         data_dict = {}
-
         for group in self.out_groups:
             if group != 'offline':
                 num_algos_dim = self.num_algos
@@ -207,6 +214,15 @@ class Validation(AbstractModule):
             for i, name in enumerate(algo_names):
                     # Fill each row with the characters of the algorithm name
                     data_dict[group]['algo_names'][i, :len(name)] = list(name)
+                    
+        
+        # Vlen variables
+        data_dict['flpe']['consensus_flpe'] = np.empty((self.sos_rids.shape[0]), dtype=object)
+        data_dict['flpe']['consensus_flpe'].fill(np.array([self.FILL["f8"]]))
+        data_dict['flpe']['attrs']['consensus_flpe'] = {}
+        data_dict['flpe']['time'] = np.empty((self.sos_rids.shape[0]), dtype=object)
+        data_dict['flpe']['time'].fill(np.array([self.FILL["i4"]]))
+        data_dict['flpe']['attrs']['time'] = {}
         return data_dict
         
     def get_nc_attrs(self, nc_file, data_dict):
@@ -235,6 +251,8 @@ class Validation(AbstractModule):
             data_dict[self.suffix_dict[suffix]]["attrs"]["sige"] = ds[f"SIGe{suffix}"].__dict__
             data_dict[self.suffix_dict[suffix]]["attrs"]["spearmanr"] = ds[f"Spearmanr{suffix}"].__dict__
 
+        data_dict['flpe']["attrs"]["time"] = ds["time"].__dict__
+        data_dict['flpe']["attrs"]["consensus_flpe"] = ds["consensus_flpe"].__dict__
 
         ds.close()
         return data_dict
@@ -262,6 +280,14 @@ class Validation(AbstractModule):
         for group in self.out_groups:
 
             val_grp = val_t_grp.createGroup(group)
+            if group == 'flpe':
+                            # Writing "sige" and conditionally setting attributes
+                var = self.write_var_nt(val_grp, "consensus_flpe", self.vlen_f, ("num_reaches"), data_dict[group], fill=[self.FILL["f8"]])
+                if "consensus_flpe" in metadata_json["validation"]:
+                    self.set_variable_atts(var, metadata_json["validation"]["consensus_flpe"])
+                var = self.write_var_nt(val_grp, "time", self.vlen_i, ("num_reaches"), data_dict[group], fill=[self.FILL["i4"]])
+                if "time" in metadata_json["validation"]:
+                    self.set_variable_atts(var, metadata_json["validation"]["time"])
 
             # # Validation data
             # var = self.write_var(val_grp, "algo_names", "S1", ("num_algos", "nchar",), data_dict[group])

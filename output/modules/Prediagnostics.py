@@ -71,10 +71,14 @@ class Prediagnostics(AbstractModule):
         pre_rids = [ int(pre_file.name.split('_')[0]) for pre_file in pre_files ]
 
         # Storage of results data
-        pre_ds = Dataset(pre_dir / f"{pre_rids[0]}_prediagnostics.nc", 'r')
-        pre_dict = self.create_data_dict(pre_ds)
-        pre_ds.close()
-        
+        try:
+            pre_path = pre_dir / f"{pre_rids[0]}_prediagnostics.nc"
+            pre_ds = Dataset(pre_path, 'r')
+            pre_dict = self.create_data_dict(pre_ds)
+            pre_ds.close()
+        except:
+            self.logger.warning(f"Error when reading file {pre_path}")
+
         if len(pre_files) != 0:
             # Storage of variable attributes
             self.get_nc_attrs(pre_dir / pre_files[0], pre_dict)

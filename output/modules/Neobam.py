@@ -239,7 +239,7 @@ class Neobam(AbstractModule):
         q_grp = nb_grp.createGroup("q")
         var = self.write_var_nt(q_grp, "q", self.vlen_f, ("num_reaches"), data_dict["q"])
         self.set_variable_atts(var, metadata_json["neobam"]["q"]["q"])
-        var = self.write_var_nt(q_grp, "q_sd", self.vlen_f, ("num_reaches"), data_dict["q"])
+        var = self.write_var(q_grp, "q_sd", "f8", ("num_reaches"), data_dict["q"])
         self.set_variable_atts(var, metadata_json["neobam"]["q"]["q_sd"])
         
         sos_ds.close()

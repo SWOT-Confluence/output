@@ -46,7 +46,9 @@ class AbstractModule(metaclass=ABCMeta):
     FILL = {
         "f8": -999999999999.0,
         "i4": -999,
-        "S1": "x"
+        "i8": -999999999999,
+        "S1": "x",
+        "S48": b"\x00" * 48        # 48-byte padded string fill (e.g., tile_name)
     }
     
     def __init__(self, cont_ids, input_dir, sos_new, logger, vlen_f=None, vlen_i=None, 
@@ -128,7 +130,7 @@ class AbstractModule(metaclass=ABCMeta):
         
         raise NotImplementedError
     
-    def write_var(self, grp, name, type, dims, data_dict):
+    def write_var(self, grp, name, type_of_var, dims, data_dict):
         """Create NetCDF variable and write module data to it.
 
         Parameters
@@ -144,11 +146,10 @@ class AbstractModule(metaclass=ABCMeta):
         data_dict: dict
             dictionary of result data
         """
-
-        var = grp.createVariable(name, type, dims, fill_value=self.FILL[type], compression="zlib")
+        var = grp.createVariable(name, type_of_var, dims, fill_value=self.FILL[type_of_var], compression="zlib")
         if data_dict["attrs"][name]: var.setncatts(data_dict["attrs"][name])
-        if type == "f8" or type == "i4":
-            var[:] = np.nan_to_num(data_dict[name], copy=True, nan=self.FILL[type])
+        if type_of_var == "f8" or type_of_var == "i4":
+            var[:] = np.nan_to_num(data_dict[name], copy=True, nan=self.FILL[type_of_var])
         else:
             var[:] = data_dict[name]
         return var
@@ -175,10 +176,18 @@ class AbstractModule(metaclass=ABCMeta):
             if fill:
                 if fill != -1: var.missing_value = fill
             else:
-                var.missing_value = data_dict["attrs"][name]["_FillValue"]
+                fill = data_dict["attrs"][name]["_FillValue"]
+                var.missing_value = fill
             data_dict["attrs"][name].pop("_FillValue", None)
             var.setncatts(data_dict["attrs"][name])
-        var[:] = data_dict[name]
+        for i, x in enumerate(data_dict[name][:]):
+            try:
+                var[i] = data_dict[name][i][:]
+
+            except Exception as e:
+                print('problem',data_dict[name][i], type(data_dict[name][i]), e)
+                raise
+        
         return var
         
     def set_variable_atts(self, variable, variable_dict):
