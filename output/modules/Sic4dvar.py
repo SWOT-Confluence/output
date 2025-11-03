@@ -83,17 +83,30 @@ class Sic4dvar(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in sv_rids:
-                    sv_ds = Dataset(sv_dir / f"{int(s_rid)}_sic4dvar.nc", 'r')
-                    sv_dict["A0"][index] = sv_ds["A0"][:].filled(np.nan)
-                    sv_dict["n"][index] = sv_ds["n"][:].filled(np.nan)                    
-                    # sv_dict["Qalgo5"][index] = sv_ds["Qalgo5"][:].filled(self.FILL["f8"])
-                    # sv_dict["Qalgo31"][index] = sv_ds["Qalgo31"][:].filled(self.FILL["f8"])
-                    sv_dict["Q_mm"][index] = sv_ds["Q_mm"][:].filled(self.FILL["f8"])
-                    sv_dict["Q_da"][index] = sv_ds["Q_da"][:].filled(self.FILL["f8"])
-                    indexes = np.where(s_rid == self.sos_nrids)
-                    sv_dict["node_id"][indexes] = self.sos_nids[indexes]
-                    # self.__insert_nx(sv_dict, sv_ds, indexes)
-                    sv_ds.close()
+                    try:
+		            sv_ds = Dataset(sv_dir / f"{int(s_rid)}_sic4dvar.nc", 'r')
+		            sv_dict["A0"][index] = sv_ds["A0"][:].filled(np.nan)
+		            sv_dict["n"][index] = sv_ds["n"][:].filled(np.nan)                    
+		            # sv_dict["Qalgo5"][index] = sv_ds["Qalgo5"][:].filled(self.FILL["f8"])
+		            # sv_dict["Qalgo31"][index] = sv_ds["Qalgo31"][:].filled(self.FILL["f8"])
+		            sv_dict["Q_mm"][index] = sv_ds["Q_mm"][:].filled(self.FILL["f8"])
+		            sv_dict["Q_da"][index] = sv_ds["Q_da"][:].filled(self.FILL["f8"])
+		            indexes = np.where(s_rid == self.sos_nrids)
+
+		            nb_nodes, nb_cross_section = sv_ds["width"][:].filled(np.nan).shape
+		            width = np.full((sv_dict["width"][indexes].shape), np.nan)
+		            width[:nb_nodes, :nb_cross_section] = sv_ds["width"][:].filled(np.nan)
+		            sv_dict["width"][indexes] = width
+		            
+		            elevation = np.full((sv_dict["elevation"][indexes].shape), np.nan)
+		            elevation[:nb_nodes, :nb_cross_section] = sv_ds["elevation"][:].filled(np.nan)
+		            sv_dict["elevation"][indexes] = elevation
+
+		            sv_dict["node_id"][indexes] = self.sos_nids[indexes]
+		            # self.__insert_nx(sv_dict, sv_ds, indexes)
+		            sv_ds.close()
+                    except:
+                      self.logger.warn(f'Reach {s_rid} failed for SIC4DVAR ...')
                 index += 1
         return sv_dict
     
@@ -106,8 +119,8 @@ class Sic4dvar(AbstractModule):
             "Q_mm" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "Q_da" : np.empty((self.sos_rids.shape[0]), dtype=object),
             # "Qalgo31" : np.empty((self.sos_rids.shape[0]), dtype=object),
-            # "half_width": np.empty((self.sos_nids.shape[0]), dtype=object),
-            # "elevation": np.empty((self.sos_nids.shape[0]), dtype=object),
+            "width": np.full((self.sos_nids.shape[0], 10), np.nan, dtype=object),
+            "elevation": np.full((self.sos_nids.shape[0], 10), np.nan, dtype=object),
             "node_id" : np.zeros(self.sos_nids.shape[0], dtype=np.int64),
             "attrs": {
                 "A0" : {},
@@ -115,8 +128,8 @@ class Sic4dvar(AbstractModule):
                 "Q_mm" : {},
                 "Q_da":{},
                 # "Qalgo31" : {},
-                # "half_width": {},
-                # "elevation": {}
+                "width": {},
+                "elevation": {}
             }
         }
         
@@ -124,8 +137,8 @@ class Sic4dvar(AbstractModule):
         data_dict["Q_mm"].fill(np.array([self.FILL["f8"]]))
         data_dict["Q_da"].fill(np.array([self.FILL["f8"]]))
         # data_dict["Qalgo31"].fill(np.array([self.FILL["f8"]]))
-        # data_dict["half_width"].fill(np.array([self.FILL["f8"]]))
-        # data_dict["elevation"].fill(np.array([self.FILL["f8"]]))
+        data_dict["width"].fill(np.array([self.FILL["f8"]]))
+        data_dict["elevation"].fill(np.array([self.FILL["f8"]]))
         return data_dict
     
     def get_nc_attrs(self, nc_file, data_dict):
@@ -175,6 +188,8 @@ class Sic4dvar(AbstractModule):
         sos_ds = Dataset(self.sos_new, 'a')
         sv_grp = sos_ds.createGroup("sic4dvar")
 
+        sv_grp.createDimension("nb_pts", 10)
+
         # SIC4DVar data
 
         var = self.write_var(sv_grp, "A0", "f8", ("num_reaches",), data_dict)
@@ -185,5 +200,10 @@ class Sic4dvar(AbstractModule):
         self.set_variable_atts(var, metadata_json["sic4dvar"]["Q_mm"])
         var = self.write_var_nt(sv_grp, "Q_da", self.vlen_f, ("num_reaches"), data_dict)
         self.set_variable_atts(var, metadata_json["sic4dvar"]["Q_da"])
+
+        var = self.write_var(sv_grp, "width", "f8", ("num_nodes", "nb_pts"), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["width"])
+        var = self.write_var(sv_grp, "elevation", "f8", ("num_nodes", "nb_pts"), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["elevation"])
         
         sos_ds.close()

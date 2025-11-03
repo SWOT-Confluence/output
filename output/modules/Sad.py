@@ -81,12 +81,15 @@ class Sad(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in sd_rids:
-                    sd_ds = Dataset(sd_dir / f"{int(s_rid)}_sad.nc", 'r')
-                    sd_dict["A0"][index] = sd_ds["A0"][:].filled(np.nan)
-                    sd_dict["n"][index] = sd_ds["n"][:].filled(np.nan)
-                    sd_dict["Qa"][index] = sd_ds["Qa"][:].filled(self.FILL["f8"])
-                    sd_dict["Q_u"][index] = sd_ds["Q_u"][:].filled(self.FILL["f8"])
-                    sd_ds.close()               
+                    try:
+                        sd_ds = Dataset(sd_dir / f"{int(s_rid)}_sad.nc", 'r')
+                        sd_dict["A0"][index] = sd_ds["A0"][:].filled(np.nan)
+                        sd_dict["n"][index] = sd_ds["n"][:].filled(np.nan)
+                        sd_dict["Qa"][index] = sd_ds["Qa"][:].filled(self.FILL["f8"])
+                        sd_dict["Q_u"][index] = sd_ds["Q_u"][:].filled(self.FILL["f8"])
+                        sd_ds.close()
+                    except:
+                        self.logger.warn(f'Reach {s_rid} failed for Metroman ...')
                 index += 1
         return sd_dict
     
