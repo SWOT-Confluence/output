@@ -115,34 +115,34 @@ class Validation(AbstractModule):
             for s_rid in self.sos_rids:
                 if s_rid in val_rids:
                     try:
-		        val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
-		        self.logger.info('processing validation reach: %s', s_rid)
-		            
-		        # write consensus and time since they are the odd ones out with dimensions, this will be ragged
+                val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
+                self.logger.info('processing validation reach: %s', s_rid)
+                    
+                # write consensus and time since they are the odd ones out with dimensions, this will be ragged
 
-		        val_dict['flpe']["time"][index] = val_ds[f"time"][:].filled(self.FILL["i4"])
-		        val_dict['flpe']["consensus_flpe"][index] = val_ds[f"consensus_flpe"][:].filled(self.FILL["f8"])
-		            
-		            
-		        for suffix in self.suffixes :
-		        # val_dict[self.suffix_dict[suffix]]["algo_names"][:self.num_algos,:val_ds[f"algorithm{suffix}"][0].shape[0]] = val_ds[f"algorithm{suffix}"][:].filled('')
-
-
+                val_dict['flpe']["time"][index] = val_ds[f"time"][:].filled(self.FILL["i4"])
+                val_dict['flpe']["consensus_flpe"][index] = val_ds[f"consensus_flpe"][:].filled(self.FILL["f8"])
+                    
+                    
+                for suffix in self.suffixes :
+                # val_dict[self.suffix_dict[suffix]]["algo_names"][:self.num_algos,:val_ds[f"algorithm{suffix}"][0].shape[0]] = val_ds[f"algorithm{suffix}"][:].filled('')
 
 
-		             val_dict[self.suffix_dict[suffix]]["has_validation"][index] = getattr(val_ds, f'has_validation{suffix}')
-		             val_dict[self.suffix_dict[suffix]]["gageid"][index,:val_ds[f"gageID{suffix}"][0].shape[0]] = val_ds[f"gageID{suffix}"][0].filled('')
-		             val_dict[self.suffix_dict[suffix]]["nse"][index,:val_ds[f"NSE{suffix}"].shape[0]] = val_ds[f"NSE{suffix}"][:].filled(np.nan)
-		             val_dict[self.suffix_dict[suffix]]["rsq"][index,:val_ds[f"Rsq{suffix}"].shape[0]] = val_ds[f"Rsq{suffix}"][:].filled(np.nan)
-		             val_dict[self.suffix_dict[suffix]]["kge"][index,:val_ds[f"KGE{suffix}"].shape[0]] = val_ds[f"KGE{suffix}"][:].filled(np.nan)
-		             val_dict[self.suffix_dict[suffix]]["rmse"][index,:val_ds[f"RMSE{suffix}"].shape[0]] = val_ds[f"RMSE{suffix}"][:].filled(np.nan)
-		             val_dict[self.suffix_dict[suffix]]["nrmse"][index,:val_ds[f"nRMSE{suffix}"].shape[0]] = val_ds[f"nRMSE{suffix}"][:].filled(np.nan)
-		             val_dict[self.suffix_dict[suffix]]["nbias"][index,:val_ds[f"nBIAS{suffix}"].shape[0]] = val_ds[f"nBIAS{suffix}"][:].filled(np.nan)
-		             # val_dict[self.suffix_dict[suffix]]["rrmse"][index,:] = val_ds[f"rRMSE{suffix}"][:].filled(np.nan)
-		             val_dict[self.suffix_dict[suffix]]["sige"][index,:val_ds[f"SIGe{suffix}"].shape[0]] = val_ds[f"SIGe{suffix}"][:].filled(np.nan)
-		             val_dict[self.suffix_dict[suffix]]["spearmanr"][index,:val_ds[f"Spearmanr{suffix}"].shape[0]] = val_ds[f"Spearmanr{suffix}"][:].filled(np.nan)
-		             val_dict[self.suffix_dict[suffix]]["testn"][index,:val_ds[f"testn{suffix}"].shape[0]] = val_ds[f"testn{suffix}"][:].filled(np.nan)
-		        val_ds.close()
+
+
+                     val_dict[self.suffix_dict[suffix]]["has_validation"][index] = getattr(val_ds, f'has_validation{suffix}')
+                     val_dict[self.suffix_dict[suffix]]["gageid"][index,:val_ds[f"gageID{suffix}"][0].shape[0]] = val_ds[f"gageID{suffix}"][0].filled('')
+                     val_dict[self.suffix_dict[suffix]]["nse"][index,:val_ds[f"NSE{suffix}"].shape[0]] = val_ds[f"NSE{suffix}"][:].filled(np.nan)
+                     val_dict[self.suffix_dict[suffix]]["rsq"][index,:val_ds[f"Rsq{suffix}"].shape[0]] = val_ds[f"Rsq{suffix}"][:].filled(np.nan)
+                     val_dict[self.suffix_dict[suffix]]["kge"][index,:val_ds[f"KGE{suffix}"].shape[0]] = val_ds[f"KGE{suffix}"][:].filled(np.nan)
+                     val_dict[self.suffix_dict[suffix]]["rmse"][index,:val_ds[f"RMSE{suffix}"].shape[0]] = val_ds[f"RMSE{suffix}"][:].filled(np.nan)
+                     val_dict[self.suffix_dict[suffix]]["nrmse"][index,:val_ds[f"nRMSE{suffix}"].shape[0]] = val_ds[f"nRMSE{suffix}"][:].filled(np.nan)
+                     val_dict[self.suffix_dict[suffix]]["nbias"][index,:val_ds[f"nBIAS{suffix}"].shape[0]] = val_ds[f"nBIAS{suffix}"][:].filled(np.nan)
+                     # val_dict[self.suffix_dict[suffix]]["rrmse"][index,:] = val_ds[f"rRMSE{suffix}"][:].filled(np.nan)
+                     val_dict[self.suffix_dict[suffix]]["sige"][index,:val_ds[f"SIGe{suffix}"].shape[0]] = val_ds[f"SIGe{suffix}"][:].filled(np.nan)
+                     val_dict[self.suffix_dict[suffix]]["spearmanr"][index,:val_ds[f"Spearmanr{suffix}"].shape[0]] = val_ds[f"Spearmanr{suffix}"][:].filled(np.nan)
+                     val_dict[self.suffix_dict[suffix]]["testn"][index,:val_ds[f"testn{suffix}"].shape[0]] = val_ds[f"testn{suffix}"][:].filled(np.nan)
+                val_ds.close()
                     except:
                         self.logger.warn(f'Reach {s_rid} failed for Validation ...')
 
