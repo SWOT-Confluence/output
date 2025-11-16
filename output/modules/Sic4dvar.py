@@ -84,27 +84,27 @@ class Sic4dvar(AbstractModule):
             for s_rid in self.sos_rids:
                 if s_rid in sv_rids:
                     try:
-                    sv_ds = Dataset(sv_dir / f"{int(s_rid)}_sic4dvar.nc", 'r')
-                    sv_dict["A0"][index] = sv_ds["A0"][:].filled(np.nan)
-                    sv_dict["n"][index] = sv_ds["n"][:].filled(np.nan)                    
-                    # sv_dict["Qalgo5"][index] = sv_ds["Qalgo5"][:].filled(self.FILL["f8"])
-                    # sv_dict["Qalgo31"][index] = sv_ds["Qalgo31"][:].filled(self.FILL["f8"])
-                    sv_dict["Q_mm"][index] = sv_ds["Q_mm"][:].filled(self.FILL["f8"])
-                    sv_dict["Q_da"][index] = sv_ds["Q_da"][:].filled(self.FILL["f8"])
-                    indexes = np.where(s_rid == self.sos_nrids)
+                        sv_ds = Dataset(sv_dir / f"{int(s_rid)}_sic4dvar.nc", 'r')
+                        sv_dict["A0"][index] = sv_ds["A0"][:].filled(np.nan)
+                        sv_dict["n"][index] = sv_ds["n"][:].filled(np.nan)
+                        # sv_dict["Qalgo5"][index] = sv_ds["Qalgo5"][:].filled(self.FILL["f8"])
+                        # sv_dict["Qalgo31"][index] = sv_ds["Qalgo31"][:].filled(self.FILL["f8"])
+                        sv_dict["Q_mm"][index] = sv_ds["Q_mm"][:].filled(self.FILL["f8"])
+                        sv_dict["Q_da"][index] = sv_ds["Q_da"][:].filled(self.FILL["f8"])
+                        indexes = np.where(s_rid == self.sos_nrids)
 
-                    nb_nodes, nb_cross_section = sv_ds["width"][:].filled(np.nan).shape
-                    width = np.full((sv_dict["width"][indexes].shape), np.nan)
-                    width[:nb_nodes, :nb_cross_section] = sv_ds["width"][:].filled(np.nan)
-                    sv_dict["width"][indexes] = width
-                    
-                    elevation = np.full((sv_dict["elevation"][indexes].shape), np.nan)
-                    elevation[:nb_nodes, :nb_cross_section] = sv_ds["elevation"][:].filled(np.nan)
-                    sv_dict["elevation"][indexes] = elevation
+                        nb_nodes, nb_cross_section = sv_ds["width"][:].filled(np.nan).shape
+                        width = np.full((sv_dict["width"][indexes].shape), np.nan)
+                        width[:nb_nodes, :nb_cross_section] = sv_ds["width"][:].filled(np.nan)
+                        sv_dict["width"][indexes] = width
+                        
+                        elevation = np.full((sv_dict["elevation"][indexes].shape), np.nan)
+                        elevation[:nb_nodes, :nb_cross_section] = sv_ds["elevation"][:].filled(np.nan)
+                        sv_dict["elevation"][indexes] = elevation
 
-                    sv_dict["node_id"][indexes] = self.sos_nids[indexes]
-                    # self.__insert_nx(sv_dict, sv_ds, indexes)
-                    sv_ds.close()
+                        sv_dict["node_id"][indexes] = self.sos_nids[indexes]
+                        # self.__insert_nx(sv_dict, sv_ds, indexes)
+                        sv_ds.close()
                     except:
                       self.logger.warn(f'Reach {s_rid} failed for SIC4DVAR ...')
                 index += 1
