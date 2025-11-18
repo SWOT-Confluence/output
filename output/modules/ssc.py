@@ -37,7 +37,8 @@ class ssc(AbstractModule):
         self.df = pd.concat(dfs, ignore_index=True)
 
         # parsed to datetime, handling NaNs
-        self.df['date_parsed'] = pd.to_datetime(self.df['date_x'], errors='coerce')
+        # was previously date_x instead of 'date'
+        self.df['date_parsed'] = pd.to_datetime(self.df['date'], errors='coerce')
 
         epoch_diff = 946684800  # seconds between 1970-01-01 and 2000-01-01
 
