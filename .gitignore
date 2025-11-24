@@ -1,2 +1,4 @@
 __pycache__
 .terraform
+tests/sos_new/na_apriori_rivers_v07_SOS_results.nc
+tests/flpe/na_apriori_rivers_v07_SOS_results.nc
