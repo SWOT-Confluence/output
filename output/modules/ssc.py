@@ -91,7 +91,7 @@ class ssc(AbstractModule):
 
 
         data_dict = {
-            "ssc_pred": np.full((self.num_nodes, self.num_dates), self.fill_f8, dtype=np.int64),
+            "ssc_pred": np.full((self.num_nodes, self.num_dates), self.fill_f8, dtype=np.float64),
             "ssc_nodes": np.full((self.num_nodes,), self.fill_f8, dtype=np.int64),
             "ssc_date": np.full(self.num_dates, self.fill_f8, dtype=np.int64),
             "tile_name": np.full(
