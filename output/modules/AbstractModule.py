@@ -48,6 +48,7 @@ class AbstractModule(metaclass=ABCMeta):
         "i4": -999,
         "i8": -999999999999,
         "S1": "x",
+        "S20":'xxxxxxxxxxxxxxxxxxxx', #for the consensus
         "S48": b"\x00" * 48        # 48-byte padded string fill (e.g., tile_name)
     }
     
