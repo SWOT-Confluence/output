@@ -160,7 +160,7 @@ class lakeflow(AbstractModule):
         data_dict = {
             # Scalars (1D arrays, one value per reach)
             # "reach_id": np.full(num_reaches, fill_i4, dtype=np.int32),
-            "lake_id": np.full(num_reaches, fill_i4, dtype=np.int32),
+            "lake_id": np.full(num_reaches, fill_i4, dtype=np.int64),
             "prior_fit": np.full(num_reaches, fill_i4, dtype=np.int32),
             "type": np.full(num_reaches, fill_i4, dtype=np.int32),
             "q_upper": np.full(num_reaches, fill_f8, dtype=np.float64),
@@ -233,7 +233,7 @@ class lakeflow(AbstractModule):
         # if "lakeflow" in metadata_json and "reach_id" in metadata_json["lakeflow"]:
         #     self.set_variable_atts(var, metadata_json["lakeflow"]["reach_id"])
 
-        var = self.write_var(lakeflow_grp, "lake_id", "i4", ("num_reaches",), data_dict)
+        var = self.write_var(lakeflow_grp, "lake_id", "i8", ("num_reaches",), data_dict)
         if "lakeflow" in metadata_json and "lake_id" in metadata_json["lakeflow"]:
             self.set_variable_atts(var, metadata_json["lakeflow"]["lake_id"])
 
