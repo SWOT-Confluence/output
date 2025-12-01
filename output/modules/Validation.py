@@ -120,8 +120,8 @@ class Validation(AbstractModule):
                             
                         # write consensus and time since they are the odd ones out with dimensions, this will be ragged
 
-                        val_dict['flpe']["time"][index] = val_ds[f"time"][:].filled(self.FILL["i4"])
-                        val_dict['flpe']["consensus_flpe"][index] = val_ds[f"consensus_flpe"][:].filled(self.FILL["f8"])
+                        #val_dict['flpe']["time"][index] = val_ds[f"time"][:].filled(self.FILL["i4"])
+                        #val_dict['flpe']["consensus_flpe"][index] = val_ds[f"consensus_flpe"][:].filled(self.FILL["f8"])
                             
                             
                         for suffix in self.suffixes :
@@ -217,9 +217,9 @@ class Validation(AbstractModule):
                     
         
         # Vlen variables
-        data_dict['flpe']['consensus_flpe'] = np.empty((self.sos_rids.shape[0]), dtype=object)
-        data_dict['flpe']['consensus_flpe'].fill(np.array([self.FILL["f8"]]))
-        data_dict['flpe']['attrs']['consensus_flpe'] = {}
+        #data_dict['flpe']['consensus_flpe'] = np.empty((self.sos_rids.shape[0]), dtype=object)
+        #data_dict['flpe']['consensus_flpe'].fill(np.array([self.FILL["f8"]]))
+        #data_dict['flpe']['attrs']['consensus_flpe'] = {}
         data_dict['flpe']['time'] = np.empty((self.sos_rids.shape[0]), dtype=object)
         data_dict['flpe']['time'].fill(np.array([self.FILL["i4"]]))
         data_dict['flpe']['attrs']['time'] = {}
@@ -251,8 +251,8 @@ class Validation(AbstractModule):
             data_dict[self.suffix_dict[suffix]]["attrs"]["sige"] = ds[f"SIGe{suffix}"].__dict__
             data_dict[self.suffix_dict[suffix]]["attrs"]["spearmanr"] = ds[f"Spearmanr{suffix}"].__dict__
 
-        data_dict['flpe']["attrs"]["time"] = ds["time"].__dict__
-        data_dict['flpe']["attrs"]["consensus_flpe"] = ds["consensus_flpe"].__dict__
+        #data_dict['flpe']["attrs"]["time"] = ds["time"].__dict__
+        #data_dict['flpe']["attrs"]["consensus_flpe"] = ds["consensus_flpe"].__dict__
 
         ds.close()
         return data_dict
@@ -280,14 +280,14 @@ class Validation(AbstractModule):
         for group in self.out_groups:
 
             val_grp = val_t_grp.createGroup(group)
-            if group == 'flpe':
+            #if group == 'flpe':
                             # Writing "sige" and conditionally setting attributes
-                var = self.write_var_nt(val_grp, "consensus_flpe", self.vlen_f, ("num_reaches"), data_dict[group], fill=[self.FILL["f8"]])
-                if "consensus_flpe" in metadata_json["validation"]:
-                    self.set_variable_atts(var, metadata_json["validation"]["consensus_flpe"])
-                var = self.write_var_nt(val_grp, "time", self.vlen_i, ("num_reaches"), data_dict[group], fill=[self.FILL["i4"]])
-                if "time" in metadata_json["validation"]:
-                    self.set_variable_atts(var, metadata_json["validation"]["time"])
+                #var = self.write_var_nt(val_grp, "consensus_flpe", self.vlen_f, ("num_reaches"), data_dict[group], fill=[self.FILL["f8"]])
+                #if "consensus_flpe" in metadata_json["validation"]:
+                #    self.set_variable_atts(var, metadata_json["validation"]["consensus_flpe"])
+                #var = self.write_var_nt(val_grp, "time", self.vlen_i, ("num_reaches"), data_dict[group], fill=[self.FILL["i4"]])
+                #if "time" in metadata_json["validation"]:
+                #    self.set_variable_atts(var, metadata_json["validation"]["time"])
 
             # # Validation data
             # var = self.write_var(val_grp, "algo_names", "S1", ("num_algos", "nchar",), data_dict[group])

@@ -35,6 +35,7 @@ MOI = Path("/mnt/data/moi")
 DIAGNOSTICS = Path("/mnt/data/diagnostics")
 OFFLINE = Path("/mnt/data/offline")
 VALIDATION = Path("/mnt/data/validation")
+CONSENSUS = Path('/mnt/data/flpe')
 OUTPUT = Path("/mnt/data/output")
 LAKEFLOW = Path("/mnt/data/flpe/lakeflow")
 SSC = Path("/mnt/data/flpe/ssc")
@@ -124,7 +125,7 @@ def main():
         logger, args.metadatajson)
     append.create_new_version()
     append.create_modules(args.runtype, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
-        VALIDATION / "stats", LAKEFLOW, SSC)
+        VALIDATION / "stats", CONSENSUS, LAKEFLOW, SSC)
     append.append_data()
     append.update_time_coverage()
 
