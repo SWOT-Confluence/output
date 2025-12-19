@@ -197,6 +197,7 @@ class Append:
         # Variable length time steps
         self.vlen_f = result_sos.createVLType(np.float64, "vlen_float")
         self.vlen_i = result_sos.createVLType(np.int32, "vlen_int")
+        self.vlen_i8 = result_sos.createVLType(np.int64, "vlen_int64")
         self.vlen_s = result_sos.createVLType("S1", "vlen_str")
 
         # Node and reach group
@@ -301,7 +302,7 @@ class Append:
 
             if module == "consensus":
                 self.modules.append(Consensus(list(self.cont.values())[0], \
-                    flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
+                    flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i8, \
                     self.vlen_s, self.sos_rids))
                 
             if module == "ssc":
