@@ -157,7 +157,7 @@ class Swot(AbstractModule):
                 swot_dict["node"]["observations"][i] = ','.join(chartostring(swot_ds["observations"][:]))
                 swot_dict["node"]["time"][i] = swot_ds["node"]["time"][j,:].filled(self.FILL["f8"])
             except:
-                self.logging.warn('time variable filled, reach was partially observed')
+                self.logger.warn('time variable filled, reach was partially observed')
                 return
             j +=1
         
