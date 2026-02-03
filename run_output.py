@@ -82,6 +82,11 @@ def create_args():
                             type=str,
                             default="confluence-sos",
                             help="Name of SoS S3 bucket to upload to")
+    arg_parser.add_argument("-v",
+                            "--swordversion",
+                            type=str,
+                            default="17",
+                            help="Version of sword we are using")
     return arg_parser
 
 def get_logger():
@@ -122,7 +127,7 @@ def main():
 
     # Append SoS data
     append = Append(INPUT / args.contjson, index, INPUT, OUTPUT, args.modules, \
-        logger, args.metadatajson)
+        logger, args.metadatajson, args.swordversion)
     append.create_new_version()
     append.create_modules(args.runtype, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
         VALIDATION / "stats", CONSENSUS, LAKEFLOW, SSC)
@@ -132,7 +137,7 @@ def main():
     # Upload SoS data
     if args.sosbucket != 'local':
         upload = Upload(append.sos_file, args.sosbucket, args.podaacupload, args.podaacbucket, \
-            list(append.cont.keys())[0], append.run_date, args.runtype, logger)
+            list(append.cont.keys())[0], append.run_date, args.runtype, logger, args.swordversion)
         try:
             upload.upload_data(OUTPUT, VALIDATION / "figs", args.runtype, args.modules)
         except botocore.exceptions.ClientError as error:

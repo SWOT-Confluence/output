@@ -25,11 +25,10 @@ class Upload:
         Transfers SOS data to S3 from EFS
     """
     
-    SWORD_VERSION = "v16"
     VERS_LENGTH = 4
 
     def __init__(self, sos_file, sos_bucket, podaac_upload, podaac_bucket, \
-                 continent, run_date, run_type, logger):
+                 continent, run_date, run_type, logger, sword_version="17"):
         """
         Parameters
         ----------
@@ -37,6 +36,8 @@ class Upload:
             path to new SoS file to upload
         logger: Logger
             logger to use for logging state
+        sword_version: str, optional
+            SWORD version number (default: "17")
         """
 
         self.sos_file = sos_file
@@ -47,6 +48,7 @@ class Upload:
         self.run_date = run_date
         self.run_type = run_type
         self.logger = logger
+        self.sword_version = sword_version
 
     def upload_data(self, output_dir, val_dir, run_type, modules):
         """Uploads SoS result file to confluence-sos S3 bucket.
@@ -109,7 +111,7 @@ class Upload:
     def upload_podaac(self, vers):
         """Upload SoS to PO.DAAC bucket."""
         
-        sos_filename = f"{self.continent}_sword_{self.SWORD_VERSION}_SOS_results_{self.run_type}_{vers}_{self.run_date.strftime('%Y%m%dT%H%M%S')}.nc"
+        sos_filename = f"{self.continent}_sword_{self.sword_version}_SOS_results_{self.run_type}_{vers}_{self.run_date.strftime('%Y%m%dT%H%M%S')}.nc"
         try:
             s3 = boto3.client("s3")
             response = s3.upload_file(str(self.sos_file), 

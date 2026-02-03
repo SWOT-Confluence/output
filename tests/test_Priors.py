@@ -14,7 +14,7 @@ from output.modules.Priors import Priors
 class test_Priors(unittest.TestCase):
     """Test Priors class methods."""
     
-    PRIORS_SOS = Path(__file__).parent / "priors" / "na_sword_v11_SOS.nc"
+    PRIORS_SOS = Path(__file__).parent / "priors" / "na_sword_v17_SOS.nc"
     APPEND_DIR = Path(__file__).parent / "priors" / "append"
     
     def test_get_module_data(self):
@@ -26,7 +26,7 @@ class test_Priors(unittest.TestCase):
         
         # Run method
         priors = Priors([7,8,9], self.PRIORS_SOS.parent, \
-            self.APPEND_DIR / self.PRIORS_SOS.name, "sword_v11_SOS")
+            self.APPEND_DIR / self.PRIORS_SOS.name, "sword_v17_SOS")
         prior_dict = priors.get_module_data()
         
         # Assert results
@@ -58,7 +58,7 @@ class test_Priors(unittest.TestCase):
         
         # Run method
         priors = Priors([7,8,9], self.PRIORS_SOS.parent, \
-            self.APPEND_DIR / self.PRIORS_SOS.name, "sword_v11_SOS")
+            self.APPEND_DIR / self.PRIORS_SOS.name, "sword_v17_SOS")
         prior_dict = priors.get_module_data()
         priors.append_module_data(prior_dict)
         
