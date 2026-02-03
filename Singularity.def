@@ -1,0 +1,17 @@
+Bootstrap: docker
+From: ghcr.io/swot-confluence/output:latest
+
+%files
+    metadata /app/metadata/
+    output /app/output/
+    run_output.py /app/run_output.py
+
+%post
+    # Fix nested output directory - copy contents up one level
+    if [ -d /app/output/output ]; then
+        cp -rf /app/output/output/* /app/output/
+        rm -rf /app/output/output
+    fi
+
+%runscript
+    exec /app/env/bin/python3 /app/run_output.py "$@"

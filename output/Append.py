@@ -226,7 +226,10 @@ class Append:
                 module.append_module(self.metadata_json)
                 self.logger.info(f"Appended {module.__class__.__name__} data to {self.sos_file.name}.")
             except Exception as e:
+                import traceback
                 self.logger.error(f"Failed to append {module.__class__.__name__}: {e}")
+                self.logger.error(traceback.format_exc())        
+                
     def create_modules(self, run_type, input_dir, diag_dir, flpe_dir, moi_dir, \
                        off_dir, val_dir, consensus_dir, lakeflow_dir, ssc_dir):
         

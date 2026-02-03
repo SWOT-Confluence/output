@@ -63,10 +63,6 @@ class Append:
         list of AbstractModule objects to execute result storage ops for
     MODULES_LIST: list
         list of string module names to create objects for
-    PRIORS_SUFFIX: str
-        string suffix for priors file name
-    RESULTS_SUFFIX: str
-        string suffix for output file name
     sos_nrids: nd.array
         array of SOS reach identifiers on the node-level
     sos_nids: nd.array
@@ -99,20 +95,22 @@ class Append:
     """
 
 
-    PRIORS_SUFFIX = "sword_v16_SOS_priors"
-    RESULTS_SUFFIX = "sword_v16_SOS_results"
-    # PRIORS_SUFFIX = "sword_v11_SOS_priors"
-    # RESULTS_SUFFIX = "sword_v11_SOS_results"
     VERS_LENGTH = 4
     INT_FILL_VALUE = -999
 
     def __init__(self, cont_json, index, input_dir, output_dir, modules, logger,
-                 metadata_json):
+                 metadata_json, sword_version="17"):
         """
         TODO: Remove "temp" from output_dir (self.sos_new)
 
         Parameters
         ----------
+        sword_version: str
+            string arg input of SWORD version that built priors
+        priors_suffix: str
+            string suffix for priors file name
+        results_suffix: str
+            string suffix for output file name
         cont_json: Path
             path to continent JSON file
         index: int
@@ -125,12 +123,18 @@ class Append:
             list of module results to append to the SoS
         logger: Logger
             logger to use for logging state
+        sword_version: str, optional
+            SWORD version number (default: "16")
         """
+        
+        self.sword_version = sword_version
+        self.priors_suffix = f"sword_v{sword_version}_SOS_priors"
+        self.results_suffix = f"sword_v{sword_version}_SOS_results"
         
         self.cont = get_cont_data(cont_json, index)
         self.sos_cur = input_dir / "sos"
-        self.sos_file = output_dir / "sos" / f"{list(self.cont.keys())[0]}_{self.RESULTS_SUFFIX}.nc"
-        sos_data = get_continent_sos_data(self.sos_cur, list(self.cont.keys())[0], self.PRIORS_SUFFIX)
+        self.sos_file = output_dir / "sos" / f"{list(self.cont.keys())[0]}_{self.results_suffix}.nc"
+        sos_data = get_continent_sos_data(self.sos_cur, list(self.cont.keys())[0], self.priors_suffix)
         self.sos_rids = sos_data["reaches"]
         self.sos_nrids = sos_data["node_reaches"]
         self.sos_nids = sos_data["nodes"]
@@ -153,7 +157,7 @@ class Append:
         # Create directory and file
         self.sos_file.parent.mkdir(parents=True, exist_ok=True)
         continent = self.sos_file.name.split('_')[0]        
-        prior_sos = Dataset(self.sos_cur / f"{continent}_{self.PRIORS_SUFFIX}.nc")
+        prior_sos = Dataset(self.sos_cur / f"{continent}_{self.priors_suffix}.nc")
         result_sos = Dataset(self.sos_file, 'w')
         
         # Global attributes
@@ -197,13 +201,14 @@ class Append:
         # Variable length time steps
         self.vlen_f = result_sos.createVLType(np.float64, "vlen_float")
         self.vlen_i = result_sos.createVLType(np.int32, "vlen_int")
+        self.vlen_i8 = result_sos.createVLType(np.int64, "vlen_int64")
         self.vlen_s = result_sos.createVLType("S1", "vlen_str")
 
         # Node and reach group
         write_reaches(prior_sos, result_sos, self.metadata_json)
         
         # netCDF4 library is not reading in node_ids - use xarray
-        ds = xr.open_dataset(self.sos_cur / f"{continent}_{self.PRIORS_SUFFIX}.nc",
+        ds = xr.open_dataset(self.sos_cur / f"{continent}_{self.priors_suffix}.nc",
                              group="nodes", drop_variables="river_name")
         node_ids = ds["node_id"].data
         ds.close()
@@ -217,9 +222,14 @@ class Append:
         """Append data to the SoS by executing module storage operations."""
         
         for module in self.modules:
-            module.append_module(self.metadata_json)
-            self.logger.info(f"Appended {module.__class__.__name__} data to {self.sos_file.name}.")
-        
+            try:
+                module.append_module(self.metadata_json)
+                self.logger.info(f"Appended {module.__class__.__name__} data to {self.sos_file.name}.")
+            except Exception as e:
+                import traceback
+                self.logger.error(f"Failed to append {module.__class__.__name__}: {e}")
+                self.logger.error(traceback.format_exc())        
+                
     def create_modules(self, run_type, input_dir, diag_dir, flpe_dir, moi_dir, \
                        off_dir, val_dir, consensus_dir, lakeflow_dir, ssc_dir):
         
@@ -285,7 +295,7 @@ class Append:
                     self.sos_nids)) 
             if module == "priors" and run_type == "constrained":
                 self.modules.append(Priors(list(self.cont.values())[0], \
-                    self.sos_cur, self.sos_file, self.logger, self.PRIORS_SUFFIX))
+                    self.sos_cur, self.sos_file, self.logger, self.priors_suffix))
             if module == "sad":
                 self.modules.append(Sad(list(self.cont.values())[0], \
                     flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
@@ -301,7 +311,7 @@ class Append:
 
             if module == "consensus":
                 self.modules.append(Consensus(list(self.cont.values())[0], \
-                    flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
+                    flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i8, \
                     self.vlen_s, self.sos_rids))
                 
             if module == "ssc":
