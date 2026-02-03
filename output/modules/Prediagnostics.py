@@ -149,12 +149,33 @@ class Prediagnostics(AbstractModule):
 # )
                     # for a_variable in pre_ds['reach'].variables.keys():
                     #     pre_dict['reach'][a_variable][index] = pre_ds['reach'][a_variable][:].filled(self.FILL["i4"])
+#ORIGINAL 
+    #     j = 0
+    #     for i in indexes[0]:
+    #         for a_variable in pre_ds['node'].variables.keys():
+    #             if a_variable != 'attrs':
+    #                 pre_dict['node'][a_variable][i] = pre_ds['node'][a_variable][:,j].filled(self.FILL["i4"])
+    # # Get the number of nodes in the prediagnostics file
+    
+# This version includes some exception handling
+    
+    num_nodes_in_file = pre_ds['node'].dimensions['num_nodes'].size
 
-        j = 0
-        for i in indexes[0]:
-            for a_variable in pre_ds['node'].variables.keys():
-                if a_variable != 'attrs':
+    j = 0
+    for i in indexes[0]:
+        # Check if we've exceeded the nodes available in the file
+        if j >= num_nodes_in_file:
+            self.logger.warning(f'Node index {j} exceeds available nodes ({num_nodes_in_file}) in prediagnostics file')
+            break
+            
+        for a_variable in pre_ds['node'].variables.keys():
+            if a_variable != 'attrs':
+                try:
                     pre_dict['node'][a_variable][i] = pre_ds['node'][a_variable][:,j].filled(self.FILL["i4"])
+                except IndexError:
+                    self.logger.warning(f'Could not access node variable {a_variable} at index {j}')
+                    break
+        j += 1
             # pre_dict["node"]["ice_clim_f"][i] = pre_ds["node"]["ice_clim_f"][:,j].filled(self.FILL["i4"])
             # # pre_dict["node"]["ice_dyn_f"][i] = pre_ds["node"]["ice_dyn_f"][:,j].filled(self.FILL["i4"])
             # pre_dict["node"]["dark_frac"][i] = pre_ds["node"]["dark_frac"][:,j].filled(self.FILL["i4"])
