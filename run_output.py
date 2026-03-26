@@ -85,7 +85,7 @@ def create_args():
     arg_parser.add_argument("-v",
                             "--swordversion",
                             type=str,
-                            default="17",
+                            default="17b",
                             help="Version of sword we are using")
     return arg_parser
 
