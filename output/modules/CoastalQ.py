@@ -62,8 +62,7 @@ class CoastalQ(AbstractModule):
 
     def get_module_data(self):
         """Queue CoastalQ delta NetCDF files for the active continent."""
-        cq_dir = self.input_dir / "coastalq"
-        cq_files = list(cq_dir.glob("*.nc"))
+        cq_files = list(self.input_dir.glob("*.nc"))
         data_dict = self.create_data_dict()
 
         if not cq_files:
@@ -112,6 +111,7 @@ class CoastalQ(AbstractModule):
             else:
                 coastal_group = sos_ds.groups['coastal']
 
+            coastal_info_set = False # flag
             for delta_name, cq_file in data_dict.items():
                 try:
                     with Dataset(cq_file, 'r') as src_ds:
@@ -121,8 +121,11 @@ class CoastalQ(AbstractModule):
                         else:
                             delta_group = coastal_group.groups[delta_name]
 
-                        # 1. Copy Group-level Attributes
-                        delta_group.setncatts(src_ds.__dict__)
+                        # 1. Copy attributes for the first delta in the series
+                        if not coastal_info_set:
+                            filtered_attrs = {k: v for k, v in src_ds.__dict__.items() if k != 'delta_name'}
+                            coastal_group.setncatts(filtered_attrs)
+                            coastal_info_set = True
 
                         # 2. Copy Dimensions (handling unlimited dimensions safely)
                         for dim_name, dimension in src_ds.dimensions.items():
