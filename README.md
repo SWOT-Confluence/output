@@ -20,7 +20,7 @@ Build a Docker image: `docker build -t output .`
 - -i: index to locate continent in JSON file
 - -c: Name of the continent JSON file
 - -r: run type for workflow execution: 'constrained' or 'unconstrained'
-- -m: List of modules to gather output data for: "hivdi", "metroman", "moi", "momma", "neobam", "prediagnostics", "priors", "sad", "sic4dvar", "swot", "validation", "offline"
+- -m: List of modules to gather output data for: "hivdi", "metroman", "moi", "momma", "neobam", "prediagnostics", "priors", "sad", "sic4dvar", "swot", "validation", "offline", "coastalq"
 
 **Execute a Docker container:**
 
