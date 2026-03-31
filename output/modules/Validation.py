@@ -56,27 +56,29 @@ class Validation(AbstractModule):
             array of SOS node identifiers
         """
 
-        self.num_algos = 14
-        self.num_algos_offline = 14
+        self.num_algos = 8 # metroman, neobam, busboi, hivdi, momma, sad, sic4dvar, consensus
+        self.num_algos_offline = 16
         self.nchar = 100
         self.out_groups = ['offline', 'moi', 'flpe']
         self.algo_names_offline = [
-            "dschg_gb",
-            "dschg_gh",
-            "dschg_gm",
-            "dschg_go",
-            "dschg_gs",
-            "dschg_gi",
-            "dschg_i",
-            "dschg_b",
-            "dschg_h",
-            "dschg_m",
-            "dschg_o",
-            "dschg_s",
-            "dschg_gc",
-            "dschg_c"
+            "dschg_gb",    # 0  - bam constrained
+            "dschg_ga",    # 1  - busboi constrained
+            "dschg_gh",    # 2  - hivdi constrained
+            "dschg_gm",    # 3  - metroman constrained
+            "dschg_go",    # 4  - momma constrained
+            "dschg_gs",    # 5  - sads constrained
+            "dschg_gi",    # 6  - sic4dvar constrained
+            "dschg_i",     # 7  - sic4dvar unconstrained
+            "dschg_b",     # 8  - bam unconstrained
+            "dschg_a",     # 9  - busboi unconstrained
+            "dschg_h",     # 10 - hivdi unconstrained
+            "dschg_m",     # 11 - metroman unconstrained
+            "dschg_o",     # 12 - momma unconstrained
+            "dschg_s",     # 13 - sads unconstrained
+            "dschg_gc",    # 14 - consensus constrained
+            "dschg_c"      # 15 - consensus unconstrained
         ]
-        self.algo_names = np.array(["metroman", "neobam", "hivdi", "momma", "sad", "sic4dvar", "consensus"])
+        self.algo_names = np.array(["metroman", "neobam", "busboi", "hivdi", "momma", "sad", "sic4dvar", "consensus"])
 
         self.suffixes = ['_flpe', '_moi', '_o']
         self.suffix_dict = {
@@ -140,11 +142,11 @@ class Validation(AbstractModule):
                              val_dict[self.suffix_dict[suffix]]["nbias"][index,:val_ds[f"nBIAS{suffix}"].shape[0]] = val_ds[f"nBIAS{suffix}"][:].filled(np.nan)
                              # val_dict[self.suffix_dict[suffix]]["rrmse"][index,:] = val_ds[f"rRMSE{suffix}"][:].filled(np.nan)
                              val_dict[self.suffix_dict[suffix]]["sige"][index,:val_ds[f"SIGe{suffix}"].shape[0]] = val_ds[f"SIGe{suffix}"][:].filled(np.nan)
-                             val_dict[self.suffix_dict[suffix]]["spearmanr"][index,:val_ds[f"Spearmanr{suffix}"].shape[0]] = val_ds[f"Spearmanr{suffix}"][:].filled(np.nan)
+                             val_dict[self.suffix_dict[suffix]]["pearsonr"][index,:val_ds[f"pearsonr{suffix}"].shape[0]] = val_ds[f"pearsonr{suffix}"][:].filled(np.nan)
                              val_dict[self.suffix_dict[suffix]]["testn"][index,:val_ds[f"testn{suffix}"].shape[0]] = val_ds[f"testn{suffix}"][:].filled(np.nan)
                         val_ds.close()
-                    except:
-                        self.logger.warn(f'Reach {s_rid} failed for Validation ...')
+                    except Exception as e:
+                        self.logger.warn(f'Reach {s_rid} failed for Validation: {e}')
 
                 index += 1
         return val_dict
@@ -178,7 +180,7 @@ class Validation(AbstractModule):
                 algo_names = self.algo_names_offline
             data_dict[group] = {
 
-            "num_algos" : self.num_algos,
+            "num_algos" : num_algos_dim,
             "nchar": self.nchar,
             
             "gageid": np.full((self.sos_rids.shape[0], self.nchar), ''),
@@ -191,7 +193,7 @@ class Validation(AbstractModule):
             "nbias": np.full((self.sos_rids.shape[0], num_algos_dim), np.nan, dtype=np.float64),
             # "rrmse": np.full((self.sos_rids.shape[0], self.num_algos), np.nan, dtype=np.float64),
             "sige": np.full((self.sos_rids.shape[0], num_algos_dim), np.nan, dtype=np.float64),
-            "spearmanr": np.full((self.sos_rids.shape[0], num_algos_dim), np.nan, dtype=np.float64),
+            "pearsonr": np.full((self.sos_rids.shape[0], num_algos_dim), np.nan, dtype=np.float64),
             "testn": np.full((self.sos_rids.shape[0], num_algos_dim), np.nan, dtype=np.float64),
             "attrs": {
                 "algo_names": {},
@@ -205,15 +207,16 @@ class Validation(AbstractModule):
                 # "rrmse": {},
                 "testn": {},
                 "sige":{}, 
-                "spearmanr":{}, 
+                "pearsonr":{}, 
                 "has_validation": {},
             }}
 
             data_dict[group]["algo_names"] = {}
-            data_dict[group]["algo_names"] =  np.full((num_algos_dim, self.nchar), '')
+            # Replace the algo_names block at the end of the group loop:
+            data_dict[group]["algo_names"] = np.full((self.sos_rids.shape[0], num_algos_dim, self.nchar), '')
             for i, name in enumerate(algo_names):
-                    # Fill each row with the characters of the algorithm name
-                    data_dict[group]['algo_names'][i, :len(name)] = list(name)
+                # Fill each row with the characters of the algorithm name
+                data_dict[group]['algo_names'][:, i, :len(name)] = list(name)
                     
         
         # Vlen variables
@@ -249,7 +252,7 @@ class Validation(AbstractModule):
             data_dict[self.suffix_dict[suffix]]["attrs"]["nbias"] = ds[f"nBIAS{suffix}"].__dict__
             data_dict[self.suffix_dict[suffix]]["attrs"]["testn"] = ds[f"testn{suffix}"].__dict__
             data_dict[self.suffix_dict[suffix]]["attrs"]["sige"] = ds[f"SIGe{suffix}"].__dict__
-            data_dict[self.suffix_dict[suffix]]["attrs"]["spearmanr"] = ds[f"Spearmanr{suffix}"].__dict__
+            data_dict[self.suffix_dict[suffix]]["attrs"]["pearsonr"] = ds[f"pearsonr{suffix}"].__dict__
 
         #data_dict['flpe']["attrs"]["time"] = ds["time"].__dict__
         #data_dict['flpe']["attrs"]["consensus_flpe"] = ds["consensus_flpe"].__dict__
@@ -272,7 +275,8 @@ class Validation(AbstractModule):
 
         # Dimensions
 
-        val_t_grp.createDimension("num_algos", self.num_algos)
+        val_t_grp.createDimension("num_algos_flpe_moi", self.num_algos)          # 8
+        val_t_grp.createDimension("num_algos_offline", self.num_algos_offline)   # 16
         val_t_grp.createDimension("nchar", self.nchar)
         val_t_grp.createDimension("num_reaches", self.sos_rids.shape[0])
 
@@ -316,13 +320,16 @@ class Validation(AbstractModule):
             # self.set_variable_atts(var, metadata_json["validation"]["nbias"]) 
             # # var = self.write_var(val_grp, "rrmse", "f8", ("num_reaches", "num_algos",), data_dict)
             # # self.set_variable_atts(var, metadata_json["validation"]["rrmse"]) 
-            # var = self.write_var(val_grp, "spearmanr", "f8", ("num_reaches", "num_algos",), data_dict[group])
-            # self.set_variable_atts(var, metadata_json["validation"]["spearmanr"]) 
+            # var = self.write_var(val_grp, "pearsonr", "f8", ("num_reaches", "num_algos",), data_dict[group])
+            # self.set_variable_atts(var, metadata_json["validation"]["pearsonr"]) 
             # var = self.write_var(val_grp, "sige", "f8", ("num_reaches", "num_algos",), data_dict[group])
             # self.set_variable_atts(var, metadata_json["validation"]["sige"]) 
+            
+            
+            num_algos_dim_name = "num_algos_offline" if group == "offline" else "num_algos_flpe_moi"
 
-                # Writing "algo_names" and conditionally setting attributes
-            var = self.write_var(val_grp, "algo_names", "S1", ("num_reaches", "num_algos", "nchar",), data_dict[group])
+            # Writing "algo_names" and conditionally setting attributes
+            var = self.write_var(val_grp, "algo_names", "S1", ("num_reaches", num_algos_dim_name, "nchar",), data_dict[group])
             if "algo_names" in metadata_json["validation"]:
                 self.set_variable_atts(var, metadata_json["validation"]["algo_names"])
 
@@ -336,49 +343,21 @@ class Validation(AbstractModule):
             if "has_validation" in metadata_json["validation"]:
                 self.set_variable_atts(var, metadata_json["validation"]["has_validation"])
 
-            # Writing "nse" and conditionally setting attributes
-            var = self.write_var(val_grp, "nse", "f8", ("num_reaches", "num_algos",), data_dict[group])
-            if "nse" in metadata_json["validation"]:
-                self.set_variable_atts(var, metadata_json["validation"]["nse"])
-
-            # Writing "rsq" and conditionally setting attributes
-            var = self.write_var(val_grp, "rsq", "f8", ("num_reaches", "num_algos",), data_dict[group])
-            if "rsq" in metadata_json["validation"]:
-                self.set_variable_atts(var, metadata_json["validation"]["rsq"])
-
-            # Writing "kge" and conditionally setting attributes
-            var = self.write_var(val_grp, "kge", "f8", ("num_reaches", "num_algos",), data_dict[group])
-            if "kge" in metadata_json["validation"]:
-                self.set_variable_atts(var, metadata_json["validation"]["kge"])
-
-            # Writing "rmse" and conditionally setting attributes
-            var = self.write_var(val_grp, "rmse", "f8", ("num_reaches", "num_algos",), data_dict[group])
-            if "rmse" in metadata_json["validation"]:
-                self.set_variable_atts(var, metadata_json["validation"]["rmse"])
-
-            # Writing "testn" and conditionally setting attributes
-            var = self.write_var(val_grp, "testn", "f8", ("num_reaches", "num_algos",), data_dict[group])
-            if "testn" in metadata_json["validation"]:
-                self.set_variable_atts(var, metadata_json["validation"]["testn"])
-
-            # Writing "nrmse" and conditionally setting attributes
-            var = self.write_var(val_grp, "nrmse", "f8", ("num_reaches", "num_algos",), data_dict[group])
-            if "nrmse" in metadata_json["validation"]:
-                self.set_variable_atts(var, metadata_json["validation"]["nrmse"])
-
-            # Writing "nbias" and conditionally setting attributes
-            var = self.write_var(val_grp, "nbias", "f8", ("num_reaches", "num_algos",), data_dict[group])
-            if "nbias" in metadata_json["validation"]:
-                self.set_variable_atts(var, metadata_json["validation"]["nbias"])
-
-            # Writing "spearmanr" and conditionally setting attributes
-            var = self.write_var(val_grp, "spearmanr", "f8", ("num_reaches", "num_algos",), data_dict[group])
-            if "spearmanr" in metadata_json["validation"]:
-                self.set_variable_atts(var, metadata_json["validation"]["spearmanr"])
-
-            # Writing "sige" and conditionally setting attributes
-            var = self.write_var(val_grp, "sige", "f8", ("num_reaches", "num_algos",), data_dict[group])
-            if "sige" in metadata_json["validation"]:
-                self.set_variable_atts(var, metadata_json["validation"]["sige"])
+            # Writing metric variables with group-appropriate num_algos dimension
+            metric_vars = [
+                ("nse",      "f8", metadata_json["validation"].get("nse")),
+                ("rsq",      "f8", metadata_json["validation"].get("rsq")),
+                ("kge",      "f8", metadata_json["validation"].get("kge")),
+                ("rmse",     "f8", metadata_json["validation"].get("rmse")),
+                ("testn",    "f8", metadata_json["validation"].get("testn")),
+                ("nrmse",    "f8", metadata_json["validation"].get("nrmse")),
+                ("nbias",    "f8", metadata_json["validation"].get("nbias")),
+                ("pearsonr", "f8", metadata_json["validation"].get("pearsonr")),
+                ("sige",     "f8", metadata_json["validation"].get("sige")),
+            ]
+            for var_name, dtype, attrs in metric_vars:
+                var = self.write_var(val_grp, var_name, dtype, ("num_reaches", num_algos_dim_name,), data_dict[group])
+                if attrs is not None:
+                    self.set_variable_atts(var, attrs)
         
         sos_ds.close()
