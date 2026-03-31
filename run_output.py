@@ -39,6 +39,7 @@ CONSENSUS = Path('/mnt/data/flpe')
 OUTPUT = Path("/mnt/data/output")
 LAKEFLOW = Path("/mnt/data/flpe/lakeflow")
 SSC = Path("/mnt/data/flpe/ssc")
+COASTALQ = Path("/mnt/coastalq") # possibly update to /mnt/data/coastalq
 
 def create_args():
     """Create and return argparser with arguments."""
@@ -130,7 +131,7 @@ def main():
         logger, args.metadatajson, args.swordversion)
     append.create_new_version()
     append.create_modules(args.runtype, INPUT, DIAGNOSTICS, FLPE, MOI, OFFLINE, \
-        VALIDATION / "stats", CONSENSUS, LAKEFLOW, SSC)
+        VALIDATION / "stats", CONSENSUS, LAKEFLOW, SSC, COASTALQ)
     append.append_data()
     append.update_time_coverage()
 
