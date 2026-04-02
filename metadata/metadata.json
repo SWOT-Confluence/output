@@ -4427,23 +4427,6 @@
                 "Prior discharge used to constrain the BUSBOI algorithm"
             ]
         },
-        "time_str": {
-            "long_name": [
-                "Observation date"
-            ],
-            "units": [
-                "YYYY-MM-DD"
-            ],
-            "fill": [
-                "NA"
-            ],
-            "coverage_content_type": [
-                "coordinate"
-            ],
-            "comment": [
-                "Date of each SWOT observation in YYYY-MM-DD format"
-            ]
-        },
         "is_valid": {
             "long_name": [
                 "Valid reach flag"
@@ -4462,6 +4445,29 @@
             ],
             "comment": [
                 "Flag indicating whether the reach had sufficient data for BUSBOI to produce valid discharge estimates (1=valid, 0=invalid)"
+            ]
+        },
+        "time": {
+            "long_name": [
+                "Observation time"
+            ],
+            "units": [
+                "seconds since 2000-01-01 00:00:00.000"
+            ],
+            "valid_min": [
+                0
+            ],
+            "valid_max": [
+                1000000000
+            ],
+            "fill": [
+                -999999999999
+            ],
+            "coverage_content_type": [
+                "coordinate"
+            ],
+            "comment": [
+                "Time of each SWOT observation in seconds since 2000-01-01"
             ]
         }
     }

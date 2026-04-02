@@ -153,25 +153,13 @@ class AbstractModule(metaclass=ABCMeta):
             var[:] = np.nan_to_num(data_dict[name], copy=True, nan=self.FILL[type_of_var])
         else:
             var[:] = data_dict[name]
+
+        
         return var
     
     def write_var_nt(self, grp, name, vlen, dims, data_dict, fill=0):
-        """Create NetCDF variable length data variable and write module data.
-        
-        Parameters
-        ----------
-        grp: netCDF4._netCDF4.Group
-            dicharge NetCDF4 group to write data to
-        name: str
-            name of variable
-        vlen: netCDF4._netCDF4.VLType
-            variable length data type
-        dims: tuple
-            tuple of NetCDF4 dimensions that matches shape of var data
-        data_dict: dict
-            dictionary of result data
-        """
-        
+        """Create NetCDF variable length data variable and write module data."""
+    
         var = grp.createVariable(name, vlen, dims)
         if data_dict["attrs"][name]:
             if fill:
@@ -181,15 +169,27 @@ class AbstractModule(metaclass=ABCMeta):
                 var.missing_value = fill
             data_dict["attrs"][name].pop("_FillValue", None)
             var.setncatts(data_dict["attrs"][name])
-        for i, x in enumerate(data_dict[name][:]):
+    
+        for i, _ in enumerate(data_dict[name][:]):
             try:
-                var[i] = data_dict[name][i][:]
-
+                item = data_dict[name][i]
+                if isinstance(item, str):
+                    # String ragged arrays: pass through directly, np.array()
+                    # wrapping turns them into 0-d arrays that netCDF4 rejects
+                    var[i] = item
+                else:
+                    arr = np.asarray(item[:])
+                    # Apply NaN sanitisation only for floating-point arrays,
+                    # mirroring the guard already present in write_var()
+                    if np.issubdtype(arr.dtype, np.floating):
+                        arr = np.nan_to_num(arr, nan=self.FILL["f8"])
+                    var[i] = arr
             except Exception as e:
-                print('problem',data_dict[name][i], type(data_dict[name][i]), e)
+                print('problem', data_dict[name][i], type(data_dict[name][i]), e)
                 raise
-        
+    
         return var
+
         
     def set_variable_atts(self, variable, variable_dict):
         """Set the variable attribute metdata."""
