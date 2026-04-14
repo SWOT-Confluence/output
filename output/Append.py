@@ -35,7 +35,7 @@ from output.modules.Hivdi import Hivdi
 from output.modules.Metroman import Metroman
 from output.modules.Moi import Moi
 from output.modules.Momma import Momma
-from output.modules.Neobam import Neobam
+from output.modules.Busboi import Busboi
 from output.modules.Offline import Offline
 from output.modules.Postdiagnostics import Postdiagnostics
 from output.modules.Prediagnostics import Prediagnostics
@@ -276,8 +276,8 @@ class Append:
                 self.modules.append(Momma(list(self.cont.values())[0], \
                     flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
                     self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
-            if module == "neobam":
-                self.modules.append(Neobam(list(self.cont.values())[0], \
+            if module == "busboi":
+                self.modules.append(Busboi(list(self.cont.values())[0], \
                     flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
                     self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "offline":
