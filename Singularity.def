@@ -2,8 +2,8 @@ Bootstrap: docker
 From: ghcr.io/swot-confluence/output:latest
 
 %files
-    metadata /app/metadata/
-    output /app/output/
+    metadata/. /app/metadata/
+    output/. /app/output/
     run_output.py /app/run_output.py
 
 %post
