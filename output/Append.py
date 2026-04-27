@@ -474,20 +474,23 @@ def write_nodes(prior_sos, result_sos, metadata_json, node_ids):
     
     # Latitude
     x = sos_node.createVariable("x", "f8", ("num_nodes"), compression="zlib")
-    x.setncatts(prior_sos["nodes"]["x"].__dict__)
-    x[:] = prior_sos["nodes"]["x"][:]
+    if "x" in prior_sos["nodes"].variables:
+        x.setncatts(prior_sos["nodes"]["x"].__dict__)
+        x[:] = prior_sos["nodes"]["x"][:]
     set_variable_atts(x, metadata_json["nodes"]["x"])
     
     # Longitude
     y = sos_node.createVariable("y", "f8", ("num_nodes"), compression="zlib")
-    y.setncatts(prior_sos["nodes"]["y"].__dict__)
-    y[:] = prior_sos["nodes"]["y"][:]
+    if "y" in prior_sos["nodes"].variables:
+        y.setncatts(prior_sos["nodes"]["y"].__dict__)
+        y[:] = prior_sos["nodes"]["y"][:]
     set_variable_atts(y, metadata_json["nodes"]["y"])
     
     # River name
     river_name = sos_node.createVariable("river_name", str, ("num_nodes"),)
-    river_name.setncatts(prior_sos["nodes"]["river_name"].__dict__)
-    river_name[:] = prior_sos["nodes"]["river_name"][:]
+    if "river_name" in prior_sos["nodes"].variables:
+        river_name.setncatts(prior_sos["nodes"]["river_name"].__dict__)
+        river_name[:] = prior_sos["nodes"]["river_name"][:]
     set_variable_atts(river_name, metadata_json["nodes"]["river_name"])
 
 def set_variable_atts(variable, variable_dict):
