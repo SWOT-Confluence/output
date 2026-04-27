@@ -4379,5 +4379,182 @@
                 ]
             }
         }
+    },
+    "busboi": {
+        "q": {
+            "long_name": [
+                "BUSBOI estimated discharge"
+            ],
+            "units": [
+                "m^3/s"
+            ],
+            "valid_min": [
+                0
+            ],
+            "valid_max": [
+                1000000000
+            ],
+            "fill": [
+                -999999999999
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ],
+            "comment": [
+                "Discharge time series estimated by the BUSBOI algorithm"
+            ]
+        },
+        "q_sd": {
+            "long_name": [
+                "BUSBOI estimated discharge standard deviation"
+            ],
+            "units": [
+                "m^3/s"
+            ],
+            "valid_min": [
+                0
+            ],
+            "valid_max": [
+                1000000000
+            ],
+            "fill": [
+                -999999999999
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ],
+            "comment": [
+                "Standard deviation of discharge estimates"
+            ]
+        },
+        "r": {
+            "long_name": [
+                "Manning's roughness coefficient"
+            ],
+            "units": [
+                "dimensionless"
+            ],
+            "valid_min": [
+                0
+            ],
+            "valid_max": [
+                1
+            ],
+            "fill": [
+                -999999999999
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ],
+            "comment": [
+                "Scalar Manning's roughness coefficient estimated by BUSBOI"
+            ]
+        },
+        "bed_elevation": {
+            "long_name": [
+                "Bed elevation relative to geoid"
+            ],
+            "units": [
+                "m"
+            ],
+            "valid_min": [
+                -1000
+            ],
+            "valid_max": [
+                10000
+            ],
+            "fill": [
+                -999999999999
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ],
+            "comment": [
+                "Estimated bed elevation at each cross-section node along the reach"
+            ]
+        },
+        "chainage": {
+            "long_name": [
+                "Along-channel distance"
+            ],
+            "units": [
+                "m"
+            ],
+            "valid_min": [
+                0
+            ],
+            "valid_max": [
+                1000000
+            ],
+            "fill": [
+                -999999999999
+            ],
+            "coverage_content_type": [
+                "coordinate"
+            ],
+            "comment": [
+                "Cumulative along-channel distance from the first node"
+            ]
+        },
+        "prior_Q": {
+            "long_name": [
+                "Prior discharge estimate"
+            ],
+            "units": [
+                "m^3/s"
+            ],
+            "valid_min": [
+                0
+            ],
+            "valid_max": [
+                1000000000
+            ],
+            "fill": [
+                -999999999999
+            ],
+            "coverage_content_type": [
+                "referenceInformation"
+            ],
+            "comment": [
+                "Prior discharge used to constrain the BUSBOI algorithm"
+            ]
+        },
+        "time_str": {
+            "long_name": [
+                "Observation date"
+            ],
+            "units": [
+                "YYYY-MM-DD"
+            ],
+            "fill": [
+                "NA"
+            ],
+            "coverage_content_type": [
+                "coordinate"
+            ],
+            "comment": [
+                "Date of each SWOT observation in YYYY-MM-DD format"
+            ]
+        },
+        "is_valid": {
+            "long_name": [
+                "Valid reach flag"
+            ],
+            "units": [
+                "dimensionless"
+            ],
+            "valid_min": [
+                0
+            ],
+            "valid_max": [
+                1
+            ],
+            "coverage_content_type": [
+                "qualityInformation"
+            ],
+            "comment": [
+                "Flag indicating whether the reach had sufficient data for BUSBOI to produce valid discharge estimates (1=valid, 0=invalid)"
+            ]
+        }
     }
 }

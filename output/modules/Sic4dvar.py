@@ -93,14 +93,16 @@ class Sic4dvar(AbstractModule):
                         sv_dict["Q_da"][index] = sv_ds["Q_da"][:].filled(self.FILL["f8"])
                         indexes = np.where(s_rid == self.sos_nrids)
 
-                        nb_nodes, nb_cross_section = sv_ds["width"][:].filled(np.nan).shape
-                        width = np.full((sv_dict["width"][indexes].shape), np.nan)
-                        width[:nb_nodes, :nb_cross_section] = sv_ds["width"][:].filled(np.nan)
-                        sv_dict["width"][indexes] = width
+                        if "width" in sv_ds.variables:
+                            nb_nodes, nb_cross_section = sv_ds["width"][:].filled(np.nan).shape
+                            width = np.full((sv_dict["width"][indexes].shape), np.nan)
+                            width[:nb_nodes, :nb_cross_section] = sv_ds["width"][:].filled(np.nan)
+                            sv_dict["width"][indexes] = width
                         
-                        elevation = np.full((sv_dict["elevation"][indexes].shape), np.nan)
-                        elevation[:nb_nodes, :nb_cross_section] = sv_ds["elevation"][:].filled(np.nan)
-                        sv_dict["elevation"][indexes] = elevation
+                        if "elevation" in sv_ds.variables:
+                            elevation = np.full((sv_dict["elevation"][indexes].shape), np.nan)
+                            elevation[:nb_nodes, :nb_cross_section] = sv_ds["elevation"][:].filled(np.nan)
+                            sv_dict["elevation"][indexes] = elevation
 
                         sv_dict["node_id"][indexes] = self.sos_nids[indexes]
                         # self.__insert_nx(sv_dict, sv_ds, indexes)
@@ -154,7 +156,8 @@ class Sic4dvar(AbstractModule):
         
         ds = Dataset(nc_file, 'r')
         for key in data_dict["attrs"].keys():
-            data_dict["attrs"][key] = ds[key].__dict__        
+            if key in ds.variables:
+                data_dict["attrs"][key] = ds[key].__dict__        
         ds.close()
         
     def __insert_nx(self, sv_dict, sv_ds, indexes):
