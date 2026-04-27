@@ -4288,6 +4288,98 @@
             ]
         }
     },
+    "coastal": {
+        "delta_name": {
+            "time": {
+                "long_name": [
+                    "time"
+                ],
+                "standard_name": [
+                    "time"
+                ],
+                "units": [
+                    "seconds since 2000-01-01T00:00:00Z"
+                ],
+                "coverage_content_type": [
+                    "coordinate"
+                ],
+                "calendar": [
+                    "standard"
+                ],
+                "axis": [
+                    "T"
+                ]
+            },
+            "reach": {
+                "long_name": [
+                    "Local Delta Reach ID"
+                ],
+                "comment": [
+                    "Local reach identifiers within the delta network"
+                ],
+                "units": [
+                    "-"
+                ],
+                "coverage_content_type": [
+                    "coordinate"
+                ]
+            },
+            "sword_inlets": {
+                "long_name": [
+                    "SWORD Reach ID"
+                ],
+                "comment": [
+                    "SWORD reach identifiers at delta inlets from which discharge is summed and partitioned"
+                ],
+                "units": [
+                    "-"
+                ],
+                "coverage_content_type": [
+                    "coordinate"
+                ]
+            },
+            "algos": {
+                "long_name": [
+                    "Algorithm Name"
+                ],
+                "comment": [
+                    "Names of discharge algorithms used to compute delta apex discharge"
+                ],
+                "units": [
+                    "-"
+                ],
+                "coverage_content_type": [
+                    "coordinate"
+                ]
+            },
+            "Q": {
+                "standard_name": [
+                    "water_volume_transport_in_river_channel"
+                ],
+                "long_name": [
+                    "River Discharge"
+                ],
+                "comment": [
+                    "Discharge partitioned to delta sub-reaches from apex discharge"
+                ],
+                "units": [
+                    "m3 s-1"
+                ],
+                "valid_min": [
+                    0.0
+                ],
+                "valid_max": [
+                    1000000000.0
+                ],
+                "_FillValue": [
+                    "NaN"
+                ],
+                "coverage_content_type": [
+                    "modelResult"
+                ]
+            }
+        }
+    },
     "busboi": {
         "q": {
             "long_name": [
