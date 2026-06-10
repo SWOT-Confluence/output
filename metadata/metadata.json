@@ -4429,7 +4429,7 @@
         },
         "r": {
             "long_name": [
-                "Manning's roughness coefficient"
+                "Dingman channel shape"
             ],
             "units": [
                 "dimensionless"
@@ -4438,7 +4438,7 @@
                 0
             ],
             "valid_max": [
-                1
+                1000
             ],
             "fill": [
                 -999999999999
@@ -4447,7 +4447,53 @@
                 "modelResult"
             ],
             "comment": [
-                "Scalar Manning's roughness coefficient estimated by BUSBOI"
+                "shape of the channel estimated by BUSBOI"
+            ]
+        },
+        "db": {
+            "long_name": [
+                "bankfull depth"
+            ],
+            "units": [
+                "m"
+            ],
+            "valid_min": [
+                0
+            ],
+            "valid_max": [
+                1000
+            ],
+            "fill": [
+                -999999999999
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ],
+            "comment": [
+                "Bankfull depth estimated by BUSBOI"
+            ]
+        },
+        "wb": {
+            "long_name": [
+                "Bankfull width"
+            ],
+            "units": [
+                "m"
+            ],
+            "valid_min": [
+                0
+            ],
+            "valid_max": [
+                100000
+            ],
+            "fill": [
+                -999999999999
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ],
+            "comment": [
+                "Bankfull width estimated by BUSBOI"
             ]
         },
         "bed_elevation": {
