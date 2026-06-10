@@ -54,6 +54,23 @@ class Busboi(AbstractModule):
             arr = np.where(np.isnan(arr), self.FILL["f8"], arr)
         return arr
 
+    def _read_scalar(self, nc_var):
+        """Read a scalar netCDF4 variable safely.
+
+        Parameters
+        ----------
+        nc_var : netCDF4.Variable
+
+        Returns
+        -------
+        float
+        """
+        val = nc_var[:]
+        if np.ma.is_masked(val):
+            return self.FILL["f8"]
+        v = float(val)
+        return self.FILL["f8"] if np.isnan(v) else v
+
     def get_module_data(self):
         """Extract BUSBOI results from NetCDF files."""
 
@@ -90,15 +107,16 @@ class Busboi(AbstractModule):
                     bb_dict["chainage"][index]       = self._read_fill(bb_ds["bed/chainage"])
 
                     # Scalar r
-                    r_raw = bb_ds["r/mean"][:]
-                    r_val = float(r_raw) if not np.ma.is_masked(r_raw) else float("nan")
-                    bb_dict["r"][index] = self.FILL["f8"] if np.isnan(r_val) else r_val
+                    bb_dict["r"][index]  = self._read_scalar(bb_ds["r/mean"])
+
+                    # Scalar db and wb
+                    bb_dict["db"][index] = self._read_scalar(bb_ds["r/db"])
+                    bb_dict["wb"][index] = self._read_scalar(bb_ds["r/wb"])
 
                     # is_valid: 1 if any q value is real (non-fill, non-NaN)
                     bb_dict["is_valid"][index] = 1.0 if np.any(
                         (q_vals != self.FILL["f8"]) & ~np.isnan(q_vals)
                     ) else 0.0
-
 
                     bb_ds.close()
                     self.logger.info(f'Reach {s_rid} successfully read for Busboi')
@@ -122,6 +140,8 @@ class Busboi(AbstractModule):
             "bed_elevation" : np.empty(n, dtype=object),
             "chainage"      : np.empty(n, dtype=object),
             "r"             : np.full(n, np.nan, dtype=np.float64),
+            "db"            : np.full(n, np.nan, dtype=np.float64),
+            "wb"            : np.full(n, np.nan, dtype=np.float64),
             "is_valid"      : np.full(n, np.nan, dtype=np.float64),
             "attrs": {
                 "q"             : {},
@@ -130,6 +150,8 @@ class Busboi(AbstractModule):
                 "bed_elevation" : {},
                 "chainage"      : {},
                 "r"             : {},
+                "db"            : {},
+                "wb"            : {},
                 "is_valid"      : {},
             }
         }
@@ -171,6 +193,12 @@ class Busboi(AbstractModule):
         # Scalars per reach
         var = self.write_var(bb_grp, "r",        "f8", ("num_reaches",), data_dict)
         self.set_variable_atts(var, metadata_json["busboi"]["r"])
+
+        var = self.write_var(bb_grp, "db",       "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["busboi"]["db"])
+
+        var = self.write_var(bb_grp, "wb",       "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["busboi"]["wb"])
 
         var = self.write_var(bb_grp, "is_valid",  "f8", ("num_reaches",), data_dict)
         self.set_variable_atts(var, metadata_json["busboi"]["is_valid"])
