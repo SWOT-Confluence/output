@@ -29,7 +29,7 @@ class Validation(AbstractModule):
 
         # Defaults - will be overwritten dynamically from first validation file
         self.num_algos = 7
-        self.num_algos_offline = 16
+        self.num_algos_offline = self.num_algos*2
         self.nchar = 100
         self.out_groups = ['offline', 'moi', 'flpe']
         self.algo_names_offline = [
