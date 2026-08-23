@@ -155,9 +155,9 @@ class Validation(AbstractModule):
             }
 
             data_dict[group]["algo_names"] = np.full((num_algos_dim, self.nchar), '')
-           
+            self.logger.info(algo_names)
             for i, name in enumerate(algo_names):
-                self.logger.info(algo_names)
+               
                 data_dict[group]['algo_names'][i, :len(name)] = list(name)
 
         data_dict['flpe']['time'] = np.empty((self.sos_rids.shape[0]), dtype=object)
