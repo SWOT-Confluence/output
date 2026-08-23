@@ -47,8 +47,8 @@ class Validation(AbstractModule):
             "dschg_s",
             "dschg_gc",
             "dschg_c"
-            #"dschg_ga",
-            #"dschg_a"
+            "dschg_ga",
+            "dschg_a"
         ]
         self.algo_names = np.array(["metroman", "busboi", "hivdi", "momma", "sad", "sic4dvar", "consensus"])
 
