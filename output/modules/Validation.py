@@ -155,6 +155,7 @@ class Validation(AbstractModule):
             }
 
             data_dict[group]["algo_names"] = np.full((num_algos_dim, self.nchar), '')
+            print(algo_names)
             for i, name in enumerate(algo_names):
                 data_dict[group]['algo_names'][i, :len(name)] = list(name)
 
