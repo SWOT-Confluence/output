@@ -31,7 +31,7 @@ class Validation(AbstractModule):
         self.num_algos = 7
         self.num_algos_offline = self.num_algos*2
         self.nchar = 100
-        self.out_groups = ['offline', 'moi', 'flpe']
+        self.out_groups = ['flpe','moi','offline' ]
         self.algo_names_offline = [
             "dschg_gb",
             "dschg_gh",
