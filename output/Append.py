@@ -41,6 +41,7 @@ from output.modules.Offline import Offline
 from output.modules.Postdiagnostics import Postdiagnostics
 from output.modules.Prediagnostics import Prediagnostics
 from output.modules.Priors import Priors
+from output.modules.QQ import QQ
 from output.modules.Sad import Sad
 from output.modules.Sic4dvar import Sic4dvar
 from output.modules.Swot import Swot
@@ -297,6 +298,10 @@ class Append:
             if module == "priors" and run_type == "constrained":
                 self.modules.append(Priors(list(self.cont.values())[0], \
                     self.sos_cur, self.sos_file, self.logger, self.priors_suffix))
+            if module == "qq":
+                self.modules.append(QQ(list(self.cont.values())[0], \
+                    flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
+                    self.vlen_s, self.sos_rids, self.sos_nrids, self.sos_nids))
             if module == "sad":
                 self.modules.append(Sad(list(self.cont.values())[0], \
                     flpe_dir, self.sos_file, self.logger, self.vlen_f, self.vlen_i, \
