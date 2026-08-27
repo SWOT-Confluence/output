@@ -28,7 +28,7 @@ class Validation(AbstractModule):
     def __init__(self, cont_ids, input_dir, sos_new, logger, rids, nrids, nids):
 
         # Defaults - will be overwritten dynamically from first validation file
-        self.num_algos = 7
+        self.num_algos = 8
         self.num_algos_offline = 16
         self.nchar = 100
         self.out_groups = ['offline', 'moi', 'flpe']
@@ -50,7 +50,7 @@ class Validation(AbstractModule):
             "dschg_ga",
             "dschg_a"
         ]
-        self.algo_names = np.array(["metroman", "busboi", "hivdi", "momma", "sad", "sic4dvar", "consensus"])
+        self.algo_names = np.array(["metroman", "busboi", "hivdi", "momma", "sad", "sic4dvar", "qq", "consensus"])
 
         self.suffixes = ['_flpe', '_moi', '_o']
         self.suffix_dict = {
