@@ -3182,6 +3182,182 @@
             ]
         }
     },
+    "qq": {
+        "QQ_time": {
+            "long_name": [
+                "QQ observation time"
+            ],
+            "comment": [
+                "Time vector associated with QQ discharge estimates."
+            ],
+            "units": [
+                "seconds since 2000-01-01 00:00:00.000"
+            ],
+            "coverage_content_type": [
+                "coordinate"
+            ]
+        },
+        "QQ_invalid_reach_detailed_flag": {
+            "long_name": [
+                "QQ invalid reach detailed reason flag"
+            ],
+            "comment": [
+                "Detailed QQ reach-level status flag copied from the QQ output file."
+            ],
+            "units": [
+                "1"
+            ],
+            "coverage_content_type": [
+                "qualityInformation"
+            ]
+        },
+        "QQ_invalid_reach_summary_flag": {
+            "long_name": [
+                "QQ invalid reach summary reason flag"
+            ],
+            "comment": [
+                "Summary QQ reach-level status flag copied from the QQ output file."
+            ],
+            "units": [
+                "1"
+            ],
+            "coverage_content_type": [
+                "qualityInformation"
+            ]
+        },
+        "QQ_q": {
+            "long_name": [
+                "QQ discharge"
+            ],
+            "comment": [
+                "Reach-level discharge estimated by the QQ FLPE algorithm."
+            ],
+            "units": [
+                "m^3/s"
+            ],
+            "valid_min": [
+                0
+            ],
+            "valid_max": [
+                1000000
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
+        },
+        "QQ_q_status_flag": {
+            "long_name": [
+                "QQ discharge estimation status flag"
+            ],
+            "comment": [
+                "Status flag for each QQ discharge value."
+            ],
+            "units": [
+                "1"
+            ],
+            "coverage_content_type": [
+                "qualityInformation"
+            ]
+        },
+        "QQ_wse_quant_prob": {
+            "long_name": [
+                "QQ WSE non-exceedance probability"
+            ],
+            "comment": [
+                "Non-exceedance probabilities used in the QQ WSE quantile table."
+            ],
+            "units": [
+                "1"
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
+        },
+        "QQ_wse_quant_wse": {
+            "long_name": [
+                "QQ WSE quantile"
+            ],
+            "comment": [
+                "Water surface elevation values in the QQ WSE quantile table."
+            ],
+            "units": [
+                "m"
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
+        },
+        "QQ_wse_quant_flag": {
+            "long_name": [
+                "QQ WSE quantile table resampling flag"
+            ],
+            "comment": [
+                "Status flag describing how the QQ WSE quantile table was produced."
+            ],
+            "units": [
+                "1"
+            ],
+            "coverage_content_type": [
+                "qualityInformation"
+            ]
+        },
+        "QQ_lookup_table_prob": {
+            "long_name": [
+                "QQ lookup table non-exceedance probability"
+            ],
+            "comment": [
+                "Non-exceedance probabilities in the QQ discharge lookup table."
+            ],
+            "units": [
+                "1"
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
+        },
+        "QQ_lookup_table_wse": {
+            "long_name": [
+                "QQ lookup table WSE"
+            ],
+            "comment": [
+                "Water surface elevation values in the QQ discharge lookup table."
+            ],
+            "units": [
+                "m"
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
+        },
+        "QQ_lookup_table_q": {
+            "long_name": [
+                "QQ lookup table discharge"
+            ],
+            "comment": [
+                "Discharge values in the QQ lookup table."
+            ],
+            "units": [
+                "m^3/s"
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
+        },
+        "QQ_lookup_table_flag": {
+            "long_name": [
+                "QQ lookup table resampling flag"
+            ],
+            "comment": [
+                "Status flag describing how the QQ lookup table was produced."
+            ],
+            "units": [
+                "1"
+            ],
+            "coverage_content_type": [
+                "qualityInformation"
+            ]
+        }
+    },
     "sic4dvar": {
         "A0": {
             "long_name": [
