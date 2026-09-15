@@ -87,9 +87,9 @@ class Validation(AbstractModule):
                     try:
                         val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
                         self.logger.info('processing validation reach: %s', s_rid)
-                        self.reach_con_status=val_ds['reach_con_status']
-                        self.reach_con_validation=val_ds['reach_con_validation']
-                        self.reach_con_calibration=val_ds['reach_con_calibration']
+                        self.reach_con_status=val_ds['moi_gauge_status']
+                        self.reach_con_validation=val_ds['moi_gauge_validation']
+                        self.reach_con_calibration=val_ds['moi_gauge_calibration']
 
                         for suffix in self.suffixes:
                             grp = self.suffix_dict[suffix]
