@@ -206,9 +206,9 @@ class Validation(AbstractModule):
         val_t_grp = sos_ds.createGroup("validation")
 
         #dump calibration gauge info directly into the val group
-        var = self.write_var(val_grp, "moi_gauge_status", "i4", ("num_reaches",),self.reach_con_status)
-        var = self.write_var(val_grp, "moi_gauge_validation", "i4", ("num_reaches",),self.reach_con_validation)
-        var = self.write_var(val_grp, "moi_gauge_calibration", "i4", ("num_reaches",),self.reach_con_calibration)
+        var = self.write_var(val_t_grp, "moi_gauge_status", "i4", ("num_reaches",),self.reach_con_status)
+        var = self.write_var(val_t_grp, "moi_gauge_validation", "i4", ("num_reaches",),self.reach_con_validation)
+        var = self.write_var(val_t_grp, "moi_gauge_calibration", "i4", ("num_reaches",),self.reach_con_calibration)
 
         val_t_grp.createDimension("num_algos", self.num_algos)
         val_t_grp.createDimension("num_algos_offline", self.num_algos_offline)
