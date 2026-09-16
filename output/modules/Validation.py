@@ -94,9 +94,9 @@ class Validation(AbstractModule):
                     val_ds.close()
                 except:
                     self.logger.info('using fill for moi gauge info: %s', s_rid)    
-                    self.reach_con_status.append(np.nan)
-                    self.reach_con_validation.append(np.nan)
-                    self.reach_con_calibration.append(np.nan)
+                    self.reach_con_status.append(-999)
+                    self.reach_con_validation.append(-999)
+                    self.reach_con_calibration.append(-999)
                 if s_rid in val_rids:
                     try:
                         val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
