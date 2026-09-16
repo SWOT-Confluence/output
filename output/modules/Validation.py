@@ -85,9 +85,18 @@ class Validation(AbstractModule):
             self.reach_con_calibration=[]
             index = 0
             for s_rid in self.sos_rids:
-                self.reach_con_status.append(val_ds.moi_gauge_status)
-                self.reach_con_validation.append(val_ds.moi_gauge_validation)
-                self.reach_con_calibration.append(val_ds.moi_gauge_calibration)
+                try:
+                    val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
+                    self.logger.info('pulling moi gauge info: %s', s_rid)    
+                    self.reach_con_status.append(val_ds.moi_gauge_status)
+                    self.reach_con_validation.append(val_ds.moi_gauge_validation)
+                    self.reach_con_calibration.append(val_ds.moi_gauge_calibration)
+                    val_ds.close()
+                except:
+                    self.logger.info('using fill for moi gauge info: %s', s_rid)    
+                    self.reach_con_status.append(np.nan)
+                    self.reach_con_validation.append(np.nan)
+                    self.reach_con_calibration.append(np.nan)
                 if s_rid in val_rids:
                     try:
                         val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
