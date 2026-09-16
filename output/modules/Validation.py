@@ -80,16 +80,18 @@ class Validation(AbstractModule):
 
             val_dict = self.create_data_dict()
             val_dict = self.get_nc_attrs(val_dir / val_files[0], val_dict)
-
+            self.reach_con_status=[]
+            self.reach_con_validation=[]
+            self.reach_con_calibration=[]
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in val_rids:
                     try:
                         val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
                         self.logger.info('processing validation reach: %s', s_rid)
-                        self.reach_con_status=val_ds.moi_gauge_status
-                        self.reach_con_validation=val_ds.moi_gauge_validation
-                        self.reach_con_calibration=val_ds.moi_gauge_calibration
+                        self.reach_con_status.append(val_ds.moi_gauge_status)
+                        self.reach_con_validation.append(val_ds.moi_gauge_validation)
+                        self.reach_con_calibration.append(val_ds.moi_gauge_calibration)
 
                         for suffix in self.suffixes:
                             grp = self.suffix_dict[suffix]
