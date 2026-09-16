@@ -85,13 +85,13 @@ class Validation(AbstractModule):
             self.reach_con_calibration=[]
             index = 0
             for s_rid in self.sos_rids:
+                self.reach_con_status.append(val_ds.moi_gauge_status)
+                self.reach_con_validation.append(val_ds.moi_gauge_validation)
+                self.reach_con_calibration.append(val_ds.moi_gauge_calibration)
                 if s_rid in val_rids:
                     try:
                         val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
-                        self.logger.info('processing validation reach: %s', s_rid)
-                        self.reach_con_status.append(val_ds.moi_gauge_status)
-                        self.reach_con_validation.append(val_ds.moi_gauge_validation)
-                        self.reach_con_calibration.append(val_ds.moi_gauge_calibration)
+                        self.logger.info('processing validation reach: %s', s_rid)                       
 
                         for suffix in self.suffixes:
                             grp = self.suffix_dict[suffix]
@@ -196,9 +196,10 @@ class Validation(AbstractModule):
         sos_ds    = Dataset(self.sos_new, 'a')
         val_t_grp = sos_ds.createGroup("validation")
 
-        val_t_grp.moi_gauge_status=self.reach_con_status
-        val_t_grp.moi_gauge_validation=self.reach_con_validation
-        val_t_grp.moi_gauge_calibration=self.reach_con_calibration
+        #dump calibration gauge info directly into the val group
+        var = self.write_var(val_grp, "moi_gauge_status", "i4", ("num_reaches",),self.reach_con_status)
+        var = self.write_var(val_grp, "moi_gauge_validation", "i4", ("num_reaches",),self.reach_con_validation)
+        var = self.write_var(val_grp, "moi_gauge_calibration", "i4", ("num_reaches",),self.reach_con_calibration)
 
         val_t_grp.createDimension("num_algos", self.num_algos)
         val_t_grp.createDimension("num_algos_offline", self.num_algos_offline)
