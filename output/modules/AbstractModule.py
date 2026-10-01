@@ -148,11 +148,13 @@ class AbstractModule(metaclass=ABCMeta):
             dictionary of result data
         """
         var = grp.createVariable(name, type_of_var, dims, fill_value=self.FILL[type_of_var], compression="zlib")
-        if data_dict["attrs"][name]: var.setncatts(data_dict["attrs"][name])
-        if type_of_var == "f8" or type_of_var == "i4":
-            var[:] = np.nan_to_num(data_dict[name], copy=True, nan=self.FILL[type_of_var])
-        else:
-            var[:] = data_dict[name]
+        if "moi_gauge" not in name:
+            if data_dict["attrs"][name]: var.setncatts(data_dict["attrs"][name])
+            if type_of_var == "f8" or type_of_var == "i4":
+                var[:] = np.nan_to_num(data_dict[name], copy=True, nan=self.FILL[type_of_var])
+            else:
+                var[:] = data_dict[name]
+        else: var[:] = data_dict
 
         
         return var

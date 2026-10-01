@@ -29,9 +29,9 @@ class Validation(AbstractModule):
 
         # Defaults - will be overwritten dynamically from first validation file
         self.num_algos = 7
-        self.num_algos_offline = 16
+        self.num_algos_offline = self.num_algos*2
         self.nchar = 100
-        self.out_groups = ['offline', 'moi', 'flpe']
+        self.out_groups = ['flpe','moi','offline' ]
         self.algo_names_offline = [
             "dschg_gb",
             "dschg_gh",
@@ -46,9 +46,9 @@ class Validation(AbstractModule):
             "dschg_o",
             "dschg_s",
             "dschg_gc",
-            "dschg_c",
-            "dschg_ga",
-            "dschg_a"
+            "dschg_c"
+            # "dschg_ga",
+            # "dschg_a"
         ]
         self.algo_names = np.array(["metroman", "busboi", "hivdi", "momma", "sad", "sic4dvar", "consensus"])
 
@@ -80,13 +80,27 @@ class Validation(AbstractModule):
 
             val_dict = self.create_data_dict()
             val_dict = self.get_nc_attrs(val_dir / val_files[0], val_dict)
-
+            self.reach_con_status=[]
+            self.reach_con_validation=[]
+            self.reach_con_calibration=[]
             index = 0
             for s_rid in self.sos_rids:
+                try:
+                    val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
+                    self.logger.info('pulling moi gauge info: %s', s_rid)    
+                    self.reach_con_status.append(val_ds.moi_gauge_status)
+                    self.reach_con_validation.append(val_ds.moi_gauge_validation)
+                    self.reach_con_calibration.append(val_ds.moi_gauge_calibration)
+                    val_ds.close()
+                except:
+                    self.logger.info('using fill for moi gauge info: %s', s_rid)    
+                    self.reach_con_status.append(-999)
+                    self.reach_con_validation.append(-999)
+                    self.reach_con_calibration.append(-999)
                 if s_rid in val_rids:
                     try:
                         val_ds = Dataset(val_dir / f"{int(s_rid)}_validation.nc", 'r')
-                        self.logger.info('processing validation reach: %s', s_rid)
+                        self.logger.info('processing validation reach: %s', s_rid)                       
 
                         for suffix in self.suffixes:
                             grp = self.suffix_dict[suffix]
@@ -155,7 +169,9 @@ class Validation(AbstractModule):
             }
 
             data_dict[group]["algo_names"] = np.full((num_algos_dim, self.nchar), '')
+            self.logger.info(algo_names)
             for i, name in enumerate(algo_names):
+               
                 data_dict[group]['algo_names'][i, :len(name)] = list(name)
 
         data_dict['flpe']['time'] = np.empty((self.sos_rids.shape[0]), dtype=object)
@@ -189,10 +205,18 @@ class Validation(AbstractModule):
         sos_ds    = Dataset(self.sos_new, 'a')
         val_t_grp = sos_ds.createGroup("validation")
 
+        
+
         val_t_grp.createDimension("num_algos", self.num_algos)
         val_t_grp.createDimension("num_algos_offline", self.num_algos_offline)
         val_t_grp.createDimension("nchar", self.nchar)
         val_t_grp.createDimension("num_reaches", self.sos_rids.shape[0])
+
+        #dump calibration gauge info directly into the val group
+        var = self.write_var(val_t_grp, "moi_gauge_status", "i4", ("num_reaches",),self.reach_con_status)
+        var = self.write_var(val_t_grp, "moi_gauge_validation", "i4", ("num_reaches",),self.reach_con_validation)
+        var = self.write_var(val_t_grp, "moi_gauge_calibration", "i4", ("num_reaches",),self.reach_con_calibration)
+        
 
         for group in self.out_groups:
             val_grp = val_t_grp.createGroup(group)
