@@ -350,5 +350,174 @@ class Momma(AbstractModule):
         var = self.write_var(mm_grp, "width_stage_corr", "f8", ("num_reaches",), data_dict)
         self.set_variable_atts(var, metadata_json["momma"]["width_stage_corr"])
 
-
+        # NEW: node-level MOMMA v2 results into /momma/node
+        self.append_node_data(sos_ds, mm_grp, metadata_json)
+        
         sos_ds.close()
+
+
+    
+    def append_node_data(self, sos_ds, mm_grp, metadata_json):
+        """Append MOMMA v2 node results aligned with SoS node IDs.
+
+        All variables have dimension (num_nodes,).
+        Each element contains a variable-length time series.
+        Nodes without MOMMA results contain empty arrays.
+        Existing SoS groups and variables are not modified.
+        """
+
+        node_names = ("stage", "width", "slope", "seg", "n", "nb", "x", "Y", "v", "Q")
+
+        mm_dir = self.input_dir / "momma"
+        mm_files = sorted(Path(f) for f in glob.glob(f"{mm_dir}/{self.cont_ids}*.nc"))
+
+        # Use existing SoS node IDs and ordering
+        sos_node_ids = np.asarray(self.sos_nids, dtype=np.int64)
+
+        num_nodes = len(sos_node_ids)
+
+        if len(sos_ds.dimensions["num_nodes"]) != num_nodes:
+            return
+
+        sorted_order = np.argsort(sos_node_ids)
+        sorted_ids = sos_node_ids[sorted_order]
+
+        if np.any(sorted_ids[1:] == sorted_ids[:-1]):
+            return
+
+        # Create only the new /momma/node group
+        node_grp = mm_grp.createGroup("node")
+
+        node_vars = {}
+
+        for name in (*node_names, "nt"):
+            var = node_grp.createVariable(name, self.vlen_f,("num_nodes",))
+
+            var.setncattr(
+                "description",
+                "Aligned with /nodes/node_id. Each element contains a node time series. Empty arrays indicate no MOMMA results."
+            )
+
+            node_vars[name] = var
+
+        node_vars["nt"].long_name = ("Source MOMMA node time index")
+
+
+        # Initialize missing nodes as empty arrays
+        chunk_size = 10000
+
+        for start in range(0, num_nodes, chunk_size):
+            end = min(start + chunk_size, num_nodes)
+            n_chunk = end - start
+
+            empty_chunk = np.empty(n_chunk, dtype=object)
+
+            for i in range(n_chunk):
+                empty_chunk[i] = np.array([], dtype=np.float64)
+
+            for var in node_vars.values():
+                var[start:end] = empty_chunk
+
+        # Optional metadata
+        node_meta = metadata_json.get("momma", {}).get("node", {})
+
+        for name, var in node_vars.items():
+            if name in node_meta:
+                self.set_variable_atts(var, node_meta[name])
+
+        # Read and store MOMMA node results
+        count_files = 0
+        count_nodes = 0
+        seen_node_ids = set()
+
+        for mm_file in mm_files:
+            try:
+                with Dataset(mm_file, "r") as src:
+    
+                    if "node" not in src.groups:
+                        continue
+    
+                    src_node = src.groups["node"]
+    
+                    src_ids = np.asarray(src_node.variables["node_id"][:], dtype=np.int64)
+    
+                    positions = np.searchsorted(sorted_ids, src_ids)
+    
+                    valid = positions < num_nodes
+    
+                    valid[valid] &= (sorted_ids[positions[valid]] == src_ids[valid])
+    
+                    nt = np.ma.asarray(src_node.variables["nt"][:])
+    
+                    nt_values = np.asarray(nt.filled(self.FILL["f8"]), dtype=np.float64)
+    
+                    # Copy source variable attributes
+                    if count_files == 0:
+                        for name in node_names:
+                            if name in src_node.variables:
+                                attrs = {
+                                    k: src_node.variables[name].getncattr(k)
+                                    for k in src_node.variables[name].ncattrs()
+                                    if k != "_FillValue"
+                                }
+    
+                                # Preserve explicit output metadata
+                                attrs.pop("description", None)
+    
+                                node_vars[name].setncatts(attrs)
+    
+                    reach_nodes = 0
+    
+                    for j in np.flatnonzero(valid):
+    
+                        node_id = int(src_ids[j])
+    
+                        if node_id in seen_node_ids:
+                            continue
+    
+                        target = int(sorted_order[positions[j]])
+    
+                        # Read and validate before writing
+                        values_to_write = {}
+                        valid_node = True
+    
+                        for name in node_names:
+    
+                            if name not in src_node.variables:
+                                continue
+    
+                            col = np.ma.asarray(src_node.variables[name][:, j])
+    
+                            values = np.asarray(col.filled(self.FILL["f8"]), dtype=np.float64)
+    
+                            if len(values) != len(nt_values):
+                                valid_node = False
+                                break
+    
+                            values_to_write[name] = values
+    
+                        if not valid_node:
+                            continue
+    
+                        # Write to matching SoS node index
+                        node_vars["nt"][target] = nt_values
+    
+                        for name, values in values_to_write.items():
+                            node_vars[name][target] = values
+    
+                        seen_node_ids.add(node_id)
+                        reach_nodes += 1
+                        count_nodes += 1
+    
+                    count_files += 1
+    
+                    # Log only reaches with stored nodes
+                    if reach_nodes > 0:
+                        self.logger.info(
+                            "MOMMA reach %s: stored %d nodes",
+                            mm_file.name.split("_")[0],
+                            reach_nodes
+                        )
+
+            except Exception:
+                    continue
