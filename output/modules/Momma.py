@@ -511,13 +511,13 @@ class Momma(AbstractModule):
     
                     count_files += 1
     
-                    # Log only reaches with stored nodes
-                    if reach_nodes > 0:
-                        self.logger.info(
-                            "MOMMA reach %s: stored %d nodes",
-                            mm_file.name.split("_")[0],
-                            reach_nodes
-                        )
+                    # # Log only reaches with stored nodes
+                    # if reach_nodes > 0:
+                    #     self.logger.info(
+                    #         "MOMMA reach %s: stored %d nodes",
+                    #         mm_file.name.split("_")[0],
+                    #         reach_nodes
+                    #     )
 
             except Exception:
                     continue
