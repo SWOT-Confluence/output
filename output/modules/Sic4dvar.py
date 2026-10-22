@@ -73,6 +73,10 @@ class Sic4dvar(AbstractModule):
         sv_files = [ Path(sv_file) for sv_file in glob.glob(f"{sv_dir}/{self.cont_ids}*.nc") ] 
         sv_rids = [ int(sv_file.name.split('_')[0]) for sv_file in sv_files ]
 
+        print(sv_dir)
+        print(sv_files)
+        print(sv_rids)
+
         # Storage of results data
         sv_dict = self.create_data_dict()
         
@@ -83,7 +87,9 @@ class Sic4dvar(AbstractModule):
             index = 0
             for s_rid in self.sos_rids:
                 if s_rid in sv_rids:
-                    try:
+                    if True:
+                    #try:
+                        #print(f'Reach {s_rid} run.')
                         sv_ds = Dataset(sv_dir / f"{int(s_rid)}_sic4dvar.nc", 'r')
                         sv_dict["A0"][index] = sv_ds["A0"][:].filled(np.nan)
                         sv_dict["n"][index] = sv_ds["n"][:].filled(np.nan)
@@ -91,6 +97,33 @@ class Sic4dvar(AbstractModule):
                         # sv_dict["Qalgo31"][index] = sv_ds["Qalgo31"][:].filled(self.FILL["f8"])
                         sv_dict["Q_mm"][index] = sv_ds["Q_mm"][:].filled(self.FILL["f8"])
                         sv_dict["Q_da"][index] = sv_ds["Q_da"][:].filled(self.FILL["f8"])
+
+                        #reach data
+                        # print(f"reach data for reach {s_rid}")
+                        # print(sv_ds.variables.keys())
+                        # print(sv_ds["reach_xr"][:])
+                        # print(buggy)
+                        if "reach_xr" in sv_ds.variables:
+                            sv_dict["reach_xr"][index] = sv_ds["reach_xr"][:].filled(self.FILL["f8"])
+
+                        if "reach_yr" in sv_ds.variables:
+                            sv_dict["reach_yr"][index] = sv_ds["reach_yr"][:].filled(self.FILL["f8"])
+
+                        if "mean_elevation_profile" in sv_ds.variables:
+                            sv_dict["mean_elevation_profile"][index] = sv_ds["mean_elevation_profile"][:].filled(self.FILL["f8"])
+
+                        if "prior_used" in sv_ds.variables:
+                            sv_dict["prior_used"][index] = sv_ds["prior_used"][:].filled(np.nan)
+
+                        if "Zb_acc" in sv_ds.variables:
+                            sv_dict["Zb_acc"][index] = sv_ds["Zb_acc"][:].filled(np.nan)
+
+                        if "K" in sv_ds.variables:
+                            sv_dict["K"][index] = sv_ds["K"][:].filled(np.nan)
+
+                        if "SLOPEM1_constant" in sv_ds.variables:
+                            sv_dict["SLOPEM1_constant"][index] = sv_ds["SLOPEM1_constant"][:].filled(np.nan)
+
                         indexes = np.where(s_rid == self.sos_nrids)
 
                         if "width" in sv_ds.variables:
@@ -104,11 +137,32 @@ class Sic4dvar(AbstractModule):
                             elevation[:nb_nodes, :nb_cross_section] = sv_ds["elevation"][:].filled(np.nan)
                             sv_dict["elevation"][indexes] = elevation
 
+                        if "quantile_matrix" in sv_ds.variables:
+                            nb_nodes, nb_cross_section = sv_ds["quantile_matrix"][:].filled(np.nan).shape
+                            quantile_matrix = np.full((sv_dict["quantile_matrix"][indexes].shape), np.nan)
+                            #try:
+                            print("S_RID:", s_rid)
+                            print("INDEXES:", indexes)
+                            print("NB_NODES:", nb_nodes)
+                            print("SHAPE_DICT:", sv_dict["quantile_matrix"][indexes].shape)
+
+                            if nb_nodes != sv_dict["quantile_matrix"][indexes].shape[0]:
+                                quantile_matrix = np.full((sv_dict["quantile_matrix"][indexes].shape), np.nan)
+                            else:
+                                quantile_matrix[:nb_nodes, :nb_cross_section] = sv_ds["quantile_matrix"][:].filled(np.nan)
+
+                            # except Exception as e:
+                            #     print(f"Index {s_rid} failed with error: {e}")
+                            sv_dict["quantile_matrix"][indexes] = quantile_matrix
+
                         sv_dict["node_id"][indexes] = self.sos_nids[indexes]
                         # self.__insert_nx(sv_dict, sv_ds, indexes)
                         sv_ds.close()
-                    except:
-                      self.logger.warn(f'Reach {s_rid} failed for SIC4DVAR ...')
+
+                    # print(sv_dict)
+                    # print(bug)
+                    # except:
+                    #  self.logger.warn(f'Reach {s_rid} failed for SIC4DVAR ...')
                 index += 1
         return sv_dict
     
@@ -116,14 +170,26 @@ class Sic4dvar(AbstractModule):
         """Creates and returns SIC4DVar data dictionary."""
 
         data_dict = {
+            #scalars
             "A0" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
             "n" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+            "Zb_acc" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+            "K" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+            "SLOPEM1_constant" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+            "prior_used" : np.full(self.sos_rids.shape[0], np.nan, dtype=np.float64),
+            #1D arrays
             "Q_mm" : np.empty((self.sos_rids.shape[0]), dtype=object),
             "Q_da" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "node_id" : np.zeros(self.sos_nids.shape[0], dtype=np.int64),
+            "reach_xr" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "reach_yr" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            "mean_elevation_profile" : np.empty((self.sos_rids.shape[0]), dtype=object),
             # "Qalgo31" : np.empty((self.sos_rids.shape[0]), dtype=object),
+            #2D arrays
             "width": np.full((self.sos_nids.shape[0], 10), np.nan, dtype=object),
             "elevation": np.full((self.sos_nids.shape[0], 10), np.nan, dtype=object),
-            "node_id" : np.zeros(self.sos_nids.shape[0], dtype=np.int64),
+            "quantile_matrix": np.empty((self.sos_nids.shape[0], 3), dtype=object),
+
             "attrs": {
                 "A0" : {},
                 "n" : {},
@@ -131,7 +197,17 @@ class Sic4dvar(AbstractModule):
                 "Q_da":{},
                 # "Qalgo31" : {},
                 "width": {},
-                "elevation": {}
+                "elevation": {},
+                #new
+                "Zb_acc": {},
+                "K": {},
+                "SLOPEM1_constant": {},
+                "prior_used": {},
+                "node_id": {},
+                "reach_xr": {},
+                "reach_yr": {},
+                "mean_elevation_profile": {},
+                "quantile_matrix": {}
             }
         }
         
@@ -141,6 +217,10 @@ class Sic4dvar(AbstractModule):
         # data_dict["Qalgo31"].fill(np.array([self.FILL["f8"]]))
         data_dict["width"].fill(np.array([self.FILL["f8"]]))
         data_dict["elevation"].fill(np.array([self.FILL["f8"]]))
+        data_dict["reach_xr"].fill(np.array([self.FILL["f8"]]))
+        data_dict["reach_yr"].fill(np.array([self.FILL["f8"]]))
+        data_dict["mean_elevation_profile"].fill(np.array([self.FILL["f8"]]))
+        data_dict["quantile_matrix"].fill(np.array([self.FILL["f8"]]))
         return data_dict
     
     def get_nc_attrs(self, nc_file, data_dict):
@@ -192,6 +272,7 @@ class Sic4dvar(AbstractModule):
         sv_grp = sos_ds.createGroup("sic4dvar")
 
         sv_grp.createDimension("nb_pts", 10)
+        sv_grp.createDimension("nb_quantiles", 3)
 
         # SIC4DVar data
 
@@ -208,5 +289,27 @@ class Sic4dvar(AbstractModule):
         self.set_variable_atts(var, metadata_json["sic4dvar"]["width"])
         var = self.write_var(sv_grp, "elevation", "f8", ("num_nodes", "nb_pts"), data_dict)
         self.set_variable_atts(var, metadata_json["sic4dvar"]["elevation"])
+
+        #new
+        var = self.write_var(sv_grp, "Zb_acc", "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["Zb_acc"])
+        var = self.write_var(sv_grp, "K", "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["K"])
+        var = self.write_var(sv_grp, "SLOPEM1_constant", "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["SLOPEM1_constant"])
+        var = self.write_var(sv_grp, "prior_used", "f8", ("num_reaches",), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["prior_used"])
         
+        var = self.write_var_nt(sv_grp, "reach_xr", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["reach_xr"])
+        var = self.write_var_nt(sv_grp, "reach_yr", self.vlen_f, ("num_reaches"), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["reach_yr"])
+        var = self.write_var_nt(sv_grp, "mean_elevation_profile", self.vlen_f, ("num_reaches"), data_dict)  
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["mean_elevation_profile"])
+        var = self.write_var(sv_grp, "quantile_matrix", "f8", ("num_nodes", "nb_quantiles"), data_dict)
+        self.set_variable_atts(var, metadata_json["sic4dvar"]["quantile_matrix"])
+
+        #var = self.write_var(sv_grp, "node_id", "i4", ("num_nodes",), data_dict)
+        # self.set_variable_atts(var, metadata_json["sic4dvar"]["node_id"])
+
         sos_ds.close()

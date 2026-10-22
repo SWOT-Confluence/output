@@ -3322,7 +3322,176 @@
             "coverage_content_type": [
                 "modelResult"
             ]
+        },
+
+        "reach_yr": {
+            "long_name": [
+                "Reach elevation bathymetry"
+            ],
+            "comment": [
+                "Bed levels at each reach (dry observed bathymetry)"
+            ],
+            "units": [
+                "m"
+            ],
+            "valid_min": [
+                -1000
+            ],
+            "valid_max": [
+                10000
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
+        },
+
+        "reach_xr": {
+            "long_name": [
+                "Reach width bathymetry"
+            ],
+            "comment": [
+                "Bed widths at each reach (dry observed bathymetry)"
+            ],
+            "units": [
+                "m"
+            ],
+            "valid_min": [
+                0.1
+            ],
+            "valid_max": [
+                1000000
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
+        },
+
+        "SLOPEM1_constant": {
+            "long_name": [
+                "Constant SIC slope"
+            ],
+            "comment": [
+                "Average slope "
+            ],
+            "units": [
+                "m/m"
+            ],
+            "valid_min": [
+                0.000001
+            ],
+            "valid_max": [
+                500
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
+        },
+
+        "mean_elevation_profile": {
+            "long_name": [
+                "Mean water surface elevation profile"
+            ],
+            "comment": [
+                "Mean water surface elevation profile"
+            ],
+            "units": [
+                "m"
+            ],
+            "valid_min": [
+                -1000
+            ],
+            "valid_max": [
+                10000
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
+        },
+
+        "quantile_matrix": {
+            "long_name": [
+                "Quantiles of water surface elevation profile"
+            ],
+            "comment": [
+                "Quantiles of water surface elevation profile"
+            ],
+            "units": [
+                "m"
+            ],
+            "valid_min": [
+                -1000
+            ],
+            "valid_max": [
+                10000
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
+        },
+
+        "prior_used": {
+            "long_name": [
+                "Prior used in sic4dvar computation"
+            ],
+            "comment": [
+                "Prior used in sic4dvar computation"
+            ],
+            "units": [
+                "m^3/s"
+            ],
+            "valid_min": [
+                0
+            ],
+            "valid_max": [
+                10000000
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
+        },
+
+        "Zb_acc": {
+            "long_name": [
+                "Accumulated bed level"
+            ],
+            "comment": [
+                "Accumulated bed level"
+            ],
+            "units": [
+                "m"
+            ],
+            "valid_min": [
+                -1000
+            ],
+            "valid_max": [
+                10000
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
+        },
+
+        "K": {
+            "long_name": [
+                "Accumulated friction"
+            ],
+            "comment": [
+                "Accumulated friction"
+            ],
+            "units": [
+                "m^(1/3)/s"
+            ],
+            "valid_min": [
+                0
+            ],
+            "valid_max": [
+                500
+            ],
+            "coverage_content_type": [
+                "modelResult"
+            ]
         }
+
     },
     "validation": {
         "algo_names": {
