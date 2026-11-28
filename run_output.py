@@ -98,8 +98,8 @@ def get_logger():
     logger.setLevel(logging.DEBUG)
 
     # Create a handler to console and set level
-    console_handler = logging.StreamHandler()
-
+    console_handler = logging.StreamHandler()  
+    console_handler.setLevel(logging.DEBUG)
     # Create a formatter and add it to the handler
     console_format = logging.Formatter("%(asctime)s - %(module)s - %(levelname)s : %(message)s")
     console_handler.setFormatter(console_format)
